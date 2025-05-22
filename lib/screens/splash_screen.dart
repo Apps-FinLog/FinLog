@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SvgPicture.asset(
-              'assets/logo_finlog.svg',
+              'assets/svgs/logo_finlog.svg',
               width: 150, // Adjust size as needed
               height: 150, // Adjust size as needed
             ),
