@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -87,12 +88,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               onPressed: () {
                 if (isLastPage) {
-                  print("Onboarding completed!");
+                  if (kDebugMode) {
+                    print("Onboarding completed!");
+                  }
 
                   if (Navigator.canPop(context)) {
                     Navigator.pop(context);
                   } else {
-                    print("Cannot pop, would navigate to home screen here.");
+                    if (kDebugMode) {
+                      print("Cannot pop, would navigate to home screen here.");
+                    }
                   }
                 } else {
                   _pageController.nextPage(
