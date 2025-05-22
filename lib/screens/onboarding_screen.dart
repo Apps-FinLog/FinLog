@@ -47,17 +47,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerRight,
-          end: Alignment.centerLeft,
-          colors: [
-            Color(0xFF60A5FA),
-            Color(0xFF0C68FF),
-            Color(0xFF1E3A8A),
-          ],
-        ),
-      ),
+      // Removed background decoration as it's now handled by the fixed background in the Stack
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,6 +112,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
+          // Fixed background gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerRight,
+                end: Alignment.centerLeft,
+                colors: [
+                  Color(0xFF60A5FA),
+                  Color(0xFF0C68FF),
+                  Color(0xFF1E3A8A),
+                ],
+              ),
+            ),
+          ),
+          // PageView for scrolling content
           PageView(
             controller: _pageController,
             onPageChanged: (int page) {
@@ -131,6 +136,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             },
             children: _buildPages(),
           ),
+          // Page indicator
           Positioned(
             top: 60, // Adjust as needed for status bar and aesthetics
             left: 0,
