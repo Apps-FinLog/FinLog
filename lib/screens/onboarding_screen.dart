@@ -190,7 +190,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   }
                 },
                 child: Text(
-                  _pageController.page == _buildPages().length - 1 ? 'Mulai' : 'Lanjut',
+                  _pageController.hasClients && (_pageController.page ?? 0).round() == _buildPages().length - 1
+                      ? 'Mulai'
+                      : 'Lanjut',
                   style: const TextStyle(color: Colors.white),
                 ),
               ),
