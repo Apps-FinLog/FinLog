@@ -40,17 +40,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       _buildOnboardingPage(
         title: "Catat Cepat",
         description:
-            "Langsung catat pengeluaran dari halaman landing - tanpa perlu klik banyak.",
+            "🗣️ Langsung catat pengeluaran dari halaman landing — tanpa perlu klik banyak.",
         isLastPage: false,
       ),
       _buildOnboardingPage(
         title: "Pantau Dengan Mudah",
-        description: "Pantau melalui dashboard singkat.",
+        description: "🗣️ Pantau melalui dashboard singkat.",
         isLastPage: false,
       ),
       _buildOnboardingPage(
         title: "Mulai Keuangan Sehat",
-        description: "Bangun kebiasaan keuangan yang sehat tanpa takut dan santai.",
+        description: "🗣 Bangun kebiasaan keuangan yang sehat tanpa takut dan santai.",
         isLastPage: true,
       ),
     ];
@@ -81,44 +81,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             style: AppTextStyles.onboardingDescription,
           ),
           const Spacer(flex: 3),
-          Align(
-            alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black87, // Button color from image
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10), // Adjusted padding
-                textStyle: AppTextStyles.onboardingButton,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0), // Slightly rounded corners
-                ),
-              ),
-              onPressed: () {
-                if (isLastPage) {
-                  if (kDebugMode) {
-                    print("Onboarding completed!");
-                  }
-
-                  if (Navigator.canPop(context)) {
-                    Navigator.pop(context);
-                  } else {
-                    if (kDebugMode) {
-                      print("Cannot pop, would navigate to home screen here.");
-                    }
-                  }
-                } else {
-                  _pageController.nextPage(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                  );
-                }
-              },
-              child: Text(
-                isLastPage ? 'Mulai' : 'Lanjut',
-                style: const TextStyle(color: Colors.white), // This style is simple, can keep it inline or add to AppTextStyles if needed. For now, keeping it simple.
-              ),
-            ),
-          ),
-          const SizedBox(height: 40), // Add negative height to pull button up
         ],
       ),
     );
@@ -148,7 +110,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             controller: _pageController,
             onPageChanged: (int page) {
               setState(() {
-// Update for logic, animation handled by listener
+                // Update for logic, animation handled by listener
               });
             },
             children: _buildPages(),
@@ -190,6 +152,48 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ],
                 );
               },
+            ),
+          ),
+          // Fixed button at the bottom
+          Positioned(
+            bottom: 40.0,
+            right: 40.0,
+            child: SizedBox(
+              width: 150, // Fixed width for the button
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black87,
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                  textStyle: AppTextStyles.onboardingButton,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                ),
+                onPressed: () {
+                  final isLastPage = _pageController.page == _buildPages().length - 1;
+                  if (isLastPage) {
+                    if (kDebugMode) {
+                      print("Onboarding completed!");
+                    }
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    } else {
+                      if (kDebugMode) {
+                        print("Cannot pop, would navigate to home screen here.");
+                      }
+                    }
+                  } else {
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                },
+                child: Text(
+                  _pageController.page == _buildPages().length - 1 ? 'Mulai' : 'Lanjut',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
             ),
           ),
         ],
