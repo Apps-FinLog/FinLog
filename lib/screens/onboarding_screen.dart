@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:finlog/styles/text_styles.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -17,7 +18,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       _buildOnboardingPage(
         title: "Catat Tanpa Ribet",
         description:
-            "Cukup ceritakan pengeluaranmu seperti ngobrol biasa.\nFinLog akan menyimpan catatan keuanganmu secara otomatis dalam bentuk jurnal.",
+            "🗣️ Cukup ceritakan pengeluaranmu seperti ngobrol biasa.\n📓 FinLog akan menyimpan catatan keuanganmu secara otomatis dalam bentuk jurnal.",
         isLastPage: false,
       ),
       _buildOnboardingPage(
@@ -49,26 +50,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       color: Colors.blue.shade700, 
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const Spacer(flex: 2),
           Text(
             title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            textAlign: TextAlign.start,
+            style: AppTextStyles.onboardingTitle,
           ),
           const SizedBox(height: 20),
           Text(
             description,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.white70,
-            ),
+            textAlign: TextAlign.start,
+            style: AppTextStyles.onboardingDescription,
           ),
           const Spacer(flex: 3),
           Align(
@@ -77,11 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black87, // Button color from image
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15), // Adjusted padding
-                textStyle: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+                textStyle: AppTextStyles.onboardingButton,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0), // Slightly rounded corners
                 ),
@@ -108,7 +98,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               },
               child: Text(
                 isLastPage ? 'Mulai' : 'Lanjut',
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white), // This style is simple, can keep it inline or add to AppTextStyles if needed. For now, keeping it simple.
               ),
             ),
           ),
