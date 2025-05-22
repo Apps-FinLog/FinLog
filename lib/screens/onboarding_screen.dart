@@ -47,7 +47,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
-      // Removed background decoration as it's now handled by the fixed background in the Stack
+      color: Colors.transparent, // Ensure the page content itself is transparent
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,25 +139,40 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           // Page indicator
           Positioned(
             top: 60, // Adjust as needed for status bar and aesthetics
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List<Widget>.generate(
-                _buildPages().length,
-                (int index) {
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    height: 10,
-                    width: (index == _currentPage) ? 30 : 10, // Active page indicator is wider
-                    margin: const EdgeInsets.symmetric(horizontal: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: (index == _currentPage) ? Colors.white : Colors.white54,
+            left: 40,
+            right: 40,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final totalWidth = constraints.maxWidth;
+                final segmentWidth = totalWidth / _buildPages().length;
+
+                return Stack(
+                  children: [
+                    // Background track
+                    Container(
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: Colors.white54,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
-                  );
-                },
-              ),
+                    // Moving active segment
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                      left: _currentPage * segmentWidth,
+                      child: Container(
+                        height: 10,
+                        width: segmentWidth,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ],
