@@ -46,8 +46,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     required bool isLastPage,
   }) {
     return Container(
-      padding: const EdgeInsets.all(24.0),
-      color: Colors.blue.shade700, 
+      padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerRight,
+          end: Alignment.centerLeft,
+          colors: [
+            Color(0xFF60A5FA),
+            Color(0xFF0C68FF),
+            Color(0xFF1E3A8A),
+          ],
+        ),
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
