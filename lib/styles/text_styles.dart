@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTextStyles {
   static const TextStyle onboardingTitle = TextStyle(
@@ -15,10 +16,9 @@ class AppTextStyles {
     color: Colors.white70,
   );
 
-  static const TextStyle onboardingButton = TextStyle(
-    fontFamily: 'Geist',
+  static TextStyle onboardingButton = GoogleFonts.inter(
     fontSize: 18,
     color: Colors.white,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
   );
 }

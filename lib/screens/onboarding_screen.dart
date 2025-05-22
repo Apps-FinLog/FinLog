@@ -86,10 +86,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black87, // Button color from image
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15), // Adjusted padding
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10), // Adjusted padding
                 textStyle: AppTextStyles.onboardingButton,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0), // Slightly rounded corners
+                  borderRadius: BorderRadius.circular(5.0), // Slightly rounded corners
                 ),
               ),
               onPressed: () {
@@ -118,6 +118,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 40), // Add negative height to pull button up
         ],
       ),
     );
