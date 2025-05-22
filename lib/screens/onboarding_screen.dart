@@ -11,7 +11,23 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
-  int _currentPage = 0;
+  double _indicatorPosition = 0.0; // For smooth animation
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController.addListener(() {
+      setState(() {
+        _indicatorPosition = _pageController.page ?? 0.0;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   List<Widget> _buildPages() {
     return [
@@ -131,7 +147,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             controller: _pageController,
             onPageChanged: (int page) {
               setState(() {
-                _currentPage = page;
+// Update for logic, animation handled by listener
               });
             },
             children: _buildPages(),
@@ -139,8 +155,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           // Page indicator
           Positioned(
             top: 60, // Adjust as needed for status bar and aesthetics
-            left: 40,
-            right: 40,
+            left: 80, // Increased padding to make it shorter
+            right: 80, // Increased padding to make it shorter
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final totalWidth = constraints.maxWidth;
@@ -158,9 +174,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     // Moving active segment
                     AnimatedPositioned(
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                      left: _currentPage * segmentWidth,
+                      duration: const Duration(milliseconds: 0), // Set duration to 0 for instant update with scroll
+                      curve: Curves.linear, // Use linear curve for direct mapping to scroll
+                      left: _indicatorPosition * segmentWidth,
                       child: Container(
                         height: 10,
                         width: segmentWidth,
