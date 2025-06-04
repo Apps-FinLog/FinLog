@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:finlog/styles/text_styles.dart';
 import 'package:finlog/screens/dashboard_screen.dart';
 import 'package:finlog/screens/home_content_screen.dart';
 import 'package:finlog/screens/scan_screen.dart';
+import 'package:finlog/widgets/custom_bottom_navigation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -64,57 +64,10 @@ class _HomeScreenState extends State<HomeScreen> {
         key: ValueKey<int>(_selectedIndex), // New
         child: _widgetOptions.elementAt(_selectedIndex), // New: Add a unique key for AnimatedSwitcher
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min, // New
-        children: [ // New
-          Container( // New
-            color: const Color(0xFFE2E8F0), // Color of the line, matching app bar
-            height: 1.0, // Thickness of the line
-          ), // New
-          BottomNavigationBar( // New
-            backgroundColor: Colors.white, // White background
-            elevation: 0, // Remove shadow
-            items: <BottomNavigationBarItem>[
-              _buildNavItem(0, 'assets/svgs/pie-chart.svg', 'Dashboard'),
-              _buildNavItem(1, 'assets/svgs/home.svg', 'Home'),
-              _buildNavItem(2, 'assets/svgs/scan.svg', 'Scan'),
-            ],
-            currentIndex: _selectedIndex, // New
-            selectedItemColor: Colors.blue.shade700,
-            unselectedItemColor: Colors.grey,
-            onTap: _onItemTapped,
-            type: BottomNavigationBarType.fixed,
-            selectedLabelStyle: const TextStyle(fontSize: 0), // Hide label space
-            unselectedLabelStyle: const TextStyle(fontSize: 0), // Hide label space
-          ),
-        ], // New
-      ), // New
-    );
-  }
-
-  BottomNavigationBarItem _buildNavItem(int index, String iconPath, String label) {
-    final bool isSelected = _selectedIndex == index;
-    final Color selectedColor = Color(0x800876FF); // #0876FF80
-
-    return BottomNavigationBarItem(
-      icon: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? selectedColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(8), // Circular rectangle
-        ),
-        child: SvgPicture.asset(
-          iconPath,
-          width: 24,
-          height: 24,
-          colorFilter: ColorFilter.mode(
-            isSelected ? Colors.black : Colors.grey, // Icon color when selected/unselected
-            BlendMode.srcIn,
-          ),
-        ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
-      label: '', // Keep label as empty string to hide it
     );
   }
 }
