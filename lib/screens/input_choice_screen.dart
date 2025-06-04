@@ -124,37 +124,33 @@ class _InputChoiceScreenState extends State<InputChoiceScreen>
 
   Widget _buildOptionItem(
     BuildContext context,
-    String label,
-    VoidCallback onTap, {
-    IconData? materialIcon,
-    String? assetPath,
-  }) {
-    Widget iconWidget;
-    Color iconColor = Colors.grey[700]!; // Warna ikon untuk Tampilan Scanner
-
-    if (assetPath != null) {
-      // Jika Anda punya file ikon valid:
-      // iconWidget = Image.asset(assetPath, width: 48, height: 48, color: iconColor);
-      // Karena file Anda hitam, saya fallback ke Material Icon
-      iconWidget = Icon(
-        materialIcon ?? Icons.error,
-        size: 48,
-        color: iconColor,
-      );
-    } else if (materialIcon != null) {
-      iconWidget = Icon(materialIcon, size: 48, color: iconColor);
-    } else {
-      iconWidget = Icon(Icons.error, size: 48, color: iconColor);
-    }
-
-    return GestureDetector(
+    String line1,
+    String line2,
+    IconData iconData,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          iconWidget,
-          const SizedBox(height: 8),
-          Text(label, style: TextStyle(fontSize: 16, color: Colors.grey[800])),
+        children: <Widget>[
+          Icon(iconData, size: 24), // Use Icon widget with IconData
+          SizedBox(height: 8), // Spacing between icon and text
+          Text(
+            line1,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          Text(
+            line2,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black54,
+            ),
+          ),
         ],
       ),
     );
@@ -231,54 +227,51 @@ class _InputChoiceScreenState extends State<InputChoiceScreen>
 
     // Tampilan Pilihan Input (sesuai Tampilan scanner.png)
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'FinLog',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(backgroundColor: finlogProfileBgPlaceholder),
-          ),
-        ],
-        backgroundColor: Colors.white, // Latar AppBar Tampilan Scanner
-        elevation: 0, // Atau 1 jika ada shadow tipis
-      ),
-      // Latar belakang utama bisa putih atau abu-abu sangat muda
-      // Desain Tampilan Scanner tidak terlalu jelas latarnya karena ada blur
       backgroundColor: Colors.grey[100],
       body: Stack(
         children: [
-          // Anda bisa menambahkan gambar latar buram statis di sini jika mau
-          // Contoh:
-          // Positioned.fill(
-          //   child: Image.asset(
-          //     'assets/images/blurred_background.png', // Ganti dengan path gambar Anda
-          //     fit: BoxFit.cover,
-          //   ),
-          // ),
-          Center(
+          Positioned.fill(
+            child: Image.asset(
+              "assets/images/blurred-background.png",
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            
             // Pusatkan tombol pilihan
             child: Container(
-              // Untuk memberi sedikit jarak dari bottom jika tidak ada BottomNavBar
-              // padding: const EdgeInsets.only(bottom: 80.0),
+
+              padding: EdgeInsets.only(top:20, bottom: 20),
+              color: Colors.white60,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   _buildOptionItem(
                     context,
-                    'Kamera',
-                    () => _pickImage(ImageSource.camera),
-                    materialIcon: Icons.camera_alt_outlined, // Placeholder
-                    // assetPath: 'assets/images/Group1.png', // Jika punya ikon kamera valid
+                    'Scan Bill', // line1 for first item
+                    'Camera',  // line2 for first item
+                    Icons.camera_alt_outlined, // Icon for Camera
+                    () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Membuka kamera...'),
+                          duration: Duration(seconds: 1),
+                        ),
+                      );
+                      Future.delayed(const Duration(milliseconds: 800), () {
+                        _pickImage(ImageSource.camera);
+                      });
+                    },
                   ),
                   _buildOptionItem(
                     context,
-                    'Galeri',
+                    'Scan Bill', // line1 for second item
+                    'Gallery',  // line2 for second item
+                    Icons.photo_library_outlined, // Icon for Gallery
                     () => _pickImage(ImageSource.gallery),
-                    materialIcon: Icons.photo_library_outlined, // Placeholder
-                    // assetPath: 'assets/images/Group.png', // Jika punya ikon galeri valid
                   ),
                 ],
               ),

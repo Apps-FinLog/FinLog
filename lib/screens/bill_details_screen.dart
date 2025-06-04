@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:finlog/styles/colors.dart'; // Import shared colors
+import 'package:finlog/screens/home_screen.dart';
 
 // Taruh BillItem class di sini atau di file model terpisah
 class BillItem {
@@ -14,16 +16,6 @@ class BillItem {
     required this.total,
   });
 }
-
-// Warna dari desain
-const Color gradientStart = Color(0xFF60A5FA);
-const Color gradientMiddle = Color(0xFF0C6BFF);
-const Color gradientEnd = Color(0xFF1E3A8A);
-const Color finlogProfileBgPlaceholder = Color(0xFFD8D8D8);
-const Color finlogButtonGrey = Color(0xFFE0E0E0);
-const Color finlogButtonTextDark = Color(
-  0xFF333333,
-); // Teks lebih gelap untuk kontras
 
 class BillDetailsScreen extends StatefulWidget {
   final String ocrResult;
@@ -102,7 +94,11 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Tagihan berhasil dikonfirmasi!')),
     );
-    // TODO: Implementasi navigasi selanjutnya, misal kembali ke home atau daftar tagihan
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen(initialIndex: 2)),
+      (Route<dynamic> route) => false, // This makes sure all previous routes are removed
+    );
   }
 
   Widget _buildSummaryRow(String label, String value, {bool isTotal = false}) {
