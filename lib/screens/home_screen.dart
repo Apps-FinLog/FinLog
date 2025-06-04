@@ -75,18 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: Colors.white, // White background
             elevation: 0, // Remove shadow
             items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset('assets/svgs/pie-chart.svg', width: 24, height: 24),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset('assets/svgs/home.svg', width: 24, height: 24),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset('assets/svgs/scan.svg', width: 24, height: 24),
-                label: '',
-              ),
+              _buildNavItem(0, 'assets/svgs/pie-chart.svg', 'Dashboard'),
+              _buildNavItem(1, 'assets/svgs/home.svg', 'Home'),
+              _buildNavItem(2, 'assets/svgs/scan.svg', 'Scan'),
             ],
             currentIndex: _selectedIndex, // New
             selectedItemColor: Colors.blue.shade700,
@@ -98,6 +89,32 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ], // New
       ), // New
+    );
+  }
+
+  BottomNavigationBarItem _buildNavItem(int index, String iconPath, String label) {
+    final bool isSelected = _selectedIndex == index;
+    final Color selectedColor = Color(0x800876FF); // #0876FF80
+
+    return BottomNavigationBarItem(
+      icon: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? selectedColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(8), // Circular rectangle
+        ),
+        child: SvgPicture.asset(
+          iconPath,
+          width: 24,
+          height: 24,
+          colorFilter: ColorFilter.mode(
+            isSelected ? Colors.black : Colors.grey, // Icon color when selected/unselected
+            BlendMode.srcIn,
+          ),
+        ),
+      ),
+      label: '', // Keep label as empty string to hide it
     );
   }
 }
