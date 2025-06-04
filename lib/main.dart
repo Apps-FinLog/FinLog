@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Inter', // Menggunakan font Inter
-        scaffoldBackgroundColor: Colors.blue.shade700, // Default background
+        scaffoldBackgroundColor: Colors.white, // Default background
         textTheme: const TextTheme(
           // Default text styles
           bodyLarge: TextStyle(color: Colors.white),
