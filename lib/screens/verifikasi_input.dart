@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:finlog/screens/bill_details_screen.dart';
+import 'package:finlog/screens/journal_input_type.dart'; // Import the JournalInputTypeScreen
 
 // Placeholder for an input item model, if you were to make this dynamic
 class VerifikasiItem {
@@ -20,13 +21,10 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   List<VerifikasiItem> _items = List.generate(2, (index) => VerifikasiItem(id: 'item_$index'));
 
   void _tambahLagi() {
-    setState(() {
-      // Add more dummy items, or trigger navigation to add a new record
-      _items.add(VerifikasiItem(id: 'item_${_items.length}'));
-      _items.add(VerifikasiItem(id: 'item_${_items.length}'));
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Menambahkan item baru... (simulasi)')),
+    // Navigate back to the JournalInputTypeScreen to add more entries
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const JournalInputTypeScreen()),
     );
   }
 

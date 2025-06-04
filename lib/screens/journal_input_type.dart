@@ -188,6 +188,67 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
               ],
             ),
           ),
+          const SizedBox(height: 16), // Spacing between input and buttons
+          // Bottom Navigation Buttons (Back and Confirm)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0), // Add horizontal padding to align with input field
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: finlogButtonGrey,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 1,
+                    ),
+                    child: const Text(
+                      'Back', // Or perhaps "Cancel"
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: finlogButtonTextDark,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Handle confirm action
+                      // For example, collect all messages or the parsed result from chat
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const VerifikasiInputScreen()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: finlogButtonDark,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 1,
+                    ),
+                    child: const Text(
+                      'Confirm',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -217,64 +278,7 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
               Expanded( // This Expanded makes the chat card take available vertical space
                 child: _buildChatCard(),
               ),
-              const SizedBox(height: 16), // Spacing between card and buttons
-              // Bottom Navigation Buttons (Back and Confirm)
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: finlogButtonGrey,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 1,
-                      ),
-                      child: const Text(
-                        'Back', // Or perhaps "Cancel"
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: finlogButtonTextDark,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Handle confirm action
-                        // For example, collect all messages or the parsed result from chat
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const VerifikasiInputScreen()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: finlogButtonDark,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 1,
-                      ),
-                      child: const Text(
-                        'Confirm',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // Removed the SizedBox and Row containing buttons from here
             ],
           ),
         ),

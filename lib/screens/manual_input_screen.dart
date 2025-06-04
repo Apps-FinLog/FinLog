@@ -77,7 +77,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          width: 100,
+          width: 100, // Total width of the progress bar container
           height: 8,
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.3),
@@ -86,7 +86,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Container(
-              width: 60,
+              width: 100, // Fill the entire width to indicate completion of this step
               height: 8,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -371,6 +371,43 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           ),
           const SizedBox(height: 16),
           _buildCalendarView(),
+          const SizedBox(height: 24), // Spacing before buttons
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: finlogButtonGrey,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 1,
+                  ),
+                  child: const Text('Back', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: finlogButtonTextDark)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const VerifikasiInputScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: finlogButtonDark,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 1,
+                  ),
+                  child: const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -390,53 +427,8 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
       ),
       backgroundColor: Colors.grey[200],
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: _buildContentCard(),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 24.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: finlogButtonGrey,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        elevation: 1,
-                      ),
-                      child: const Text('Back', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: finlogButtonTextDark)),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const VerifikasiInputScreen()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: finlogButtonDark,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        elevation: 1,
-                      ),
-                      child: const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+        child: SingleChildScrollView( // Make the entire body scrollable
+          child: _buildContentCard(),
         ),
       ),
     );
