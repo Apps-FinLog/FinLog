@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/text_styles.dart';
+import 'package:finlog/screens/home_screen.dart'; // Import the new home screen
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -175,13 +176,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     if (kDebugMode) {
                       print("Onboarding completed!");
                     }
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    } else {
-                      if (kDebugMode) {
-                        print("Cannot pop, would navigate to home screen here.");
-                      }
-                    }
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    );
                   } else {
                     _pageController.nextPage(
                       duration: const Duration(milliseconds: 400),
