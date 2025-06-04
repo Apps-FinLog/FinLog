@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/styles/text_styles.dart';
 import 'package:finlog/screens/dashboard_screen.dart';
 import 'package:finlog/screens/home_content_screen.dart';
 import 'package:finlog/screens/scan_screen.dart';
 import 'package:finlog/widgets/custom_bottom_navigation_bar.dart';
+import 'package:finlog/widgets/custom_app_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,22 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white, // White background
-      appBar: AppBar(
-        backgroundColor: Colors.white, // White app bar background
-        centerTitle: true, // Center the title
-        title: Text(
-          'FinLog',
-          style: AppTextStyles.appBarTitle, // Use the defined text style
-        ),
-        elevation: 0, // Remove shadow for a flat look
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0), // Height of the line
-          child: Container(
-            color: const Color(0xFFE2E8F0), // Color of the line
-            height: 1.0, // Thickness of the line
-          ),
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'FinLog'),
       body: AnimatedSwitcher( // New
         duration: const Duration(milliseconds: 300), // New
         transitionBuilder: (Widget child, Animation<double> animation) { // New
