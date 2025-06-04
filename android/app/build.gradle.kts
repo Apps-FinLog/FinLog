@@ -8,7 +8,8 @@ plugins {
 android {
     namespace = "com.example.finlog"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    //ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -37,6 +38,10 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+    dependencies {
+        implementation(platform("com.google.firebase:firebase-bom:33.1.1")) // Baris yang sudah diperbaiki
+        implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
+}
 }
 
 flutter {

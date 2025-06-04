@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/text_styles.dart';
+import 'package:finlog/screens/home_screen.dart'; // Import the new home screen
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -50,7 +51,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
       _buildOnboardingPage(
         title: "Mulai Keuangan Sehat",
-        description: "🗣 Bangun kebiasaan keuangan yang sehat tanpa takut dan santai.",
+        description:
+            "🗣 Bangun kebiasaan keuangan yang sehat tanpa takut dan santai.",
         isLastPage: true,
       ),
     ];
@@ -63,7 +65,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
-      color: Colors.transparent, // Ensure the page content itself is transparent
+      color:
+          Colors.transparent, // Ensure the page content itself is transparent
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,8 +140,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     // Moving active segment
                     AnimatedPositioned(
-                      duration: const Duration(milliseconds: 0), // Set duration to 0 for instant update with scroll
-                      curve: Curves.linear, // Use linear curve for direct mapping to scroll
+                      duration: const Duration(
+                        milliseconds: 0,
+                      ), // Set duration to 0 for instant update with scroll
+                      curve:
+                          Curves
+                              .linear, // Use linear curve for direct mapping to scroll
                       left: _indicatorPosition * segmentWidth,
                       child: Container(
                         height: 10,
@@ -163,25 +170,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black87,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 10,
+                  ),
                   textStyle: AppTextStyles.onboardingButton,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                 ),
                 onPressed: () {
-                  final isLastPage = _pageController.page == _buildPages().length - 1;
+                  final isLastPage =
+                      _pageController.page == _buildPages().length - 1;
                   if (isLastPage) {
                     if (kDebugMode) {
                       print("Onboarding completed!");
                     }
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    } else {
-                      if (kDebugMode) {
-                        print("Cannot pop, would navigate to home screen here.");
-                      }
-                    }
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                    );
                   } else {
                     _pageController.nextPage(
                       duration: const Duration(milliseconds: 400),
@@ -190,7 +200,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   }
                 },
                 child: Text(
-                  _pageController.hasClients && (_pageController.page ?? 0).round() == _buildPages().length - 1
+                  _pageController.hasClients &&
+                          (_pageController.page ?? 0).round() ==
+                              _buildPages().length - 1
                       ? 'Mulai'
                       : 'Lanjut',
                   style: const TextStyle(color: Colors.white),

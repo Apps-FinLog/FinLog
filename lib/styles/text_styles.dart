@@ -21,4 +21,10 @@ class AppTextStyles {
     color: Colors.white,
     fontWeight: FontWeight.w600,
   );
+
+  static TextStyle appBarTitle = GoogleFonts.inter(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    color: Colors.black, // Assuming black text on a white app bar
+  );
 }
