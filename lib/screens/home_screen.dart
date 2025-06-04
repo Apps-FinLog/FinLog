@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// GANTI 'finlog' dengan nama proyek Anda yang sebenarnya jika berbeda
+import 'package:finlog/screens/input_choice_screen.dart';
 import 'package:finlog/screens/dashboard_screen.dart';
 import 'package:finlog/screens/home_content_screen.dart';
 import 'package:finlog/screens/scan_screen.dart';
@@ -14,17 +16,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  int _previousIndex = 0; // New
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    DashboardScreen(),
-    HomeContentScreen(),
-    ScanScreen(),
+  // Ganti Widget Text placeholder ini dengan layar Anda yang sebenarnya
+  // Pastikan InputChoiceScreen ada di indeks yang sesuai dengan item "Scan" Anda
+  static final List<Widget> _widgetOptions = <Widget>[
+    const Center(child: Text('Beranda (Index 0)')), // Placeholder
+    const InputChoiceScreen(), // Untuk fitur Scan/OCR
+    const Center(child: Text('Riwayat (Index 2)')), // Placeholder
+    const Center(child: Text('Profil (Index 3)')), // Placeholder
   ];
 
   void _onItemTapped(int index) {
     setState(() {
-      _previousIndex = _selectedIndex; // New
       _selectedIndex = index;
     });
   }
@@ -32,26 +35,40 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // White background
-      appBar: const CustomAppBar(title: 'FinLog'),
-      body: AnimatedSwitcher( // New
-        duration: const Duration(milliseconds: 300), // New
-        transitionBuilder: (Widget child, Animation<double> animation) { // New
-          final offsetAnimation = Tween<Offset>( // New
-            begin: Offset((_selectedIndex > _previousIndex ? 1.0 : -1.0), 0.0), // New
-            end: Offset.zero, // New
-          ).animate(animation); // New
-          return SlideTransition( // New
-            position: offsetAnimation, // New
-            child: child, // New
-          ); // New
-        },
-        key: ValueKey<int>(_selectedIndex), // New
-        child: _widgetOptions.elementAt(_selectedIndex), // New: Add a unique key for AnimatedSwitcher
+      appBar: AppBar(
+        title: const Text('FinLog'),
+        // actions: [ ... avatar profil ... ],
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: _selectedIndex,
-        onItemTapped: _onItemTapped,
+      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Beranda',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.qr_code_scanner_outlined),
+            activeIcon: Icon(Icons.qr_code_scanner),
+            label: 'Scan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history_outlined),
+            activeIcon: Icon(Icons.history),
+            label: 'Riwayat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Profil',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Theme.of(context).primaryColorDark, // Sesuaikan
+        unselectedItemColor: Colors.grey[600],
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        showUnselectedLabels: true,
       ),
     );
   }

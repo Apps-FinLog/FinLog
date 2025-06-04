@@ -7,9 +7,7 @@ class HomeContentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Colors.green, // Example color for Home Content
-      body: Center(
-        child: Text('Home Content'),
-      ),
+      body: Center(child: Text('Home Content')),
     );
   }
 }

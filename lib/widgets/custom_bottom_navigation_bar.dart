@@ -20,12 +20,15 @@ class CustomBottomNavigationBar extends StatelessWidget {
           color: const Color(0xFFE2E8F0), // Color of the line, matching app bar
           height: 1.0, // Thickness of the line
         ),
-        Theme( // New
-          data: Theme.of(context).copyWith( // New
+        Theme(
+          // New
+          data: Theme.of(context).copyWith(
+            // New
             splashFactory: NoSplash.splashFactory, // New: Remove splash effect
             highlightColor: Colors.transparent, // New: Remove highlight effect
           ), // New
-          child: BottomNavigationBar( // New
+          child: BottomNavigationBar(
+            // New
             backgroundColor: Colors.white, // White background
             elevation: 0, // Remove shadow
             items: <BottomNavigationBarItem>[
@@ -38,8 +41,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
             unselectedItemColor: Colors.grey,
             onTap: onItemTapped,
             type: BottomNavigationBarType.fixed,
-            selectedLabelStyle: const TextStyle(fontSize: 0), // Hide label space
-            unselectedLabelStyle: const TextStyle(fontSize: 0), // Hide label space
+            selectedLabelStyle: const TextStyle(
+              fontSize: 0,
+            ), // Hide label space
+            unselectedLabelStyle: const TextStyle(
+              fontSize: 0,
+            ), // Hide label space
             enableFeedback: false, // Disable press animation/feedback
           ), // New
         ), // New
@@ -47,7 +54,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  BottomNavigationBarItem _buildNavItem(int index, String iconPath, String label) {
+  BottomNavigationBarItem _buildNavItem(
+    int index,
+    String iconPath,
+    String label,
+  ) {
     final bool isSelected = selectedIndex == index;
     final Color selectedColor = Color(0x800876FF); // #0876FF80
 
@@ -64,7 +75,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
           width: 24,
           height: 24,
           colorFilter: ColorFilter.mode(
-            isSelected ? Colors.black : Colors.grey, // Icon color when selected/unselected
+            isSelected
+                ? Colors.black
+                : Colors.grey, // Icon color when selected/unselected
             BlendMode.srcIn,
           ),
         ),
