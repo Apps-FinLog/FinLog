@@ -20,22 +20,29 @@ class CustomBottomNavigationBar extends StatelessWidget {
           color: const Color(0xFFE2E8F0), // Color of the line, matching app bar
           height: 1.0, // Thickness of the line
         ),
-        BottomNavigationBar(
-          backgroundColor: Colors.white, // White background
-          elevation: 0, // Remove shadow
-          items: <BottomNavigationBarItem>[
-            _buildNavItem(0, 'assets/svgs/pie-chart.svg', 'Dashboard'),
-            _buildNavItem(1, 'assets/svgs/home.svg', 'Home'),
-            _buildNavItem(2, 'assets/svgs/scan.svg', 'Scan'),
-          ],
-          currentIndex: selectedIndex,
-          selectedItemColor: Colors.blue.shade700,
-          unselectedItemColor: Colors.grey,
-          onTap: onItemTapped,
-          type: BottomNavigationBarType.fixed,
-          selectedLabelStyle: const TextStyle(fontSize: 0), // Hide label space
-          unselectedLabelStyle: const TextStyle(fontSize: 0), // Hide label space
-        ),
+        Theme( // New
+          data: Theme.of(context).copyWith( // New
+            splashFactory: NoSplash.splashFactory, // New: Remove splash effect
+            highlightColor: Colors.transparent, // New: Remove highlight effect
+          ), // New
+          child: BottomNavigationBar( // New
+            backgroundColor: Colors.white, // White background
+            elevation: 0, // Remove shadow
+            items: <BottomNavigationBarItem>[
+              _buildNavItem(0, 'assets/svgs/pie-chart.svg', 'Dashboard'),
+              _buildNavItem(1, 'assets/svgs/home.svg', 'Home'),
+              _buildNavItem(2, 'assets/svgs/scan.svg', 'Scan'),
+            ],
+            currentIndex: selectedIndex,
+            selectedItemColor: Colors.blue.shade700,
+            unselectedItemColor: Colors.grey,
+            onTap: onItemTapped,
+            type: BottomNavigationBarType.fixed,
+            selectedLabelStyle: const TextStyle(fontSize: 0), // Hide label space
+            unselectedLabelStyle: const TextStyle(fontSize: 0), // Hide label space
+            enableFeedback: false, // Disable press animation/feedback
+          ), // New
+        ), // New
       ],
     );
   }
@@ -50,7 +57,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected ? selectedColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(20), // Circular rectangle
+          borderRadius: BorderRadius.circular(8), // Circular rectangle
         ),
         child: SvgPicture.asset(
           iconPath,
