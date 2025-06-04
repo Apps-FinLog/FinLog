@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/screens/splash_screen.dart'; // Import the new splash screen
-// import 'package:finlog/screens/onboarding_screen.dart'; // This will be navigated to from SplashScreen
+import 'package:finlog/screens/onboarding_screen.dart'; // This will be navigated to from SplashScreen
 
 void main() {
   runApp(const MyApp());
@@ -27,9 +26,8 @@ class MyApp extends StatelessWidget {
           ),
         )
       ),
-      home: const SplashScreen(), // Use the imported SplashScreen
+      home: const OnboardingScreen(), // Directly navigate to OnboardingScreen
       debugShowCheckedModeBanner: false,
     );
   }
 }
-
