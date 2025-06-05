@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/screens/onboarding_screen.dart'; // This will be navigated to from SplashScreen
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Required for async operations before runApp
+  await dotenv.load(fileName: ".env"); // Load the .env file
   runApp(const MyApp());
 }
 

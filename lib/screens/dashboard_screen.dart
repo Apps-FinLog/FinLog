@@ -7,9 +7,7 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Colors.red, // Example color for Dashboard
-      body: Center(
-        child: Text('Dashboard Content'),
-      ),
+      body: Center(child: Text('Dashboard Content')),
     );
   }
 }

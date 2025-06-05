@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Aplikasi ini memerlukan akses ke galeri foto untuk memilih gambar tagihan.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Aplikasi ini memerlukan akses ke kamera untuk memindai gambar tagihan.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Aplikasi ini memerlukan akses ke mikrofon jika Anda merekam video (walaupun tidak digunakan untuk OCR, image_picker mungkin memintanya).</string>
 </dict>
 </plist>
