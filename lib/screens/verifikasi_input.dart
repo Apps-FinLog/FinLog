@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:finlog/screens/bill_details_screen.dart';
-import 'package:finlog/screens/journal_input_type.dart'; // Import the JournalInputTypeScreen
-import 'package:finlog/services/gemini_service.dart'; // Import the new service
+import 'package:finlog/screens/journal_input_type.dart';
+import 'package:finlog/screens/manual_input_screen.dart'; // Import ManualInputScreen
+import 'package:finlog/services/gemini_service.dart';
+import 'package:finlog/models/manual_input_data.dart'; // Import ManualInputData
+import 'package:intl/intl.dart'; // Import for DateFormat
+
+enum InputSource { manual, journal }
 
 class VerifikasiInputScreen extends StatefulWidget {
-  final String journalInput; // Assuming this is passed to the screen
+  final String journalInput;
+  final ManualInputData? manualInputData; // Optional manual input data
+  final InputSource sourceScreen; // To determine where to navigate back
 
-  const VerifikasiInputScreen({super.key, required this.journalInput});
+  const VerifikasiInputScreen({
+    super.key,
+    required this.journalInput,
+    this.manualInputData,
+    this.sourceScreen = InputSource.journal, // Default to journal
+  });
 
   @override
   State<VerifikasiInputScreen> createState() => _VerifikasiInputScreenState();
@@ -22,7 +34,12 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   @override
   void initState() {
     super.initState();
-    _parseJournalEntry();
+    if (widget.manualInputData == null) {
+      _parseJournalEntry();
+    } else {
+      // If manualInputData is provided, no need to parse with Gemini
+      _isLoading = false;
+    }
   }
 
   Future<void> _parseJournalEntry() async {
@@ -47,11 +64,17 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   }
 
   void _tambahLagi() {
-    // Navigate back to the JournalInputTypeScreen to add more entries
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const JournalInputTypeScreen()),
-    );
+    if (widget.sourceScreen == InputSource.manual) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ManualInputScreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const JournalInputTypeScreen()),
+      );
+    }
   }
 
   void _konfirmasi() {
@@ -97,64 +120,60 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
             const SizedBox(height: 6),
             Divider(color: Colors.white.withAlpha((0.3) * 255 ~/ 1), thickness: 0.8),
             const SizedBox(height: 12),
-            _isLoading
+            _isLoading && widget.manualInputData == null
                 ? const Center(child: CircularProgressIndicator(color: Colors.white))
-                : _errorMessage != null
+                : _errorMessage != null && widget.manualInputData == null
                     ? Text(
                         _errorMessage!,
                         style: const TextStyle(color: Colors.red, fontSize: 16),
                       )
-                    : _parsedExpenseData != null
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Date: ${_parsedExpenseData!['date'] ?? 'N/A'}',
-                                style: TextStyle(
-                                color: Colors.white.withAlpha((255 * 0.9).round()),
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Amount: ${_parsedExpenseData!['amount'] ?? 'N/A'} ${_parsedExpenseData!['currency'] ?? ''}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Category: ${_parsedExpenseData!['category'] ?? 'N/A'}',
-                                style: TextStyle(
-                                color: Colors.white.withAlpha((255 * 0.9).round()),
-                                fontSize: 15,
-                              ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Description: ${_parsedExpenseData!['description'] ?? 'N/A'}',
-                                style: TextStyle(
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Date: ${widget.manualInputData != null ? DateFormat('dd/MM/yyyy').format(widget.manualInputData!.date) : (_parsedExpenseData?['date'] ?? 'N/A')}',
+                            style: TextStyle(
+                              color: Colors.white.withAlpha((255 * 0.9).round()),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Amount: ${widget.manualInputData != null ? NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(widget.manualInputData!.nominal) : (_parsedExpenseData?['amount'] ?? 'N/A')} ${widget.manualInputData != null ? '' : (_parsedExpenseData?['currency'] ?? '')}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Category: ${widget.manualInputData != null ? widget.manualInputData!.category : (_parsedExpenseData?['category'] ?? 'N/A')}',
+                            style: TextStyle(
+                              color: Colors.white.withAlpha((255 * 0.9).round()),
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Description: ${widget.manualInputData != null ? (widget.manualInputData!.description ?? 'N/A') : (_parsedExpenseData?['description'] ?? 'N/A')}',
+                            style: TextStyle(
+                              color: Colors.white.withAlpha((255 * 0.9).round()),
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          if (widget.manualInputData == null) // Only show payment method for parsed data
+                            Text(
+                              'Payment Method: ${_parsedExpenseData?['paymentMethod'] ?? 'N/A'}',
+                              style: TextStyle(
                                 color: Colors.white.withAlpha((255 * 0.9).round()),
                                 fontSize: 15,
                               ),
                             ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Payment Method: ${_parsedExpenseData!['paymentMethod'] ?? 'N/A'}',
-                                style: TextStyle(
-                                  color: Colors.white.withAlpha((255 * 0.9).round()),
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ],
-                          )
-                        : const Text(
-                            'No expense data parsed yet.',
-                            style: TextStyle(color: Colors.white70),
-                          ),
+                        ],
+                      ),
             const SizedBox(height: 20),
 
             // "Tambah Lagi" Button
