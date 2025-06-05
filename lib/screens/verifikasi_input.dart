@@ -5,9 +5,11 @@ import 'package:finlog/screens/journal_input_type.dart';
 import 'package:finlog/screens/manual_input_screen.dart'; // Import ManualInputScreen
 import 'package:finlog/services/gemini_service.dart';
 import 'package:finlog/models/manual_input_data.dart'; // Import ManualInputData
+import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:intl/intl.dart'; // Import for DateFormat
+import 'package:provider/provider.dart'; // Import Provider
 
-enum InputSource { manual, journal }
+enum InputSource { manual, journal, ocr }
 
 class VerifikasiInputScreen extends StatefulWidget {
   final String journalInput;
@@ -34,10 +36,10 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.manualInputData == null) {
+    if (widget.sourceScreen == InputSource.journal || widget.sourceScreen == InputSource.ocr) {
       _parseJournalEntry();
     } else {
-      // If manualInputData is provided, no need to parse with Gemini
+      // If manualInputData is provided or source is manual, no need to parse with Gemini
       _isLoading = false;
     }
   }
@@ -52,6 +54,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
       setState(() {
         _parsedExpenseData = parsedData;
       });
+      debugPrint('Parsed Expense Data: $_parsedExpenseData');
     } catch (e) {
       setState(() {
         _errorMessage = 'Failed to parse expense: ${e.toString()}';

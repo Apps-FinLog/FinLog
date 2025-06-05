@@ -1,26 +1,26 @@
 import 'dart:io';
+import 'dart:convert'; // For base64Encode
 import 'package:flutter/foundation.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import './gemini_service.dart'; // Import your GeminiService
 
 class OcrService {
-  final TextRecognizer _textRecognizer = TextRecognizer(
-    script: TextRecognitionScript.latin,
-  );
+  final GeminiService _geminiService = GeminiService(); // Instantiate GeminiService
 
   Future<String> extractTextFromImage(File imageFile) async {
     try {
-      final inputImage = InputImage.fromFilePath(imageFile.path);
-      final RecognizedText recognizedText = await _textRecognizer.processImage(
-        inputImage,
-      );
-      return recognizedText.text;
+      final List<int> imageBytes = await imageFile.readAsBytes();
+      final String base64Image = base64Encode(imageBytes);
+
+      // Call the new Gemini service method for OCR
+      final String extractedText = await _geminiService.processImageForOcr(base64Image);
+      return extractedText;
     } catch (e) {
-      debugPrint("Error during OCR: $e");
-      return "Gagal mengekstrak teks dari gambar: $e";
+      debugPrint("Error during OCR with Gemini: $e");
+      return "Gagal mengekstrak teks dari gambar menggunakan Gemini: $e";
     }
   }
 
   void dispose() {
-    _textRecognizer.close();
+    // No specific dispose needed for GeminiService here, as it's stateless
   }
 }

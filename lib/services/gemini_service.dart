@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
 
 class GeminiService {
-  static const String _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+  static const String _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
   Future<Map<String, dynamic>> parseExpense(String userInput) async {
     final String prompt = """
@@ -14,16 +14,18 @@ You are an expense journal assistant. Your task is to parse the following user i
 Expected JSON structure:
 {
   "amount": <number>,
-  "currency": <string>,
+  "currency": <string, e.g., "IDR">,
   "category": <string>,
   "description": <string>,
-  "date": <string, YYYY-MM-DD>,
-  "paymentMethod": <string>
+  "date": <string, YYYY-MM-DD, infer today's date if not specified>,
+  "paymentMethod": <string, infer "cash" if not specified>
 }
+
+If the user input is not clear or does not contain enough information to extract all fields, return an empty JSON object or a JSON object with only the fields that could be confidently extracted.
 
 User input: "$userInput"
 
-Please provide only the JSON object.
+Please provide ONLY the JSON object. Do not include any additional text or markdown outside the JSON block.
 """;
 
     final Uri uri = Uri.parse('$_baseUrl?key=${dotenv.env['GEMINI_API_KEY']}');
@@ -59,6 +61,53 @@ Please provide only the JSON object.
     } catch (e) {
       debugPrint('Error parsing expense with Gemini: ${e.toString()}');
       rethrow; // Re-throw to be handled by the calling widget
+    }
+  }
+
+  Future<String> processImageForOcr(String base64Image) async {
+    final String prompt = """
+You are an OCR assistant. Extract all visible text from the provided image.
+Return ONLY the extracted text, without any additional formatting or explanation.
+""";
+
+    final Uri uri = Uri.parse('$_baseUrl?key=${dotenv.env['GEMINI_API_KEY']}');
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'contents': [
+            {
+              'parts': [
+                {'text': prompt},
+                {
+                  'inlineData': {
+                    'mimeType': 'image/jpeg', // Assuming JPEG. Adjust if other formats are expected.
+                    'data': base64Image,
+                  }
+                }
+              ]
+            }
+          ]
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        if (responseBody['candidates'] != null && responseBody['candidates'].isNotEmpty) {
+          final String extractedText = responseBody['candidates'][0]['content']['parts'][0]['text'];
+          debugPrint('Gemini OCR Response: $extractedText'); // Log the extracted text
+          return extractedText;
+        } else {
+          throw Exception('Gemini API did not return any candidates for OCR.');
+        }
+      } else {
+        throw Exception('Failed to call Gemini API for OCR: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      debugPrint('Error processing image with Gemini for OCR: ${e.toString()}');
+      rethrow;
     }
   }
 
