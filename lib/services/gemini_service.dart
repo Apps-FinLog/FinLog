@@ -1,7 +1,8 @@
 // lib/services/gemini_service.dart
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../secrets.dart'; // Import your secrets file
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
 
 class GeminiService {
   static const String _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
@@ -25,7 +26,7 @@ User input: \"${userInput}\"
 Please provide only the JSON object.
 """;
 
-    final Uri uri = Uri.parse('$_baseUrl?key=$geminiApiKey');
+    final Uri uri = Uri.parse('$_baseUrl?key=${dotenv.env['GEMINI_API_KEY']}');
 
     try {
       final response = await http.post(
@@ -56,7 +57,7 @@ Please provide only the JSON object.
         throw Exception('Failed to call Gemini API: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      print('Error parsing expense with Gemini: $e');
+      debugPrint('Error parsing expense with Gemini: ${e.toString()}');
       rethrow; // Re-throw to be handled by the calling widget
     }
   }

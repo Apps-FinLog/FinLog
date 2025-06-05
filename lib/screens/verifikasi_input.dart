@@ -7,7 +7,7 @@ import 'package:finlog/services/gemini_service.dart'; // Import the new service
 class VerifikasiInputScreen extends StatefulWidget {
   final String journalInput; // Assuming this is passed to the screen
 
-  const VerifikasiInputScreen({Key? key, required this.journalInput}) : super(key: key);
+  const VerifikasiInputScreen({super.key, required this.journalInput});
 
   @override
   State<VerifikasiInputScreen> createState() => _VerifikasiInputScreenState();
@@ -111,10 +111,10 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                               Text(
                                 'Date: ${_parsedExpenseData!['date'] ?? 'N/A'}',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.9),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                color: Colors.white.withAlpha((255 * 0.9).round()),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
                               ),
                               const SizedBox(height: 10),
                               Text(
@@ -129,23 +129,23 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                               Text(
                                 'Category: ${_parsedExpenseData!['category'] ?? 'N/A'}',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.9),
-                                  fontSize: 15,
-                                ),
+                                color: Colors.white.withAlpha((255 * 0.9).round()),
+                                fontSize: 15,
+                              ),
                               ),
                               const SizedBox(height: 10),
                               Text(
                                 'Description: ${_parsedExpenseData!['description'] ?? 'N/A'}',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.9),
-                                  fontSize: 15,
-                                ),
+                                color: Colors.white.withAlpha((255 * 0.9).round()),
+                                fontSize: 15,
                               ),
+                            ),
                               const SizedBox(height: 10),
                               Text(
                                 'Payment Method: ${_parsedExpenseData!['paymentMethod'] ?? 'N/A'}',
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.9),
+                                  color: Colors.white.withAlpha((255 * 0.9).round()),
                                   fontSize: 15,
                                 ),
                               ),
@@ -190,7 +190,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
             Text(
               'Original Input:',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withAlpha((255 * 0.9).round()),
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),
