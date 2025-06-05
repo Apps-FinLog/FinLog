@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
+import 'package:finlog/styles/colors.dart';
 import 'package:finlog/screens/verifikasi_input.dart';
+import 'package:finlog/models/manual_input_data.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart'; // For TextInputFormatter
 
 class ManualInputScreen extends StatefulWidget {
   const ManualInputScreen({super.key});
@@ -10,15 +13,14 @@ class ManualInputScreen extends StatefulWidget {
 }
 
 class _ManualInputScreenState extends State<ManualInputScreen> {
-  final DateTime _selectedDate = DateTime(2024, 12, 5);
-  final TextEditingController _nominalController =
-      TextEditingController(text: "Rp1,000,000~");
-  late TextEditingController _dateController;
+  final TextEditingController _nominalController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController(); // New controller for description
 
-  // State for Category Accordion
+  DateTime? _selectedDate;
   bool _isCategoryExpanded = false;
-  String? _selectedCategory; // To store the selected category
-  final List<String> _categories = [ // Dummy categories
+  String? _selectedCategory;
+  final List<String> _categories = [
     'Makanan & Minuman',
     'Transportasi',
     'Belanja',
@@ -29,19 +31,82 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     'Lainnya',
   ];
 
+  final _formKey = GlobalKey<FormState>(); // Form key for validation
+
   @override
   void initState() {
     super.initState();
-    _dateController = TextEditingController(text: "Pick a date");
+    _selectedDate = DateTime.now();
+    _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate!);
+    _nominalController.addListener(_formatNominal);
   }
 
   @override
   void dispose() {
+    _nominalController.removeListener(_formatNominal);
     _nominalController.dispose();
     _dateController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
+  void _formatNominal() {
+    String text = _nominalController.text;
+    if (text.isEmpty) {
+      return;
+    }
+
+    // Remove all non-digit characters
+    String cleanText = text.replaceAll(RegExp(r'[^\d]'), '');
+    if (cleanText.isEmpty) {
+      return;
+    }
+
+    // Parse to double, then format as currency
+    double value = double.parse(cleanText);
+    final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
+    String newText = formatter.format(value);
+
+    // Prevent infinite loop
+    if (newText != text) {
+      _nominalController.value = _nominalController.value.copyWith(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newText.length),
+      );
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: finlogBluePrimary, // Header background color
+              onPrimary: Colors.white, // Header text color
+              onSurface: Colors.black87, // Body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: finlogBluePrimary, // Button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate!);
+      });
+    }
+  }
 
   Widget _buildCardProgressBar() {
     return Row(
@@ -78,6 +143,8 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     bool readOnly = false,
     VoidCallback? onTap,
     TextInputType? keyboardType,
+    String? Function(String?)? validator,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,6 +157,8 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           onTap: onTap,
           keyboardType: keyboardType,
           style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+          validator: validator,
+          inputFormatters: inputFormatters,
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.white.withAlpha((0.6) * 255 ~/ 1)),
@@ -117,6 +186,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
               borderRadius: BorderRadius.circular(10),
                borderSide: BorderSide(color: Colors.white.withAlpha((0.5) * 255 ~/ 1)),
             ),
+            errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 12),
           ),
         ),
       ],
@@ -206,89 +276,6 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     );
   }
 
-
-  Widget _buildCalendarView() {
-    List<String> dayHeaders = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-    List<String?> calendarDays = [
-      "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14",
-      "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28",
-      "29", "30", "31", null, null, null, null,
-    ];
-    calendarDays = calendarDays.sublist(0, 35);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha((0.15) * 255 ~/ 1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(Icons.chevron_left, color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
-                onPressed: () { /* Decrement month logic */ },
-                padding: EdgeInsets.zero,
-                constraints: BoxConstraints(),
-              ),
-              Text(
-                "December 2024",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              IconButton(
-                icon: Icon(Icons.chevron_right, color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
-                onPressed: () { /* Increment month logic */ },
-                padding: EdgeInsets.zero,
-                constraints: BoxConstraints(),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 1.5),
-            itemCount: dayHeaders.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) => Center(
-              child: Text(dayHeaders[index], style: TextStyle(color: Colors.white.withAlpha((0.7) * 255 ~/ 1), fontSize: 12, fontWeight: FontWeight.bold)),
-            ),
-          ),
-          const SizedBox(height: 5),
-          GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 1.5),
-            itemCount: calendarDays.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              final day = calendarDays[index];
-              if (day == null) return Container();
-              final isSelected = day == _selectedDate.day.toString() && _selectedDate.month == 12 && _selectedDate.year == 2024;
-              return GestureDetector(
-                onTap: () {
-                  // setState(() {
-                  //   _selectedDate = DateTime(2024, 12, int.parse(day));
-                  //   _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
-                  // });
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(2),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: isSelected ? finlogBlueSelectedDate : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(day, style: TextStyle(color: isSelected ? Colors.white : Colors.white.withAlpha((0.9) * 255 ~/ 1), fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, fontSize: 14)),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildContentCard() {
     return Container(
       margin: const EdgeInsets.all(16.0),
@@ -315,78 +302,55 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
             style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold, height: 1.3),
           ),
           const SizedBox(height: 24),
-          _buildTextField(
-            label: 'Nominal',
-            controller: _nominalController,
-            keyboardType: TextInputType.number,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 6.0, left: 4.0),
-            child: Text(
-              'Estimasi nominal lebih penting dibanding detail rinci nominal',
-              style: TextStyle(color: Colors.white.withAlpha((0.7) * 255 ~/ 1), fontSize: 11),
+          Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTextField(
+                  label: 'Nominal',
+                  controller: _nominalController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.replaceAll(RegExp(r'[^\d]'), '').isEmpty) {
+                      return 'Nominal tidak boleh kosong';
+                    }
+                    if (double.tryParse(value.replaceAll(RegExp(r'[^\d]'), '')) == null) {
+                      return 'Nominal tidak valid';
+                    }
+                    return null;
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 6.0, left: 4.0),
+                  child: Text(
+                    'Estimasi nominal lebih penting dibanding detail rinci nominal',
+                    style: TextStyle(color: Colors.white.withAlpha((0.7) * 255 ~/ 1), fontSize: 11),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Kategori Accordion Added Here
+                _buildCategoryAccordion(),
+                const SizedBox(height: 20),
+                _buildTextField(
+                  label: 'Tanggal',
+                  controller: _dateController,
+                  readOnly: true,
+                  onTap: () => _selectDate(context),
+                  prefixIcon: const Icon(Icons.calendar_today_outlined, size: 20),
+                ),
+                const SizedBox(height: 20),
+                _buildTextField(
+                  label: 'Deskripsi (Opsional)',
+                  controller: _descriptionController,
+                  hintText: 'Contoh: Beli makan siang',
+                  keyboardType: TextInputType.text,
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
-          // Kategori Accordion Added Here
-          _buildCategoryAccordion(),
-          const SizedBox(height: 20),
-          _buildTextField(
-            label: 'Tanggal',
-            controller: _dateController,
-            readOnly: true,
-            onTap: () {
-              // _selectDate(context); // Example: Open system date picker
-            },
-            prefixIcon: const Icon(Icons.calendar_today_outlined, size: 20),
-          ),
-          const SizedBox(height: 16),
-          _buildCalendarView(),
-          const SizedBox(height: 24), // Spacing before buttons
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: finlogButtonGrey,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 1,
-                  ),
-                  child: const Text('Back', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: finlogButtonTextDark)),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Construct the journal input string from manual input fields
-                    final String journalInput =
-                        'Nominal: ${_nominalController.text}, '
-                        'Category: ${_selectedCategory ?? 'N/A'}, '
-                        'Date: ${_dateController.text}';
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => VerifikasiInputScreen(journalInput: journalInput),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: finlogButtonDark,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 1,
-                  ),
-                  child: const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                ),
-              ),
-            ],
-          ),
+          const SizedBox(height: 24),
         ],
       ),
     );
@@ -394,20 +358,93 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Input Manual', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
-        backgroundColor: Colors.grey[50],
-        elevation: 0.5,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
-          onPressed: () => Navigator.of(context).pop(),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Input Manual', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+          backgroundColor: Colors.grey[50],
+          elevation: 0.5,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black87),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
-      ),
-      backgroundColor: Colors.grey[200],
-      body: SafeArea(
-        child: SingleChildScrollView( // Make the entire body scrollable
-          child: _buildContentCard(),
+        backgroundColor: Colors.grey[200],
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: _buildContentCard(),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0), // Adjust padding as needed
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: finlogButtonGrey,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          elevation: 1,
+                        ),
+                        child: const Text('Back', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: finlogButtonTextDark)),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            if (_selectedCategory == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Pilih kategori terlebih dahulu')),
+                              );
+                              return;
+                            }
+
+                            final double nominal = double.parse(_nominalController.text.replaceAll(RegExp(r'[^\d]'), ''));
+                            final ManualInputData manualInputData = ManualInputData(
+                              nominal: nominal,
+                              category: _selectedCategory!,
+                              date: _selectedDate!,
+                              description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+                            );
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VerifikasiInputScreen(
+                                  journalInput: manualInputData.toString(),
+                                  manualInputData: manualInputData,
+                                  sourceScreen: InputSource.manual,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: finlogButtonDark,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          elevation: 1,
+                        ),
+                        child: const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

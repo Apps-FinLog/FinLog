@@ -17,30 +17,39 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.white, // White app bar background
       centerTitle: false, // Center the title
-      title: Text(
-        title,
-        style: AppTextStyles.appBarTitle, // Use the defined text style
+      title: Row(
+        children: [
+          Text(
+            title,
+            style: AppTextStyles.appBarTitle, // Use the defined text style
+          ),
+          Expanded(
+            child: Text(
+              '~yuk catat hari ini!',
+              style: AppTextStyles.appBarSubtitle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
       elevation: 0,
       actions: [
         Padding(
-        padding: const EdgeInsets.only(right: 16.0),
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: Colors.purpleAccent, // Garis ungu
-              width: 0.5,
+          padding: const EdgeInsets.only(right: 16.0),
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.purpleAccent, // Garis ungu
+                width: 0.5,
+              ),
+            ),
+            child: const CircleAvatar(
+              radius: 18,
+              backgroundImage: AssetImage('assets/images/user_profile.png'),
             ),
           ),
-          child: const CircleAvatar(
-            radius: 18,
-            // backgroundColor: Colors.blue, // Use a solid color for debugging
-            backgroundImage: AssetImage('assets/svgs/shadcnProfile.svg'), 
-          
-          ),
         ),
-      ),
       ], // Remove shadow for a flat look
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1.0), // Height of the line
