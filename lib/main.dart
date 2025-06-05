@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/screens/onboarding_screen.dart'; // This will be navigated to from SplashScreen
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
+import 'package:provider/provider.dart'; // Import Provider
+import 'package:finlog/models/bill_data.dart'; // Import BillData
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Required for async operations before runApp
   await dotenv.load(fileName: ".env"); // Load the .env file
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => BillData(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

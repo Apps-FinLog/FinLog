@@ -3,6 +3,8 @@ import 'package:finlog/styles/colors.dart'; // Assuming this file has the necess
 import 'package:finlog/screens/bill_details_screen.dart';
 import 'package:finlog/screens/journal_input_type.dart'; // Import the JournalInputTypeScreen
 import 'package:finlog/services/gemini_service.dart'; // Import the new service
+import 'package:provider/provider.dart'; // Import Provider
+import 'package:finlog/models/bill_data.dart'; // Import BillData
 
 class VerifikasiInputScreen extends StatefulWidget {
   final String journalInput; // Assuming this is passed to the screen
@@ -57,13 +59,22 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   void _konfirmasi() {
     // Handle confirmation logic
     debugPrint('Konfirmasi ditekan');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Input berhasil dikonfirmasi! (simulasi)')),
-    );
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const BillDetailsScreen(ocrResult: '')),
-    );
+    if (_parsedExpenseData != null) {
+      Provider.of<BillData>(context, listen: false)
+          .parseParsedExpense(_parsedExpenseData!);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Input berhasil dikonfirmasi! (simulasi)')),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const BillDetailsScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Tidak ada data pengeluaran untuk dikonfirmasi.')),
+      );
+    }
   }
 
   Widget _buildContentCard() {

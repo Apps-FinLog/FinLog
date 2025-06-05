@@ -63,10 +63,12 @@ class _InputChoiceScreenState extends State<InputChoiceScreen>
 
     if (!mounted) return;
     // Navigasi ke BillDetailsScreen dan set _isLoading jadi false saat kembali atau selesai
+    // Navigasi ke BillDetailsScreen dan set _isLoading jadi false saat kembali atau selesai
+    // The BillDetailsScreen now consumes BillData from the Provider, so no parameters are needed.
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => BillDetailsScreen(ocrResult: extractedText),
+        builder: (context) => const BillDetailsScreen(),
       ),
     ).then((_) {
       if (mounted) {

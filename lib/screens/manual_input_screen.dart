@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
-import 'package:finlog/screens/verifikasi_input.dart';
+import 'package:finlog/styles/colors.dart';
+import 'package:finlog/widgets/custom_date_picker_field.dart';
+import 'package:finlog/models/category.dart';
+import 'package:finlog/models/bill_data.dart'; // Import BillData
+import 'package:provider/provider.dart'; // Import Provider
+import 'package:finlog/screens/bill_details_screen.dart'; // Import BillDetailsScreen
 
 class ManualInputScreen extends StatefulWidget {
   const ManualInputScreen({super.key});
@@ -10,29 +14,29 @@ class ManualInputScreen extends StatefulWidget {
 }
 
 class _ManualInputScreenState extends State<ManualInputScreen> {
-  final DateTime _selectedDate = DateTime(2024, 12, 5);
-  final TextEditingController _nominalController =
-      TextEditingController(text: "Rp1,000,000~");
+  late DateTime _selectedDate;
+  final TextEditingController _nominalController = TextEditingController();
   late TextEditingController _dateController;
 
   // State for Category Accordion
   bool _isCategoryExpanded = false;
-  String? _selectedCategory; // To store the selected category
-  final List<String> _categories = [ // Dummy categories
-    'Makanan & Minuman',
-    'Transportasi',
-    'Belanja',
-    'Tagihan',
-    'Hiburan',
-    'Kesehatan',
-    'Pendidikan',
-    'Lainnya',
+  Category? _selectedCategory; // To store the selected category
+  final List<Category> _categories = [
+    Category(id: 'cat_01', name: 'Makanan & Minuman'),
+    Category(id: 'cat_02', name: 'Transportasi'),
+    Category(id: 'cat_03', name: 'Belanja'),
+    Category(id: 'cat_04', name: 'Tagihan'),
+    Category(id: 'cat_05', name: 'Hiburan'),
+    Category(id: 'cat_06', name: 'Kesehatan'),
+    Category(id: 'cat_07', name: 'Pendidikan'),
+    Category(id: 'cat_08', name: 'Lainnya'),
   ];
 
   @override
   void initState() {
     super.initState();
-    _dateController = TextEditingController(text: "Pick a date");
+    _selectedDate = DateTime(2024, 12, 5); // Default selected date
+    _dateController = TextEditingController();
   }
 
   @override
@@ -42,13 +46,12 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     super.dispose();
   }
 
-
   Widget _buildCardProgressBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          width: 100, // Total width of the progress bar container
+          width: 100,
           height: 8,
           decoration: BoxDecoration(
             color: Colors.white.withAlpha((0.3) * 255 ~/ 1),
@@ -57,7 +60,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Container(
-              width: 100, // Fill the entire width to indicate completion of this step
+              width: 100,
               height: 8,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -129,7 +132,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
       children: [
         Text("Kategori", style: TextStyle(color: Colors.white.withAlpha((0.9) * 255 ~/ 1), fontSize: 14)),
         const SizedBox(height: 8),
-        Material( // To get InkWell effect
+        Material(
           color: Colors.white.withAlpha((0.15) * 255 ~/ 1),
           borderRadius: BorderRadius.circular(10),
           child: InkWell(
@@ -143,13 +146,12 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                // No borderSide: BorderSide.none, as Material's color handles the background
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    _selectedCategory ?? 'Pilih Kategori',
+                    _selectedCategory?.name ?? 'Pilih Kategori',
                     style: TextStyle(
                       color: _selectedCategory != null ? Colors.white : Colors.white.withAlpha((0.6) * 255 ~/ 1),
                       fontSize: 16,
@@ -169,11 +171,11 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           Container(
             margin: const EdgeInsets.only(top: 4),
             decoration: BoxDecoration(
-              color: Colors.white.withAlpha((0.1) * 255 ~/ 1), // Slightly different background for dropdown items
+              color: Colors.white.withAlpha((0.1) * 255 ~/ 1),
               borderRadius: BorderRadius.circular(10),
             ),
-            constraints: BoxConstraints(
-              maxHeight: 200, // Limit the height of the dropdown
+            constraints: const BoxConstraints(
+              maxHeight: 200,
             ),
             child: ListView.builder(
               shrinkWrap: true,
@@ -187,13 +189,13 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                     onTap: () {
                       setState(() {
                         _selectedCategory = category;
-                        _isCategoryExpanded = false; // Collapse after selection
+                        _isCategoryExpanded = false;
                       });
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       child: Text(
-                        category,
+                        category.name,
                         style: const TextStyle(color: Colors.white, fontSize: 15),
                       ),
                     ),
@@ -206,89 +208,6 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     );
   }
 
-
-  Widget _buildCalendarView() {
-    List<String> dayHeaders = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-    List<String?> calendarDays = [
-      "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14",
-      "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28",
-      "29", "30", "31", null, null, null, null,
-    ];
-    calendarDays = calendarDays.sublist(0, 35);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha((0.15) * 255 ~/ 1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(Icons.chevron_left, color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
-                onPressed: () { /* Decrement month logic */ },
-                padding: EdgeInsets.zero,
-                constraints: BoxConstraints(),
-              ),
-              Text(
-                "December 2024",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              IconButton(
-                icon: Icon(Icons.chevron_right, color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
-                onPressed: () { /* Increment month logic */ },
-                padding: EdgeInsets.zero,
-                constraints: BoxConstraints(),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 1.5),
-            itemCount: dayHeaders.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) => Center(
-              child: Text(dayHeaders[index], style: TextStyle(color: Colors.white.withAlpha((0.7) * 255 ~/ 1), fontSize: 12, fontWeight: FontWeight.bold)),
-            ),
-          ),
-          const SizedBox(height: 5),
-          GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 1.5),
-            itemCount: calendarDays.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              final day = calendarDays[index];
-              if (day == null) return Container();
-              final isSelected = day == _selectedDate.day.toString() && _selectedDate.month == 12 && _selectedDate.year == 2024;
-              return GestureDetector(
-                onTap: () {
-                  // setState(() {
-                  //   _selectedDate = DateTime(2024, 12, int.parse(day));
-                  //   _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
-                  // });
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(2),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: isSelected ? finlogBlueSelectedDate : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(day, style: TextStyle(color: isSelected ? Colors.white : Colors.white.withAlpha((0.9) * 255 ~/ 1), fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, fontSize: 14)),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildContentCard() {
     return Container(
       margin: const EdgeInsets.all(16.0),
@@ -298,7 +217,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           colors: [finlogBluePrimaryDark, finlogBluePrimary],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          stops: [0.0, 0.7]
+          stops: const [0.0, 0.7],
         ),
         borderRadius: BorderRadius.circular(24.0),
       ),
@@ -318,6 +237,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           _buildTextField(
             label: 'Nominal',
             controller: _nominalController,
+            hintText: 'Rp1,000,000~',
             keyboardType: TextInputType.number,
           ),
           Padding(
@@ -328,21 +248,16 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          // Kategori Accordion Added Here
           _buildCategoryAccordion(),
           const SizedBox(height: 20),
-          _buildTextField(
+          CustomDatePickerField(
             label: 'Tanggal',
             controller: _dateController,
-            readOnly: true,
-            onTap: () {
-              // _selectDate(context); // Example: Open system date picker
-            },
-            prefixIcon: const Icon(Icons.calendar_today_outlined, size: 20),
+            initialDate: _selectedDate,
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2101),
           ),
-          const SizedBox(height: 16),
-          _buildCalendarView(),
-          const SizedBox(height: 24), // Spacing before buttons
+          const SizedBox(height: 24),
           Row(
             children: [
               Expanded(
@@ -363,16 +278,37 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Construct the journal input string from manual input fields
-                    final String journalInput =
-                        'Nominal: ${_nominalController.text}, '
-                        'Category: ${_selectedCategory ?? 'N/A'}, '
-                        'Date: ${_dateController.text}';
+                    final Map<String, dynamic> manualInputData = {
+                      'amount': _nominalController.text.replaceAll(RegExp(r'[Rp,~]'), ''), // Clean nominal
+                      'category': _selectedCategory?.name ?? 'N/A',
+                      'date': _dateController.text,
+                      'description': 'Manual input', // Default description
+                      'currency': 'IDR', // Default currency
+                      'paymentMethod': 'Cash', // Default payment method
+                      'items': [ // For BillData's billItems
+                        {
+                          'name': _selectedCategory?.name ?? 'Manual Expense',
+                          'price': double.tryParse(_nominalController.text.replaceAll(RegExp(r'[Rp,~]'), '')) ?? 0.0,
+                          'quantity': 1,
+                          'total': double.tryParse(_nominalController.text.replaceAll(RegExp(r'[Rp,~]'), '')) ?? 0.0,
+                        }
+                      ],
+                      'subtotal': double.tryParse(_nominalController.text.replaceAll(RegExp(r'[Rp,~]'), '')) ?? 0.0,
+                      'jumlahTotal': double.tryParse(_nominalController.text.replaceAll(RegExp(r'[Rp,~]'), '')) ?? 0.0,
+                    };
+
+                    // Directly send data to BillData and navigate to BillDetailsScreen
+                    final billData = Provider.of<BillData>(context, listen: false);
+                    billData.parseParsedExpense(manualInputData);
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Manual input confirmed and saved!')),
+                    );
 
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => VerifikasiInputScreen(journalInput: journalInput),
+                        builder: (context) => const BillDetailsScreen(),
                       ),
                     );
                   },

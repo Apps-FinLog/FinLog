@@ -53,4 +53,28 @@ class BillData extends ChangeNotifier {
 
     notifyListeners(); // Notify listeners that data has changed
   }
+
+  void parseParsedExpense(Map<String, dynamic> parsedData) {
+    billItems.clear();
+    if (parsedData['items'] != null) {
+      for (var itemData in parsedData['items']) {
+        billItems.add(BillItem(
+          name: itemData['name'] ?? 'Unknown Item',
+          price: (itemData['price'] as num?)?.toDouble() ?? 0.0,
+          quantity: (itemData['quantity'] as num?)?.toInt() ?? 1,
+          total: (itemData['total'] as num?)?.toDouble() ?? 0.0,
+        ));
+      }
+    }
+
+    displayDate = parsedData['date'] ?? "DD/MM/YYYY";
+    displayTime = parsedData['time'] ?? "HH:MM:SS";
+    subtotal = (parsedData['subtotal'] as num?)?.toDouble() ?? 0.0;
+    pajak = (parsedData['pajak'] as num?)?.toDouble() ?? 0.0;
+    diskon = (parsedData['diskon'] as num?)?.toDouble() ?? 0.0;
+    lainnya = (parsedData['lainnya'] as num?)?.toDouble() ?? 0.0;
+    jumlahTotal = (parsedData['jumlahTotal'] as num?)?.toDouble() ?? 0.0;
+
+    notifyListeners();
+  }
 }
