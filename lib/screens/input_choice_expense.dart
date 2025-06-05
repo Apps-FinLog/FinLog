@@ -1,11 +1,4 @@
-import 'dart:io';
-import 'dart:math' as math; // Untuk animasi rotasi
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-// GANTI 'finlog' dengan nama proyek Anda yang sebenarnya jika berbeda
-import 'package:finlog/services/ocr_service.dart';
-import 'package:finlog/screens/bill_details_screen.dart';
-import 'package:finlog/screens/image_confirm_screen.dart';
 import 'package:finlog/screens/manual_input_screen.dart';
 import 'package:finlog/screens/journal_input_date.dart';
 

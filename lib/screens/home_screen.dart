@@ -1,11 +1,7 @@
 import 'package:finlog/screens/placeHolderPage/under_development.dart';
 import 'package:flutter/material.dart';
-// GANTI 'finlog' dengan nama proyek Anda yang sebenarnya jika berbeda
 import 'package:finlog/screens/input_choice_screen.dart';
 import 'package:finlog/widgets/custom_app_bar.dart'; // Import CustomAppBar
-import 'package:finlog/screens/placeHolderPage/reusablePlaceHolder.dart'; // Import ReusablePlaceholder
-// import 'package:finlog/screens/placeHolderPage/offline_page.dart'; // Not used in this fix
-// import 'package:finlog/screens/placeHolderPage/success_page.dart'; // Not used in this fix
 import 'package:finlog/screens/input_choice_expense.dart';
 
 class HomeScreen extends StatefulWidget {

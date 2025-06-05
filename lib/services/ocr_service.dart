@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 class OcrService {
@@ -14,7 +15,7 @@ class OcrService {
       );
       return recognizedText.text;
     } catch (e) {
-      print("Error during OCR: $e");
+      debugPrint("Error during OCR: $e");
       return "Gagal mengekstrak teks dari gambar: $e";
     }
   }

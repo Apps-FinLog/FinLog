@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
-import 'package:intl/intl.dart'; // For date formatting if needed for calendar
 import 'package:finlog/screens/verifikasi_input.dart';
 
 class ManualInputScreen extends StatefulWidget {
@@ -11,7 +10,7 @@ class ManualInputScreen extends StatefulWidget {
 }
 
 class _ManualInputScreenState extends State<ManualInputScreen> {
-  DateTime _selectedDate = DateTime(2024, 12, 5);
+  final DateTime _selectedDate = DateTime(2024, 12, 5);
   final TextEditingController _nominalController =
       TextEditingController(text: "Rp1,000,000~");
   late TextEditingController _dateController;
@@ -43,34 +42,6 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     super.dispose();
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: ColorScheme.light(
-              primary: finlogBluePrimary,
-              onPrimary: Colors.white,
-              surface: Colors.white,
-              onSurface: Colors.black,
-            ),
-            dialogBackgroundColor: Colors.white,
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-        _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
-      });
-    }
-  }
 
   Widget _buildCardProgressBar() {
     return Row(
@@ -80,7 +51,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           width: 100, // Total width of the progress bar container
           height: 8,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withAlpha((0.3) * 255 ~/ 1),
             borderRadius: BorderRadius.circular(4),
           ),
           child: Align(
@@ -111,7 +82,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 14)),
+        Text(label, style: TextStyle(color: Colors.white.withAlpha((0.9) * 255 ~/ 1), fontSize: 14)),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
@@ -121,18 +92,18 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+            hintStyle: TextStyle(color: Colors.white.withAlpha((0.6) * 255 ~/ 1)),
             prefixIcon: prefixIcon != null
                 ? Padding(
                     padding: const EdgeInsets.only(left: 12.0, right: 8.0),
                     child: IconTheme(
-                      data: IconThemeData(color: Colors.white.withOpacity(0.8)),
+                      data: IconThemeData(color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
                       child: prefixIcon,
                     ),
                   )
                 : null,
             filled: true,
-            fillColor: Colors.white.withOpacity(0.15),
+            fillColor: Colors.white.withAlpha((0.15) * 255 ~/ 1),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -144,7 +115,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-               borderSide: BorderSide(color: Colors.white.withOpacity(0.5)),
+               borderSide: BorderSide(color: Colors.white.withAlpha((0.5) * 255 ~/ 1)),
             ),
           ),
         ),
@@ -156,10 +127,10 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Kategori", style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 14)),
+        Text("Kategori", style: TextStyle(color: Colors.white.withAlpha((0.9) * 255 ~/ 1), fontSize: 14)),
         const SizedBox(height: 8),
         Material( // To get InkWell effect
-          color: Colors.white.withOpacity(0.15),
+          color: Colors.white.withAlpha((0.15) * 255 ~/ 1),
           borderRadius: BorderRadius.circular(10),
           child: InkWell(
             borderRadius: BorderRadius.circular(10),
@@ -180,14 +151,14 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                   Text(
                     _selectedCategory ?? 'Pilih Kategori',
                     style: TextStyle(
-                      color: _selectedCategory != null ? Colors.white : Colors.white.withOpacity(0.6),
+                      color: _selectedCategory != null ? Colors.white : Colors.white.withAlpha((0.6) * 255 ~/ 1),
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   Icon(
                     _isCategoryExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withAlpha((0.8) * 255 ~/ 1),
                   ),
                 ],
               ),
@@ -198,7 +169,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           Container(
             margin: const EdgeInsets.only(top: 4),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1), // Slightly different background for dropdown items
+              color: Colors.white.withAlpha((0.1) * 255 ~/ 1), // Slightly different background for dropdown items
               borderRadius: BorderRadius.circular(10),
             ),
             constraints: BoxConstraints(
@@ -248,7 +219,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.white.withAlpha((0.15) * 255 ~/ 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -257,7 +228,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: Icon(Icons.chevron_left, color: Colors.white.withOpacity(0.8)),
+                icon: Icon(Icons.chevron_left, color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
                 onPressed: () { /* Decrement month logic */ },
                 padding: EdgeInsets.zero,
                 constraints: BoxConstraints(),
@@ -267,7 +238,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
               ),
               IconButton(
-                icon: Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.8)),
+                icon: Icon(Icons.chevron_right, color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
                 onPressed: () { /* Increment month logic */ },
                 padding: EdgeInsets.zero,
                 constraints: BoxConstraints(),
@@ -281,7 +252,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) => Center(
-              child: Text(dayHeaders[index], style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12, fontWeight: FontWeight.bold)),
+              child: Text(dayHeaders[index], style: TextStyle(color: Colors.white.withAlpha((0.7) * 255 ~/ 1), fontSize: 12, fontWeight: FontWeight.bold)),
             ),
           ),
           const SizedBox(height: 5),
@@ -308,7 +279,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                     color: isSelected ? finlogBlueSelectedDate : Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(day, style: TextStyle(color: isSelected ? Colors.white : Colors.white.withOpacity(0.9), fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, fontSize: 14)),
+                  child: Text(day, style: TextStyle(color: isSelected ? Colors.white : Colors.white.withAlpha((0.9) * 255 ~/ 1), fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, fontSize: 14)),
                 ),
               );
             },
@@ -353,7 +324,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
             padding: const EdgeInsets.only(top: 6.0, left: 4.0),
             child: Text(
               'Estimasi nominal lebih penting dibanding detail rinci nominal',
-              style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 11),
+              style: TextStyle(color: Colors.white.withAlpha((0.7) * 255 ~/ 1), fontSize: 11),
             ),
           ),
           const SizedBox(height: 20),

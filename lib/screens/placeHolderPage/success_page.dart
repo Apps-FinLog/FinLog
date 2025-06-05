@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/widgets/custom_app_bar_notif.dart';
-import 'package:finlog/screens/placeHolderPage/reusablePlaceHolder.dart';
+import 'package:finlog/screens/placeHolderPage/reusable_place_holder.dart';
 class OfflinePage extends StatelessWidget {
   const OfflinePage({super.key});
 

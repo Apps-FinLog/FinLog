@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/widgets/custom_app_bar_notif.dart';
 
 class ReusablePlaceholder extends StatelessWidget {
   final String imagePath;

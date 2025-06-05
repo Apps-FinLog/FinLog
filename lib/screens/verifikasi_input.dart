@@ -18,7 +18,6 @@ class VerifikasiInputScreen extends StatefulWidget {
 
 class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   // Dummy list of items to simulate a list
-  List<VerifikasiItem> _items = List.generate(2, (index) => VerifikasiItem(id: 'item_$index'));
 
   void _tambahLagi() {
     // Navigate back to the JournalInputTypeScreen to add more entries
@@ -30,7 +29,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
 
   void _konfirmasi() {
     // Handle confirmation logic
-    print('Konfirmasi ditekan');
+    debugPrint('Konfirmasi ditekan');
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Input berhasil dikonfirmasi! (simulasi)')),
     );
@@ -47,7 +46,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
       width: MediaQuery.of(context).size.width * widthFactor,
       height: height,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.3), // Lighter color for skeleton
+        color: Colors.white.withAlpha((0.3) * 255 ~/ 1), // Lighter color for skeleton
         borderRadius: BorderRadius.circular(8),
       ),
     );
@@ -94,12 +93,12 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
               ),
             ),
             const SizedBox(height: 6),
-            Divider(color: Colors.white.withOpacity(0.3), thickness: 0.8),
+            Divider(color: Colors.white.withAlpha((0.3) * 255 ~/ 1), thickness: 0.8),
             const SizedBox(height: 12),
             Text(
               '18/12/2025', // Date from image
               style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withAlpha((0.9) * 255 ~/ 1),
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),
@@ -117,7 +116,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
               child: ElevatedButton(
                 onPressed: _tambahLagi,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white.withOpacity(0.95), // Light button
+                  backgroundColor: Colors.white.withAlpha((0.95) * 255 ~/ 1), // Light button
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -136,7 +135,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
             ),
 
             // Divider before summary/totals
-            Divider(color: Colors.white.withOpacity(0.3), thickness: 0.8, height: 30),
+            Divider(color: Colors.white.withAlpha((0.3) * 255 ~/ 1), thickness: 0.8, height: 30),
             const SizedBox(height: 10),
 
             // Simulating summary/total section

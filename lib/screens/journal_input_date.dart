@@ -44,7 +44,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
               surface: Colors.white,
               onSurface: Colors.black,
             ),
-            dialogBackgroundColor: Colors.white,
+            dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -70,7 +70,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 14)),
+        Text(label, style: TextStyle(color: Colors.white.withAlpha((0.9) * 255 ~/ 1), fontSize: 14)),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
@@ -79,18 +79,18 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
           style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+            hintStyle: TextStyle(color: Colors.white.withAlpha(38)),
             prefixIcon: prefixIcon != null
                 ? Padding(
                     padding: const EdgeInsets.only(left: 12.0, right: 8.0),
                     child: IconTheme(
-                      data: IconThemeData(color: Colors.white.withOpacity(0.8)),
+                      data: IconThemeData(color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
                       child: prefixIcon,
                     ),
                   )
                 : null,
             filled: true,
-            fillColor: Colors.white.withOpacity(0.15),
+            fillColor: Colors.white.withAlpha((0.15) * 255 ~/ 1),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -102,7 +102,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-               borderSide: BorderSide(color: Colors.white.withOpacity(0.5)),
+               borderSide: BorderSide(color: Colors.white.withAlpha((0.5) * 255 ~/ 1)),
             ),
           ),
         ),
@@ -124,7 +124,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.white.withAlpha((0.15) * 255 ~/ 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -133,7 +133,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: Icon(Icons.chevron_left, color: Colors.white.withOpacity(0.8)),
+                icon: Icon(Icons.chevron_left, color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
                 onPressed: () { /* Decrement month logic */ },
                 padding: EdgeInsets.zero,
                 constraints: BoxConstraints(),
@@ -147,7 +147,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.8)),
+                icon: Icon(Icons.chevron_right, color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
                 onPressed: () { /* Increment month logic */ },
                 padding: EdgeInsets.zero,
                 constraints: BoxConstraints(),
@@ -168,7 +168,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                 child: Text(
                   dayHeaders[index],
                   style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withAlpha((0.7) * 255 ~/ 1),
                       fontSize: 12,
                       fontWeight: FontWeight.bold),
                 ),
@@ -209,7 +209,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                   child: Text(
                     day,
                     style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.white.withOpacity(0.9),
+                      color: isSelected ? Colors.white : Colors.white.withAlpha((0.9) * 255 ~/ 1),
                       fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                       fontSize: 14,
                     ),
@@ -278,7 +278,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             child: Text(
               'Seingat kamu ya!', // New helper text
               style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withAlpha((0.7) * 255 ~/ 1),
                 fontSize: 11,
               ),
             ),

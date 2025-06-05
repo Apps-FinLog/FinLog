@@ -60,11 +60,11 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7), // Slightly less width
         decoration: BoxDecoration(
-          color: message.isUserMessage ? finlogBluePrimary.withOpacity(0.3) : Colors.white,
+          color: message.isUserMessage ? finlogBluePrimary.withAlpha((0.3) * 255 ~/ 1) : Colors.white,
           borderRadius: BorderRadius.circular(12),
            boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withAlpha((0.05) * 255 ~/ 1),
               blurRadius: 3,
               offset: const Offset(0, 1),
             )
@@ -143,7 +143,7 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
           // Input field area at the bottom of the card
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
-            // color: finlogBluePrimaryDark.withOpacity(0.5), // Keeping input area part of gradient
+            // color: finlogBluePrimaryDark.withAlpha((0.5) * 255 ~/ 1), // Keeping input area part of gradient
             child: Row(
               children: [
                 Expanded(
@@ -152,9 +152,9 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
                     style: const TextStyle(color: Colors.white, fontSize: 15),
                     decoration: InputDecoration(
                       hintText: 'Makan mie ayam...',
-                      hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+                      hintStyle: TextStyle(color: Colors.white.withAlpha((0.6) * 255 ~/ 1)),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.15),
+                      fillColor: Colors.white.withAlpha((0.15) * 255 ~/ 1),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -162,7 +162,7 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+                        borderSide: BorderSide(color: Colors.white.withAlpha((0.3) * 255 ~/ 1)),
                       ),
                     ),
                     onSubmitted: (_) => _sendMessage(),

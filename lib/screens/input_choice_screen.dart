@@ -110,7 +110,7 @@ class _InputChoiceScreenState extends State<InputChoiceScreen>
         }
       }
     } catch (e) {
-      print("Error picking or processing image: $e");
+      debugPrint("Error picking or processing image: $e");
       if (mounted) {
         setState(() {
           _isLoading = false;

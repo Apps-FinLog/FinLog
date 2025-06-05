@@ -29,7 +29,7 @@ class ImageConfirmScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context, false),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white.withOpacity(0.25),
+                      backgroundColor: Colors.white.withAlpha((0.25) * 255 ~/ 1),
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(20),
                       elevation: 0,
