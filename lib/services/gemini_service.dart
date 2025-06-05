@@ -9,19 +9,28 @@ class GeminiService {
 
   Future<Map<String, dynamic>> parseExpense(String userInput) async {
     final String prompt = """
-You are an expense journal assistant. Your task is to parse the following user input and extract the expense details into a JSON object. If a field is not explicitly mentioned, infer it if possible (e.g., today's date for 'date', 'cash' for 'paymentMethod' if not specified), otherwise omit it or use a reasonable default. make the category tailored to indonesia users, usually involved in food, transportation, some of the foods are 'makan', 'minum', 'snack', 'kopi', 'makanan berat', 'makanan ringan', 'transportasi', 'belanja', 'hiburan', 'tagihan', 'lainnya'. If the user input is not clear or does not contain enough information, return an empty JSON object.
+You are an expense journal assistant. Your task is to parse the following user input and extract the expense details into a JSON object that matches the BillData structure. If a field is not explicitly mentioned, infer it if possible, otherwise omit it or use a reasonable default.
 
-Expected JSON structure:
+Expected JSON structure (similar to BillData object):
 {
-  "amount": <number>,
-  "currency": <string, e.g., "IDR">,
-  "category": <string>,
-  "description": <string>,
-  "date": <string, YYYY-MM-DD, infer today's date if not specified>,
-  "paymentMethod": <string, infer "cash" if not specified>
+  "displayDate": "<string, DD/MM/YYYY, infer today's date if not specified>",
+  "displayTime": "<string, HH:MM:SS, infer current time if not specified>",
+  "billItems": [
+    {
+      "name": "<string>",
+      "price": <number>,
+      "quantity": <number>,
+      "total": <number>
+    }
+  ],
+  "subtotal": <number>,
+  "pajak": <number>,
+  "diskon": <number>,
+  "lainnya": <number>,
+  "jumlahTotal": <number>
 }
 
-If the user input is not clear or does not contain enough information to extract all fields, return an empty JSON object or a JSON object with only the fields that could be confidently extracted.
+If the user input is not clear or does not contain enough information to extract all fields, return a JSON object with only the fields that could be confidently extracted. For billItems, if no items are found, return an empty array.
 
 User input: "$userInput"
 
