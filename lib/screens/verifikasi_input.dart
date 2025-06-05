@@ -2,22 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:finlog/screens/bill_details_screen.dart';
 import 'package:finlog/screens/journal_input_type.dart'; // Import the JournalInputTypeScreen
-
-// Placeholder for an input item model, if you were to make this dynamic
-class VerifikasiItem {
-  final String id; // Placeholder
-  VerifikasiItem({required this.id});
-}
+import 'package:finlog/services/gemini_service.dart'; // Import the new service
 
 class VerifikasiInputScreen extends StatefulWidget {
-  const VerifikasiInputScreen({super.key});
+  final String journalInput; // Assuming this is passed to the screen
+
+  const VerifikasiInputScreen({Key? key, required this.journalInput}) : super(key: key);
 
   @override
   State<VerifikasiInputScreen> createState() => _VerifikasiInputScreenState();
 }
 
 class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
-  // Dummy list of items to simulate a list
+  final GeminiService _geminiService = GeminiService();
+  Map<String, dynamic>? _parsedExpenseData;
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _parseJournalEntry();
+  }
+
+  Future<void> _parseJournalEntry() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    try {
+      final parsedData = await _geminiService.parseExpense(widget.journalInput);
+      setState(() {
+        _parsedExpenseData = parsedData;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to parse expense: ${e.toString()}';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   void _tambahLagi() {
     // Navigate back to the JournalInputTypeScreen to add more entries
@@ -36,31 +63,6 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const BillDetailsScreen(ocrResult: '')),
-    );
-  }
-
-  // Helper widget to build a skeleton loading bar
-  Widget _buildSkeletonBar({double widthFactor = 0.8, double height = 16.0, double verticalMargin = 6.0}) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: verticalMargin),
-      width: MediaQuery.of(context).size.width * widthFactor,
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha((0.3) * 255 ~/ 1), // Lighter color for skeleton
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
-  }
-
-  Widget _buildInputItemSection() {
-    // This simulates a section with a couple of input lines
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSkeletonBar(widthFactor: 0.7, height: 18),
-        _buildSkeletonBar(widthFactor: 0.5, height: 14),
-        const SizedBox(height: 10), // Space before next group or button
-      ],
     );
   }
 
@@ -95,20 +97,65 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
             const SizedBox(height: 6),
             Divider(color: Colors.white.withAlpha((0.3) * 255 ~/ 1), thickness: 0.8),
             const SizedBox(height: 12),
-            Text(
-              '18/12/2025', // Date from image
-              style: TextStyle(
-                color: Colors.white.withAlpha((0.9) * 255 ~/ 1),
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            _isLoading
+                ? const Center(child: CircularProgressIndicator(color: Colors.white))
+                : _errorMessage != null
+                    ? Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.red, fontSize: 16),
+                      )
+                    : _parsedExpenseData != null
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Date: ${_parsedExpenseData!['date'] ?? 'N/A'}',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Amount: ${_parsedExpenseData!['amount'] ?? 'N/A'} ${_parsedExpenseData!['currency'] ?? ''}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Category: ${_parsedExpenseData!['category'] ?? 'N/A'}',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontSize: 15,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Description: ${_parsedExpenseData!['description'] ?? 'N/A'}',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontSize: 15,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Payment Method: ${_parsedExpenseData!['paymentMethod'] ?? 'N/A'}',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ],
+                          )
+                        : const Text(
+                            'No expense data parsed yet.',
+                            style: TextStyle(color: Colors.white70),
+                          ),
             const SizedBox(height: 20),
-
-            // Simulating multiple input groups
-            _buildInputItemSection(),
-            _buildInputItemSection(),
-
 
             // "Tambah Lagi" Button
             Padding(
@@ -139,8 +186,22 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
             const SizedBox(height: 10),
 
             // Simulating summary/total section
-            _buildSkeletonBar(widthFactor: 0.4, height: 18),
-            _buildSkeletonBar(widthFactor: 0.3, height: 14),
+            // This part can be updated later to show actual totals from parsed data
+            Text(
+              'Original Input:',
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.9),
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            Text(
+              widget.journalInput,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
             const SizedBox(height: 20), // Extra space at the bottom of the card content
           ],
         ),
