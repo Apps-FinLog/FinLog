@@ -13,15 +13,15 @@ You are an expense journal assistant. Your task is to parse the following user i
 
 Expected JSON structure:
 {
-  \"amount\": <number>,
-  \"currency\": <string>,
-  \"category\": <string>,
-  \"description\": <string>,
-  \"date\": <string, YYYY-MM-DD>,
-  \"paymentMethod\": <string>
+  "amount": <number>,
+  "currency": <string>,
+  "category": <string>,
+  "description": <string>,
+  "date": <string, YYYY-MM-DD>,
+  "paymentMethod": <string>
 }
 
-User input: \"${userInput}\"
+User input: "$userInput"
 
 Please provide only the JSON object.
 """;
