@@ -22,7 +22,7 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
   final List<ChatMessage> _messages = [
     ChatMessage(
       text:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tincidunt arcu a urna placerat, id consectetur mi posuere. Integer scelerisque ornare tellus, eu varius',
+          'Halo, selamat datang di FinLog, aplikasi pencatatan keuangan yang mudah dan menyenangkan! ^ ^\n',
       isUserMessage: false,
     ),
   ];
@@ -38,7 +38,12 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
   void _sendMessage() {
     if (_chatInputController.text.trim().isEmpty) return;
     setState(() {
-      _messages.add(ChatMessage(text: _chatInputController.text.trim(), isUserMessage: true));
+      _messages.add(
+        ChatMessage(
+          text: _chatInputController.text.trim(),
+          isUserMessage: true,
+        ),
+      );
       _chatInputController.clear();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (_scrollController.hasClients) {
@@ -54,21 +59,27 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
 
   Widget _buildChatMessageBubble(ChatMessage message) {
     return Align(
-      alignment: message.isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
+      alignment:
+          message.isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7), // Slightly less width
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.7,
+        ), // Slightly less width
         decoration: BoxDecoration(
-          color: message.isUserMessage ? finlogBluePrimary.withAlpha((0.3) * 255 ~/ 1) : Colors.white,
+          color:
+              message.isUserMessage
+                  ? finlogBluePrimary.withAlpha((0.3) * 255 ~/ 1)
+                  : Colors.white,
           borderRadius: BorderRadius.circular(12),
-           boxShadow: [
+          boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha((0.05) * 255 ~/ 1),
               blurRadius: 3,
               offset: const Offset(0, 1),
-            )
-          ]
+            ),
+          ],
         ),
         child: Text(
           message.text,
@@ -85,18 +96,18 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
     // This widget now defines the chat card itself, which will be placed within the main screen layout
     return Container(
       // No margin here, the parent Column in Scaffold.body will handle padding/margin for the card
-      clipBehavior: Clip.antiAlias, // Ensures input field at bottom adheres to rounded corners
+      clipBehavior:
+          Clip.antiAlias, // Ensures input field at bottom adheres to rounded corners
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            finlogBluePrimaryDark,
-            finlogBluePrimary,
-          ],
+          colors: [finlogBluePrimaryDark, finlogBluePrimary],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          stops: [0.0, 0.9]
+          stops: [0.0, 0.9],
         ),
-        borderRadius: BorderRadius.circular(24.0), // Rounded corners for the card
+        borderRadius: BorderRadius.circular(
+          24.0,
+        ), // Rounded corners for the card
       ),
       child: Column(
         children: [
@@ -129,10 +140,16 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
           ),
 
           // Chat messages area
-          Expanded( // This Expanded makes the ListView take available space *within the card*
+          Expanded(
+            // This Expanded makes the ListView take available space *within the card*
             child: ListView.builder(
               controller: _scrollController,
-              padding: const EdgeInsets.only(top: 0, bottom: 10, left: 8, right: 8), // Adjusted padding
+              padding: const EdgeInsets.only(
+                top: 0,
+                bottom: 10,
+                left: 8,
+                right: 8,
+              ), // Adjusted padding
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 return _buildChatMessageBubble(_messages[index]);
@@ -142,7 +159,10 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
 
           // Input field area at the bottom of the card
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12.0,
+              vertical: 10.0,
+            ),
             // color: finlogBluePrimaryDark.withAlpha((0.5) * 255 ~/ 1), // Keeping input area part of gradient
             child: Row(
               children: [
@@ -152,17 +172,24 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
                     style: const TextStyle(color: Colors.white, fontSize: 15),
                     decoration: InputDecoration(
                       hintText: 'Makan mie ayam...',
-                      hintStyle: TextStyle(color: Colors.white.withAlpha((0.6) * 255 ~/ 1)),
+                      hintStyle: TextStyle(
+                        color: Colors.white.withAlpha((0.6) * 255 ~/ 1),
+                      ),
                       filled: true,
                       fillColor: Colors.white.withAlpha((0.15) * 255 ~/ 1),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide.none,
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide(color: Colors.white.withAlpha((0.3) * 255 ~/ 1)),
+                        borderSide: BorderSide(
+                          color: Colors.white.withAlpha((0.3) * 255 ~/ 1),
+                        ),
                       ),
                     ),
                     onSubmitted: (_) => _sendMessage(),
@@ -191,7 +218,9 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
           const SizedBox(height: 16), // Spacing between input and buttons
           // Bottom Navigation Buttons (Back and Confirm)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0), // Add horizontal padding to align with input field
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12.0,
+            ), // Add horizontal padding to align with input field
             child: Row(
               children: [
                 Expanded(
@@ -222,21 +251,35 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       // Find the last user message to send for verification
-                      final String lastUserMessage = _messages.lastWhere(
-                        (msg) => msg.isUserMessage,
-                        orElse: () => ChatMessage(text: '', isUserMessage: true),
-                      ).text;
+                      final String lastUserMessage =
+                          _messages
+                              .lastWhere(
+                                (msg) => msg.isUserMessage,
+                                orElse:
+                                    () => ChatMessage(
+                                      text: '',
+                                      isUserMessage: true,
+                                    ),
+                              )
+                              .text;
 
                       if (lastUserMessage.isNotEmpty) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => VerifikasiInputScreen(journalInput: lastUserMessage),
+                            builder:
+                                (context) => VerifikasiInputScreen(
+                                  journalInput: lastUserMessage,
+                                ),
                           ),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please enter a journal entry before confirming.')),
+                          const SnackBar(
+                            content: Text(
+                              'Please enter a journal entry before confirming.',
+                            ),
+                          ),
                         );
                       }
                     },
@@ -284,10 +327,13 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
       backgroundColor: Colors.grey[200], // Standard screen background
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0), // Padding around the main content area
+          padding: const EdgeInsets.all(
+            16.0,
+          ), // Padding around the main content area
           child: Column(
             children: [
-              Expanded( // This Expanded makes the chat card take available vertical space
+              Expanded(
+                // This Expanded makes the chat card take available vertical space
                 child: _buildChatCard(),
               ),
               // Removed the SizedBox and Row containing buttons from here
