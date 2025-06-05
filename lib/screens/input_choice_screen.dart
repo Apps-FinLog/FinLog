@@ -3,7 +3,6 @@ import 'dart:math' as math; // Untuk animasi rotasi
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 // GANTI 'finlog' dengan nama proyek Anda yang sebenarnya jika berbeda
-import 'package:finlog/services/ocr_service.dart';
 import 'package:finlog/screens/bill_details_screen.dart';
 import 'package:finlog/screens/image_confirm_screen.dart';
 
@@ -25,7 +24,6 @@ class InputChoiceScreen extends StatefulWidget {
 class _InputChoiceScreenState extends State<InputChoiceScreen>
     with SingleTickerProviderStateMixin {
   final ImagePicker _picker = ImagePicker();
-  final OcrService _ocrService = OcrService();
   bool _isLoading = false;
 
   AnimationController? _animationController;
@@ -46,7 +44,6 @@ class _InputChoiceScreenState extends State<InputChoiceScreen>
 
   @override
   void dispose() {
-    _ocrService.dispose();
     _animationController?.dispose();
     super.dispose();
   }
@@ -57,16 +54,14 @@ class _InputChoiceScreenState extends State<InputChoiceScreen>
       _isLoading = true;
     });
 
-    final String extractedText = await _ocrService.extractTextFromImage(
-      imageFile,
-    );
-
+    // Since OCR is removed, we will navigate directly to BillDetailsScreen
+    // with an empty string or handle the image file directly if needed elsewhere.
+    // For now, we'll pass an empty string as ocrResult.
     if (!mounted) return;
-    // Navigasi ke BillDetailsScreen dan set _isLoading jadi false saat kembali atau selesai
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => BillDetailsScreen(ocrResult: extractedText),
+        builder: (context) => BillDetailsScreen(ocrResult: ''), // Pass empty string
       ),
     ).then((_) {
       if (mounted) {
