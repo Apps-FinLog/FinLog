@@ -276,8 +276,6 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     );
   }
 
-
-
   Widget _buildContentCard() {
     return Container(
       margin: const EdgeInsets.all(16.0),

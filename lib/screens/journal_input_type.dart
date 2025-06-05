@@ -22,7 +22,7 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
   final List<ChatMessage> _messages = [
     ChatMessage(
       text:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tincidunt arcu a urna placerat, id consectetur mi posuere. Integer scelerisque ornare tellus, eu varius',
+          'Halo, selamat datang di FinLog, aplikasi pencatatan keuangan yang mudah dan menyenangkan! ^ ^',
       isUserMessage: false,
     ),
   ];
@@ -62,7 +62,7 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
         decoration: BoxDecoration(
           color: message.isUserMessage ? finlogBluePrimary.withAlpha((0.3) * 255 ~/ 1) : Colors.white,
           borderRadius: BorderRadius.circular(12),
-           boxShadow: [
+          boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha((0.05) * 255 ~/ 1),
               blurRadius: 3,
