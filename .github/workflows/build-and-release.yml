@@ -12,6 +12,9 @@ jobs:
     permissions:
       contents: write
 
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,6 +39,10 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Create .env file
+        run: |
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
 
       - name: Analyze project
         run: flutter analyze
