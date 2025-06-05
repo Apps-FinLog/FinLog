@@ -32,9 +32,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
             backgroundColor: Colors.white, // White background
             elevation: 0, // Remove shadow
             items: <BottomNavigationBarItem>[
-              _buildNavItem(0, 'assets/svgs/pie-chart.svg', 'Dashboard'),
-              _buildNavItem(1, 'assets/svgs/home.svg', 'Home'),
+              _buildNavItem(0, 'assets/svgs/home.svg', 'Beranda'),
+              _buildNavItem(1, 'assets/svgs/calculator.svg', 'Input Expense'),
               _buildNavItem(2, 'assets/svgs/scan.svg', 'Scan'),
+              _buildNavItem(3, 'assets/svgs/pie-chart.svg', 'Riwayat'),
+              _buildNavItem(4, null, 'Profil', materialIcon: Icons.person, materialIconInactive: Icons.person_outline), // Use filled/unfilled Material Icon for Profile
             ],
             currentIndex: selectedIndex,
             selectedItemColor: Colors.blue.shade700,
@@ -56,11 +58,35 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   BottomNavigationBarItem _buildNavItem(
     int index,
-    String iconPath,
+    String? iconPath, // Make iconPath nullable
     String label,
+    {IconData? materialIcon, IconData? materialIconInactive} // Add optional materialIcon parameters
   ) {
     final bool isSelected = selectedIndex == index;
     final Color selectedColor = Color(0x800876FF); // #0876FF80
+
+    Widget iconWidget;
+    if (materialIcon != null && materialIconInactive != null) {
+      iconWidget = Icon(
+        isSelected ? materialIcon : materialIconInactive,
+        size: 24,
+        color: isSelected ? Colors.black : Colors.grey,
+      );
+    } else if (iconPath != null) {
+      iconWidget = SvgPicture.asset(
+        iconPath,
+        width: 24,
+        height: 24,
+        colorFilter: ColorFilter.mode(
+          isSelected
+              ? Colors.black
+              : Colors.grey, // Icon color when selected/unselected
+          BlendMode.srcIn,
+        ),
+      );
+    } else {
+      iconWidget = const SizedBox(width: 24, height: 24); // Placeholder if no icon
+    }
 
     return BottomNavigationBarItem(
       icon: AnimatedContainer(
@@ -70,17 +96,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           color: isSelected ? selectedColor : Colors.transparent,
           borderRadius: BorderRadius.circular(8), // Circular rectangle
         ),
-        child: SvgPicture.asset(
-          iconPath,
-          width: 24,
-          height: 24,
-          colorFilter: ColorFilter.mode(
-            isSelected
-                ? Colors.black
-                : Colors.grey, // Icon color when selected/unselected
-            BlendMode.srcIn,
-          ),
-        ),
+        child: iconWidget,
       ),
       label: '', // Keep label as empty string to hide it
     );

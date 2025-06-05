@@ -268,8 +268,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             controller: _dateController,
             readOnly: true,
             onTap: () {
-                // Logic for tapping the date field - e.g., show system picker or rely on inline
-                // _selectDate(context);
+                _selectDate(context); // Enable system date picker
             },
             prefixIcon: Icon(Icons.calendar_today_outlined, size: 20),
           ),
@@ -284,7 +283,8 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          _buildCalendarView(),
+          // Removed custom calendar view as per request to use default Android date picker
+          // _buildCalendarView(),
         ],
       ),
     );
