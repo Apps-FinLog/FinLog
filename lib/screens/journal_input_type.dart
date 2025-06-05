@@ -221,12 +221,24 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Handle confirm action
-                      // For example, collect all messages or the parsed result from chat
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const VerifikasiInputScreen()),
-                      );
+                      // Find the last user message to send for verification
+                      final String lastUserMessage = _messages.lastWhere(
+                        (msg) => msg.isUserMessage,
+                        orElse: () => ChatMessage(text: '', isUserMessage: true),
+                      ).text;
+
+                      if (lastUserMessage.isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VerifikasiInputScreen(journalInput: lastUserMessage),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please enter a journal entry before confirming.')),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: finlogButtonDark,
