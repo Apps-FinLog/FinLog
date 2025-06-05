@@ -64,10 +64,33 @@ Please provide ONLY the JSON object. Do not include any additional text or markd
     }
   }
 
-  Future<String> processImageForOcr(String base64Image) async {
+  Future<Map<String, dynamic>> processImageForOcr(String base64Image) async {
     final String prompt = """
-You are an OCR assistant. Extract all visible text from the provided image.
-Return ONLY the extracted text, without any additional formatting or explanation.
+You are an OCR assistant. Your task is to extract bill details from the provided image and format them into a JSON object.
+Infer values if not explicitly mentioned, or use reasonable defaults.
+
+Expected JSON structure:
+{
+  "displayDate": "<string, DD/MM/YYYY, infer today's date if not specified>",
+  "displayTime": "<string, HH:MM:SS, infer current time if not specified>",
+  "billItems": [
+    {
+      "name": "<string>",
+      "price": <number>,
+      "quantity": <number>,
+      "total": <number>
+    }
+  ],
+  "subtotal": <number>,
+  "pajak": <number>,
+  "diskon": <number>,
+  "lainnya": <number>,
+  "jumlahTotal": <number>
+}
+
+If the image does not contain enough information to extract all fields, return a JSON object with only the fields that could be confidently extracted. For billItems, if no items are found, return an empty array.
+
+Please provide ONLY the JSON object. Do not include any additional text or markdown outside the JSON block.
 """;
 
     final Uri uri = Uri.parse('$_baseUrl?key=${dotenv.env['GEMINI_API_KEY']}');
@@ -96,9 +119,11 @@ Return ONLY the extracted text, without any additional formatting or explanation
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody = json.decode(response.body);
         if (responseBody['candidates'] != null && responseBody['candidates'].isNotEmpty) {
-          final String extractedText = responseBody['candidates'][0]['content']['parts'][0]['text'];
-          debugPrint('Gemini OCR Response: $extractedText'); // Log the extracted text
-          return extractedText;
+          final String jsonString = responseBody['candidates'][0]['content']['parts'][0]['text'];
+          final String cleanJsonString = _extractJsonFromMarkdown(jsonString);
+          debugPrint('Gemini OCR Raw Response: $jsonString'); // Log the raw response
+          debugPrint('Gemini OCR Cleaned JSON: $cleanJsonString'); // Log the cleaned JSON
+          return json.decode(cleanJsonString);
         } else {
           throw Exception('Gemini API did not return any candidates for OCR.');
         }

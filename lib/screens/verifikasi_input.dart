@@ -5,9 +5,7 @@ import 'package:finlog/screens/journal_input_type.dart';
 import 'package:finlog/screens/manual_input_screen.dart'; // Import ManualInputScreen
 import 'package:finlog/services/gemini_service.dart';
 import 'package:finlog/models/manual_input_data.dart'; // Import ManualInputData
-import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:intl/intl.dart'; // Import for DateFormat
-import 'package:provider/provider.dart'; // Import Provider
 
 enum InputSource { manual, journal, ocr }
 
@@ -88,7 +86,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
     );
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const BillDetailsScreen(ocrResult: '')),
+      MaterialPageRoute(builder: (context) => BillDetailsScreen(ocrResult: _parsedExpenseData ?? {})),
     );
   }
 

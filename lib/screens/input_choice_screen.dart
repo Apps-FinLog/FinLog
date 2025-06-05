@@ -57,7 +57,7 @@ class _InputChoiceScreenState extends State<InputChoiceScreen>
       _isLoading = true;
     });
 
-    final String extractedText = await _ocrService.extractTextFromImage(
+    final Map<String, dynamic> extractedData = await _ocrService.extractTextFromImage(
       imageFile,
     );
 
@@ -66,7 +66,7 @@ class _InputChoiceScreenState extends State<InputChoiceScreen>
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => BillDetailsScreen(ocrResult: extractedText),
+        builder: (context) => BillDetailsScreen(ocrResult: extractedData),
       ),
     ).then((_) {
       if (mounted) {

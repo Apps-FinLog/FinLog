@@ -5,7 +5,7 @@ import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:provider/provider.dart'; // Import Provider
 
 class BillDetailsScreen extends StatefulWidget {
-  final String ocrResult;
+  final Map<String, dynamic> ocrResult;
   const BillDetailsScreen({super.key, required this.ocrResult});
 
   @override
