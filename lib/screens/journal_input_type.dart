@@ -22,7 +22,7 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
   final List<ChatMessage> _messages = [
     ChatMessage(
       text:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tincidunt arcu a urna placerat, id consectetur mi posuere. Integer scelerisque ornare tellus, eu varius',
+          'Halo, selamat datang di FinLog, aplikasi pencatatan keuangan yang mudah dan menyenangkan! ^ ^\n',
       isUserMessage: false,
     ),
   ];
