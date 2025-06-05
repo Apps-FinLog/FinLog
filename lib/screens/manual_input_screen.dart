@@ -363,9 +363,17 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
+                    // Construct the journal input string from manual input fields
+                    final String journalInput =
+                        'Nominal: ${_nominalController.text}, '
+                        'Category: ${_selectedCategory ?? 'N/A'}, '
+                        'Date: ${_dateController.text}';
+
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const VerifikasiInputScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => VerifikasiInputScreen(journalInput: journalInput),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
