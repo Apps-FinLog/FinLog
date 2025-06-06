@@ -58,7 +58,7 @@ class _SummaryCardState extends State<SummaryCard>{
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black87),
                 ),
                 IconButton(
-                  icon: Icon(Icons.visibility_off_outlined, color: Colors.grey[600]),
+                  icon: Icon(!_isHidden ? Icons.visibility_off_outlined : Icons.visibility, color: Colors.grey[600]),
                   onPressed: () {
                     setState(() {
                       _isHidden = !_isHidden;

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 class CatatCepat extends StatefulWidget {
   const CatatCepat({super.key});
@@ -9,6 +11,99 @@ class CatatCepat extends StatefulWidget {
 }
 
 class _CatatCepatState extends State<CatatCepat> {
+  final TextEditingController _nominalController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _nominalController.addListener(_formatNominal);
+  }
+
+  @override
+  void dispose() {
+    _nominalController.removeListener(_formatNominal);
+    _nominalController.dispose();
+    super.dispose();
+  }
+
+  void _formatNominal() {
+    String text = _nominalController.text;
+    if (text.isEmpty) {
+      return;
+    }
+
+    // Remove all non-digit characters
+    String cleanText = text.replaceAll(RegExp(r'[^\d]'), '');
+    if (cleanText.isEmpty) {
+      return;
+    }
+
+    // Parse to double, then format as currency
+    double value = double.parse(cleanText);
+    final formatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp',
+      decimalDigits: 0,
+    );
+    String newText = formatter.format(value);
+
+    // Prevent infinite loop
+    if (newText != text) {
+      _nominalController.value = _nominalController.value.copyWith(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newText.length),
+      );
+    }
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    TextInputType? keyboardType,
+    List<TextInputFormatter>? inputFormatters,
+    String? hintText,
+    String? Function(String?)? validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.8),
+            fontSize: 13,
+          ),
+        ),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
+          style: const TextStyle(
+            color: Colors.black87,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            hintText: hintText,
+            hintStyle: TextStyle(color: Colors.black87.withOpacity(0.5)),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
+            ),
+          ),
+          validator: validator,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,44 +141,31 @@ class _CatatCepatState extends State<CatatCepat> {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            'Nominal',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
-              fontSize: 13,
-            ),
-          ),
-          const SizedBox(height: 6),
-          TextField(
-            controller: TextEditingController(text: '1,000,000'), // Placeholder
-            style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
+                _buildTextField(
+                  label: 'Nominal',
+                  controller: _nominalController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  hintText: 'Contoh: Rp 1.000.000',
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.replaceAll(RegExp(r'[^\d]'), '').isEmpty) {
+                      return 'Nominal tidak boleh kosong';
+                    }
+                    if (double.tryParse(value.replaceAll(RegExp(r'[^\d]'), '')) == null) {
+                      return 'Nominal tidak valid';
+                    }
+                    return null;
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 6.0, left: 4.0),
+                  child: Text(
+                    'Estimasi nominal lebih penting dibanding detail rinci nominal',
+                    style: TextStyle(color: Colors.white.withAlpha((0.7) * 255 ~/ 1), fontSize: 11),
+                  ),
+                ),
           const SizedBox(height: 12),
-          Text(
-            'Catat dengan\ncepat dan mudah~\nketuk disini!',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
-              fontSize: 14,
-              height: 1.4,
-            ),
-          ),
+          
         ],
       ),
     );
@@ -91,4 +173,4 @@ class _CatatCepatState extends State<CatatCepat> {
 }
 
 
-// TODO : implement widget to accept the user money input 
+// TODO : implement widget to accept the user money input

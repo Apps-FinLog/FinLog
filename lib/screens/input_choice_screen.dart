@@ -161,24 +161,7 @@ class _InputChoiceScreenState extends State<InputChoiceScreen>
     if (_isLoading) {
       // Tampilan Loading (sesuai Galeri4.png)
       return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text(
-            'FinLog',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-          actions: const [
-            Padding(
-              padding: EdgeInsets.only(right: 16.0),
-              child: CircleAvatar(
-                backgroundColor: finlogProfileBgPlaceholder,
-                // child: Image.asset('assets/images/profile_avatar.png'), // Ganti dengan avatar Anda
-              ),
-            ),
-          ],
-          backgroundColor: Colors.white,
-          elevation: 0,
-        ),
+        
         backgroundColor: Colors.white,
         body: Center(
           child: Column(

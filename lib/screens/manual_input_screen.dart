@@ -312,6 +312,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                   controller: _nominalController,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  hintText: 'Contoh: Rp 1.000.000',
                   validator: (value) {
                     if (value == null || value.isEmpty || value.replaceAll(RegExp(r'[^\d]'), '').isEmpty) {
                       return 'Nominal tidak boleh kosong';
