@@ -379,7 +379,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           ),
         ),
         backgroundColor: Colors.grey[200],
-        resizeToAvoidBottomInset: false, // Prevent screen from resizing when keyboard appears
+        resizeToAvoidBottomInset: true, // Allow screen to resize when keyboard appears
         body: SafeArea(
           child: SingleChildScrollView( // The content should be scrollable
             child: _buildContentCard(),
