@@ -40,8 +40,7 @@ android {
     }
     dependencies {
         implementation(platform("com.google.firebase:firebase-bom:33.1.1")) // Baris yang sudah diperbaiki
-        implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
-}
+    }
 }
 
 flutter {
