@@ -11,7 +11,7 @@ class JournalInputDateScreen extends StatefulWidget {
 }
 
 class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
-  DateTime _selectedDate = DateTime(2024, 12, 5); // Default selected date from image
+  DateTime _selectedDate = DateTime.now(); 
   late TextEditingController _dateController; // Initialize in initState
 
   @override
@@ -50,7 +50,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
         );
       },
     );
-    if (picked != null && picked != _selectedDate) {
+    if (picked != null) {
       setState(() {
         _selectedDate = picked;
         _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
