@@ -14,7 +14,7 @@ class ManualInputScreen extends StatefulWidget {
 
 class _ManualInputScreenState extends State<ManualInputScreen> {
   final TextEditingController _nominalController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
+  late TextEditingController _dateController;
   final TextEditingController _descriptionController = TextEditingController(); // New controller for description
 
   DateTime? _selectedDate;
@@ -36,8 +36,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedDate = DateTime.now();
-    _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate!);
+    _dateController = TextEditingController(text: "Pick a date");
     _nominalController.addListener(_formatNominal);
   }
 
@@ -145,6 +144,8 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     TextInputType? keyboardType,
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
+    int? maxLines, // Added maxLines parameter
+    int? minLines, // Added minLines parameter
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,6 +160,8 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
           validator: validator,
           inputFormatters: inputFormatters,
+          maxLines: maxLines, // Applied maxLines
+          minLines: minLines, // Applied minLines
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.white.withAlpha((0.6) * 255 ~/ 1)),
@@ -346,6 +349,8 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                   controller: _descriptionController,
                   hintText: 'Contoh: Beli makan siang',
                   keyboardType: TextInputType.text,
+                  maxLines: null, // Allow unlimited lines
+                  minLines: 1, // Start with at least one line
                 ),
               ],
             ),
