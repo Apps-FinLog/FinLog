@@ -176,7 +176,7 @@ class HomeNavbarWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: finlogBluePrimary.withOpacity(0.3),
+            color: finlogBluePrimary.withAlpha((0.3 * 255).round()),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -196,7 +196,7 @@ class HomeNavbarWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text('Nominal', style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13)),
+          Text('Nominal', style: TextStyle(color: Colors.white.withAlpha((0.8 * 255).round()), fontSize: 13)),
           const SizedBox(height: 6),
           TextField(
             controller: TextEditingController(text: '1,000,000'), // Placeholder
@@ -215,7 +215,7 @@ class HomeNavbarWidget extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'Catat dengan\ncepat dan mudah~\nketuk disini!',
-            style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 14, height: 1.4),
+            style: TextStyle(color: Colors.white.withAlpha((0.9 * 255).round()), fontSize: 14, height: 1.4),
           ),
         ],
       ),
@@ -234,7 +234,7 @@ class HomeNavbarWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
          boxShadow: [
           BoxShadow(
-            color: finlogBluePrimary.withOpacity(0.3),
+            color: finlogBluePrimary.withAlpha((0.3 * 255).round()),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -260,7 +260,7 @@ class HomeNavbarWidget extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   'Ada guilty confession kamu\njajan apa aja hari ini?',
-                  style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 14, height: 1.4),
+                  style: TextStyle(color: Colors.white.withAlpha((0.9 * 255).round()), fontSize: 14, height: 1.4),
                 ),
               ],
             ),
