@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:intl/intl.dart'; // For date formatting if needed for calendar
 import 'package:finlog/screens/journal_input_type.dart';
+import 'package:finlog/widgets/navs/dual_action_buttons.dart';
 
 class JournalInputDateScreen extends StatefulWidget {
   const JournalInputDateScreen({super.key});
@@ -11,7 +12,11 @@ class JournalInputDateScreen extends StatefulWidget {
 }
 
 class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
-  DateTime _selectedDate = DateTime(2024, 12, 5); // Default selected date from image
+  DateTime _selectedDate = DateTime(
+    2024,
+    12,
+    5,
+  ); // Default selected date from image
   late TextEditingController _dateController; // Initialize in initState
 
   @override
@@ -70,28 +75,44 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: Colors.white.withAlpha((0.9) * 255 ~/ 1), fontSize: 14)),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.white.withAlpha((0.9) * 255 ~/ 1),
+            fontSize: 14,
+          ),
+        ),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           readOnly: readOnly,
           onTap: onTap,
-          style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(color: Colors.white.withAlpha(38)),
-            prefixIcon: prefixIcon != null
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 12.0, right: 8.0),
-                    child: IconTheme(
-                      data: IconThemeData(color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
-                      child: prefixIcon,
-                    ),
-                  )
-                : null,
+            prefixIcon:
+                prefixIcon != null
+                    ? Padding(
+                      padding: const EdgeInsets.only(left: 12.0, right: 8.0),
+                      child: IconTheme(
+                        data: IconThemeData(
+                          color: Colors.white.withAlpha((0.8) * 255 ~/ 1),
+                        ),
+                        child: prefixIcon,
+                      ),
+                    )
+                    : null,
             filled: true,
             fillColor: Colors.white.withAlpha((0.15) * 255 ~/ 1),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,
@@ -102,7 +123,9 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-               borderSide: BorderSide(color: Colors.white.withAlpha((0.5) * 255 ~/ 1)),
+              borderSide: BorderSide(
+                color: Colors.white.withAlpha((0.5) * 255 ~/ 1),
+              ),
             ),
           ),
         ),
@@ -110,20 +133,24 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
     );
   }
 
-
   Widget _buildContentCard() {
     return Container(
       margin: const EdgeInsets.all(16.0),
-      padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 30.0), // Added more bottom padding
+      padding: const EdgeInsets.fromLTRB(
+        20.0,
+        20.0,
+        20.0,
+        30.0,
+      ), // Added more bottom padding
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            finlogBluePrimaryDark,
-            finlogBluePrimary,
-          ],
+          colors: [finlogBluePrimaryDark, finlogBluePrimary],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          stops: [0.0, 0.8] // Adjusted stop for a slightly different gradient feel
+          stops: [
+            0.0,
+            0.8,
+          ], // Adjusted stop for a slightly different gradient feel
         ),
         borderRadius: BorderRadius.circular(24.0),
       ),
@@ -156,7 +183,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             controller: _dateController,
             readOnly: true,
             onTap: () {
-                _selectDate(context); // Enable system date picker
+              _selectDate(context); // Enable system date picker
             },
             prefixIcon: Icon(Icons.calendar_today_outlined, size: 20),
           ),
@@ -179,17 +206,19 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
   }
 
   @override
+  // Ganti seluruh method build Anda dengan ini
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Input Jurnal', // Changed title
+          'Input Jurnal',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         backgroundColor: Colors.grey[50],
         elevation: 0.5,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back, color: Colors.black87),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -197,68 +226,39 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: _buildContentCard(),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 24.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: finlogButtonGrey,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 1,
-                      ),
-                      child: const Text(
-                        'Back',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: finlogButtonTextDark,
-                        ),
-                      ),
-                    ),
+            Expanded(child: SingleChildScrollView(child: _buildContentCard())),
+
+            // ========================================================
+            // == INI ADALAH IMPLEMENTASI YANG BENAR DAN BERSIH ==
+            // ========================================================
+            DualActionButtons(
+              // Teks untuk tombol kiri (opsional)
+              leftButtonText: 'Back',
+
+              // Teks untuk tombol kanan (opsional)
+              rightButtonText: 'Continue',
+
+              // Perintah yang dijalankan saat tombol kiri ditekan
+              onLeftButtonPressed: () {
+                Navigator.of(context).pop();
+              },
+
+              // Perintah yang dijalankan saat tombol kanan ditekan
+              onRightButtonPressed: () {
+                // Di sini Anda bisa menambahkan logika validasi jika perlu,
+                // misalnya, memastikan tanggal sudah dipilih.
+                // if (_dateController.text != "Pick a date") { ... }
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const JournalInputTypeScreen(),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const JournalInputTypeScreen()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: finlogButtonDark,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 1,
-                      ),
-                      child: const Text(
-                        'Continue',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
+
+            // ========================================================
           ],
         ),
       ),

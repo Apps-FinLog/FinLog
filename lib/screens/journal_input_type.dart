@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:finlog/screens/verifikasi_input.dart';
-
+import 'package:finlog/widgets/navs/dual_action_buttons.dart';
 // Placeholder for a message model
 class ChatMessage {
   final String text;
@@ -190,111 +190,79 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
           ),
           const SizedBox(height: 16), // Spacing between input and buttons
           // Bottom Navigation Buttons (Back and Confirm)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0), // Add horizontal padding to align with input field
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: finlogButtonGrey,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 1,
-                    ),
-                    child: const Text(
-                      'Back', // Or perhaps "Cancel"
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: finlogButtonTextDark,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Find the last user message to send for verification
-                      final String lastUserMessage = _messages.lastWhere(
-                        (msg) => msg.isUserMessage,
-                        orElse: () => ChatMessage(text: '', isUserMessage: true),
-                      ).text;
-
-                      if (lastUserMessage.isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VerifikasiInputScreen(journalInput: lastUserMessage),
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please enter a journal entry before confirming.')),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: finlogButtonDark,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 1,
-                    ),
-                    child: const Text(
-                      'Confirm',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          
         ],
       ),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Input Jurnal (Chat)', // More specific title
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
-        ),
-        backgroundColor: Colors.grey[50],
-        elevation: 0.5,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black87),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text(
+        'Input Jurnal (Chat)',
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
       ),
-      backgroundColor: Colors.grey[200], // Standard screen background
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0), // Padding around the main content area
-          child: Column(
-            children: [
-              Expanded( // This Expanded makes the chat card take available vertical space
-                child: _buildChatCard(),
-              ),
-              // Removed the SizedBox and Row containing buttons from here
-            ],
-          ),
-        ),
+      backgroundColor: Colors.grey[50],
+      elevation: 0.5,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.black87),
+        onPressed: () => Navigator.of(context).pop(),
       ),
-    );
-  }
+    ),
+    backgroundColor: Colors.grey[200],
+    body: SafeArea(
+      // Padding di sini bisa dihilangkan jika DualActionButtons sudah punya padding sendiri
+      // Namun kita bisa biarkan untuk memberi margin di sisi kartu chat
+      
+        child: Column(
+          children: [
+            // KARTU CHAT (sekarang tanpa tombol internal)
+            Expanded(
+              child: _buildChatCard(),
+            ),
+
+            // TOMBOL AKSI (ditempatkan di sini, di luar kartu chat)
+            DualActionButtons(
+              leftButtonText: 'Back',
+              rightButtonText: 'Confirm',
+              
+              // Logika untuk tombol kiri
+              onLeftButtonPressed: () {
+                Navigator.of(context).pop();
+              },
+              
+              // Logika untuk tombol kanan (dipisahkan dari UI)
+              onRightButtonPressed: () {
+                // Cari pesan terakhir dari pengguna untuk dikirim ke verifikasi
+                final String lastUserMessage = _messages.lastWhere(
+                  (msg) => msg.isUserMessage,
+                  // Jika tidak ada pesan, kembalikan pesan kosong
+                  orElse: () => ChatMessage(text: '', isUserMessage: true),
+                ).text;
+
+                if (lastUserMessage.isNotEmpty) {                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VerifikasiInputScreen(
+                        journalInput: lastUserMessage,
+                        sourceScreen: InputSource.journal, // Changed from InputSource.chat to InputSource.journal
+                      ),
+                    ),
+                  );
+                } else {
+                  // Tampilkan pesan error jika pengguna belum mengetik apa-apa
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Tulis jurnal kamu dulu ya!')),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      
+    ),
+  );
+}
 }

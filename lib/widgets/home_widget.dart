@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming your custom colors are here
-import 'package:finlog/screens/placeHolderPage/under_development.dart';
 import 'package:finlog/screens/journal_input_date.dart'; // Import for Catat Jurnal button
 import 'package:finlog/widgets/hero_card.dart'; // Import for SummaryCard
 import 'package:finlog/widgets/catat_cepat.dart';
@@ -24,14 +23,16 @@ class HomeWidget extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.grey[100], // Very light grey, almost white
         elevation: 0.5,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: Colors.grey[300]!, width: 0.5),
         ),
       ),
     );
   }
+
+  // below is the filter button caller method 
 
   Widget _buildFilterButtons(BuildContext context) {
     return Row(

@@ -78,6 +78,7 @@ Please provide ONLY the JSON object. Do not include any additional text or markd
 You are an OCR assistant. Your task is to extract bill details from the provided image and format them into a JSON object.
 Infer values if not explicitly mentioned, or use reasonable defaults.
 
+
 Expected JSON structure:
 {
   "displayDate": "<string, DD/MM/YYYY, infer today's date if not specified>",
