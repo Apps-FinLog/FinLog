@@ -15,14 +15,14 @@ const Color finlogProfileBgPlaceholder = Color(
   0xFFD8D8D8,
 ); // Warna placeholder avatar
 
-class InputChoiceScreen extends StatefulWidget {
-  const InputChoiceScreen({super.key});
+class ImageInputChoiceScreen extends StatefulWidget {
+  const ImageInputChoiceScreen({super.key});
 
   @override
-  State<InputChoiceScreen> createState() => _InputChoiceScreenState();
+  State<ImageInputChoiceScreen> createState() => _ImageInputChoiceScreenState();
 }
 
-class _InputChoiceScreenState extends State<InputChoiceScreen>
+class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen>
     with SingleTickerProviderStateMixin {
   final ImagePicker _picker = ImagePicker();
   final OcrService _ocrService = OcrService();
