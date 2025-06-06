@@ -373,74 +373,69 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           ),
         ),
         backgroundColor: Colors.grey[200],
+        resizeToAvoidBottomInset: false, // Prevent screen from resizing when keyboard appears
         body: SafeArea(
-          child: Column(
+          child: SingleChildScrollView( // The content should be scrollable
+            child: _buildContentCard(),
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0), // Adjust padding as needed
+          child: Row(
             children: [
               Expanded(
-                child: SingleChildScrollView(
-                  child: _buildContentCard(),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: finlogButtonGrey,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 1,
+                  ),
+                  child: const Text('Back', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: finlogButtonTextDark)),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0), // Adjust padding as needed
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: finlogButtonGrey,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          elevation: 1,
-                        ),
-                        child: const Text('Back', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: finlogButtonTextDark)),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            if (_selectedCategory == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Pilih kategori terlebih dahulu')),
-                              );
-                              return;
-                            }
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      if (_selectedCategory == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Pilih kategori terlebih dahulu')),
+                        );
+                        return;
+                      }
 
-                            final double nominal = double.parse(_nominalController.text.replaceAll(RegExp(r'[^\d]'), ''));
-                            final ManualInputData manualInputData = ManualInputData(
-                              nominal: nominal,
-                              category: _selectedCategory!,
-                              date: _selectedDate!,
-                              description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
-                            );
+                      final double nominal = double.parse(_nominalController.text.replaceAll(RegExp(r'[^\d]'), ''));
+                      final ManualInputData manualInputData = ManualInputData(
+                        nominal: nominal,
+                        category: _selectedCategory!,
+                        date: _selectedDate!,
+                        description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+                      );
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => VerifikasiInputScreen(
-                                  journalInput: manualInputData.toString(),
-                                  manualInputData: manualInputData,
-                                  sourceScreen: InputSource.manual,
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: finlogButtonDark,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          elevation: 1,
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VerifikasiInputScreen(
+                            journalInput: manualInputData.toString(),
+                            manualInputData: manualInputData,
+                            sourceScreen: InputSource.manual,
+                          ),
                         ),
-                        child: const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-                      ),
-                    ),
-                  ],
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: finlogButtonDark,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 1,
+                  ),
+                  child: const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                 ),
               ),
             ],

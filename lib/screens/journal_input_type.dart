@@ -188,79 +188,6 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 16), // Spacing between input and buttons
-          // Bottom Navigation Buttons (Back and Confirm)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0), // Add horizontal padding to align with input field
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: finlogButtonGrey,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 1,
-                    ),
-                    child: const Text(
-                      'Back', // Or perhaps "Cancel"
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: finlogButtonTextDark,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Find the last user message to send for verification
-                      final String lastUserMessage = _messages.lastWhere(
-                        (msg) => msg.isUserMessage,
-                        orElse: () => ChatMessage(text: '', isUserMessage: true),
-                      ).text;
-
-                      if (lastUserMessage.isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VerifikasiInputScreen(journalInput: lastUserMessage),
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please enter a journal entry before confirming.')),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: finlogButtonDark,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 1,
-                    ),
-                    child: const Text(
-                      'Confirm',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -282,6 +209,7 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
         ),
       ),
       backgroundColor: Colors.grey[200], // Standard screen background
+      resizeToAvoidBottomInset: false, // Prevent screen from resizing when keyboard appears
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0), // Padding around the main content area
@@ -290,9 +218,80 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
               Expanded( // This Expanded makes the chat card take available vertical space
                 child: _buildChatCard(),
               ),
-              // Removed the SizedBox and Row containing buttons from here
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        color: Colors.grey[50], // Background color for the bottom navigation bar
+        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0), // Adjust padding as needed
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: finlogButtonGrey,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 1,
+                ),
+                child: const Text(
+                  'Back', // Or perhaps "Cancel"
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: finlogButtonTextDark,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  // Find the last user message to send for verification
+                  final String lastUserMessage = _messages.lastWhere(
+                    (msg) => msg.isUserMessage,
+                    orElse: () => ChatMessage(text: '', isUserMessage: true),
+                  ).text;
+
+                      if (lastUserMessage.isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VerifikasiInputScreen(journalInput: lastUserMessage),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please enter a journal entry before confirming.')),
+                        );
+                      }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: finlogButtonDark,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 1,
+                ),
+                child: const Text(
+                  'Confirm',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
