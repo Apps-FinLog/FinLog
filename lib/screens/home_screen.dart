@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:finlog/screens/input_choice_expense.dart'; // Added missing import
 import 'package:finlog/widgets/custom_app_bar.dart'; // Import CustomAppBar
 import 'package:finlog/widgets/custom_bottom_navigation_bar.dart';
-import 'package:finlog/widgets/home_navbar_widget.dart'; // Import HomeNavbarWidget
+import 'package:finlog/widgets/home_widget.dart'; // Import HomeNavbarWidget
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
   const HomeScreen({super.key, this.initialIndex = 0});
@@ -24,13 +24,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Corrected order and number of widgets to align with BottomNavigationBar items
   static final List<Widget> _widgetOptions = <Widget>[
-    const HomeNavbarWidget(), // Index 0: Beranda
+    const HomeWidget(), // Index 0: Beranda
     const InputChoiceScreenExpense(), // Index 1: Input Expense
     const InputChoiceScreen(), // Index 2: Scan
     const UnderDevelopmentPage(), // Index 3: Riwayat
     const UnderDevelopmentPage(), // Index 4: Profil
   ];
-
+  //refactor these code to change the body value 
+  // this will route to the correct page that contain widget defintions
+  // the route is hardcoded into the enum here
+  
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

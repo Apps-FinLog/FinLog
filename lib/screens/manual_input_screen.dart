@@ -417,7 +417,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                               category: _selectedCategory!,
                               date: _selectedDate!,
                               description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
-                            );
+                            );//handler buat event onclick 
 
                             Navigator.push(
                               context,
