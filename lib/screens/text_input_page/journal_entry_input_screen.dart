@@ -98,9 +98,9 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
                   textAlignVertical: TextAlignVertical.top, // Aligns text to the top
                   decoration: InputDecoration(
                     hintText: 'Tuliskan pengeluaran atau pemasukanmu hari ini, contoh: "Makan siang di kantin Rp 25.000, beli buku Rp 50.000"',
-                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+                    hintStyle: TextStyle(color: Colors.white.withAlpha((0.6 * 255).toInt())),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.15),
+                    fillColor: Colors.white.withAlpha((0.15 * 255).toInt()),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -108,7 +108,7 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+                      borderSide: BorderSide(color: Colors.white.withAlpha((0.3 * 255).toInt())),
                     ),
                   ),
                 ),

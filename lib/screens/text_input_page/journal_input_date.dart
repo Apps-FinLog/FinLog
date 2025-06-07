@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:intl/intl.dart'; // For date formatting if needed for calendar
-import 'package:finlog/screens/text_input_page/journal_entry_input_screen.dart';
+import 'package:finlog/screens/text_input_page/journal_chat_input_screen.dart';
 
 class JournalInputDateScreen extends StatefulWidget {
   const JournalInputDateScreen({super.key});
@@ -17,9 +17,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
   @override
   void initState() {
     super.initState();
-    _dateController = TextEditingController(text: "Pick a date");
-    // Optionally, initialize with the selected date formatted
-    // _dateController.text = DateFormat('d MMMM yyyy').format(_selectedDate);
+    _dateController = TextEditingController(text: DateFormat('dd/MM/yyyy').format(_selectedDate)); // Initialize with formatted date
   }
 
   @override
@@ -44,7 +42,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
               surface: Colors.white,
               onSurface: Colors.black,
             ),
-            dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+            dialogTheme: const DialogTheme(backgroundColor: Colors.white), // Use const for DialogTheme
           ),
           child: child!,
         );
@@ -70,7 +68,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: Colors.white.withAlpha((0.9) * 255 ~/ 1), fontSize: 14)),
+        Text(label, style: TextStyle(color: Colors.white.withAlpha((0.9 * 255).toInt()), fontSize: 14)),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
@@ -84,13 +82,13 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                 ? Padding(
                     padding: const EdgeInsets.only(left: 12.0, right: 8.0),
                     child: IconTheme(
-                      data: IconThemeData(color: Colors.white.withAlpha((0.8) * 255 ~/ 1)),
+                      data: IconThemeData(color: Colors.white.withAlpha((0.8 * 255).toInt())),
                       child: prefixIcon,
                     ),
                   )
                 : null,
             filled: true,
-            fillColor: Colors.white.withAlpha((0.15) * 255 ~/ 1),
+            fillColor: Colors.white.withAlpha((0.15 * 255).toInt()),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -102,7 +100,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-               borderSide: BorderSide(color: Colors.white.withAlpha((0.5) * 255 ~/ 1)),
+               borderSide: BorderSide(color: Colors.white.withAlpha((0.5 * 255).toInt())),
             ),
           ),
         ),
@@ -123,7 +121,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          stops: [0.0, 0.8] // Adjusted stop for a slightly different gradient feel
+          stops: const [0.0, 0.8] // Adjusted stop for a slightly different gradient feel
         ),
         borderRadius: BorderRadius.circular(24.0),
       ),
@@ -134,7 +132,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
           // Progress bar is removed as per new image
           // _buildCardProgressBar(),
           // const SizedBox(height: 20), // Removed as progress bar is gone
-          Icon(
+          const Icon( // Added const
             Icons.auto_awesome_outlined, // Sparkling star icon
             color: Colors.white,
             size: 48,
@@ -158,14 +156,14 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             onTap: () {
                 _selectDate(context); // Enable system date picker
             },
-            prefixIcon: Icon(Icons.calendar_today_outlined, size: 20),
+            prefixIcon: const Icon(Icons.calendar_today_outlined, size: 20), // Added const
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6.0, left: 4.0),
             child: Text(
               'Seingat kamu ya!', // New helper text
               style: TextStyle(
-                color: Colors.white.withAlpha((0.7) * 255 ~/ 1),
+                color: Colors.white.withAlpha((0.7 * 255).toInt()),
                 fontSize: 11,
               ),
             ),
@@ -189,7 +187,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
         backgroundColor: Colors.grey[50],
         elevation: 0.5,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back, color: Colors.black87), // Added const
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -236,8 +234,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder:
-                                (context) => JournalEntryInputScreen(
+                            builder: (context) => JournalChatInputScreen(
                               selectedDate: _selectedDate, // Pass the selected date
                             ),
                           ),
