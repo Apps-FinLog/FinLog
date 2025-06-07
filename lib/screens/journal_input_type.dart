@@ -2,90 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:finlog/screens/verifikasi_input.dart';
 
-// Placeholder for a message model
-class ChatMessage {
-  final String text;
-  final bool isUserMessage;
-
-  ChatMessage({required this.text, required this.isUserMessage});
-}
-
 class JournalInputTypeScreen extends StatefulWidget {
-  const JournalInputTypeScreen({super.key});
+  final DateTime selectedDate; // Add this parameter
+
+  const JournalInputTypeScreen({
+    super.key,
+    required this.selectedDate, // Make it required
+  });
 
   @override
   State<JournalInputTypeScreen> createState() => _JournalInputTypeScreenState();
 }
 
 class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
-  final TextEditingController _chatInputController = TextEditingController();
-  final List<ChatMessage> _messages = [
-    ChatMessage(
-      text:
-          'Halo, selamat datang di FinLog, aplikasi pencatatan keuangan yang mudah dan menyenangkan! ^ ^\n',
-      isUserMessage: false,
-    ),
-  ];
-  final ScrollController _scrollController = ScrollController();
+  final TextEditingController _journalEntryController = TextEditingController();
 
   @override
   void dispose() {
-    _chatInputController.dispose();
-    _scrollController.dispose();
+    _journalEntryController.dispose();
     super.dispose();
   }
 
-  void _sendMessage() {
-    if (_chatInputController.text.trim().isEmpty) return;
-    setState(() {
-      _messages.add(ChatMessage(text: _chatInputController.text.trim(), isUserMessage: true));
-      _chatInputController.clear();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
-      });
-    });
-  }
-
-  Widget _buildChatMessageBubble(ChatMessage message) {
-    return Align(
-      alignment: message.isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7), // Slightly less width
-        decoration: BoxDecoration(
-          color: message.isUserMessage ? finlogBluePrimary.withAlpha((0.3) * 255 ~/ 1) : Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha((0.05) * 255 ~/ 1),
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            )
-          ]
-        ),
-        child: Text(
-          message.text,
-          style: TextStyle(
-            color: message.isUserMessage ? Colors.white : Colors.black87,
-            fontSize: 15,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildChatCard() {
-    // This widget now defines the chat card itself, which will be placed within the main screen layout
+  Widget _buildJournalInputCard() {
     return Container(
-      // No margin here, the parent Column in Scaffold.body will handle padding/margin for the card
-      clipBehavior: Clip.antiAlias, // Ensures input field at bottom adheres to rounded corners
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -94,27 +34,26 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          stops: [0.0, 0.9]
+          stops: const [0.0, 0.9],
         ),
-        borderRadius: BorderRadius.circular(24.0), // Rounded corners for the card
+        borderRadius: BorderRadius.circular(24.0),
       ),
       child: Column(
         children: [
-          // Header section within the card (Icon and Title)
           Padding(
             padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Icon(
-                  Icons.auto_awesome_outlined,
+                  Icons.book_outlined, // Changed icon to reflect journaling
                   color: Colors.white,
                   size: 36,
                 ),
                 const SizedBox(width: 12),
                 const Expanded(
                   child: Text(
-                    'Catat Keuangan\nseperti chat dengan\nsobat ^ ^',
+                    'Tulis Jurnal Keuanganmu\ndi sini!', // Changed title
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 22,
@@ -123,69 +62,35 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
                     ),
                   ),
                 ),
-                // Back button removed from here
               ],
             ),
           ),
-
-          // Chat messages area
-          Expanded( // This Expanded makes the ListView take available space *within the card*
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.only(top: 0, bottom: 10, left: 8, right: 8), // Adjusted padding
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                return _buildChatMessageBubble(_messages[index]);
-              },
-            ),
-          ),
-
-          // Input field area at the bottom of the card
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
-            // color: finlogBluePrimaryDark.withAlpha((0.5) * 255 ~/ 1), // Keeping input area part of gradient
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _chatInputController,
-                    style: const TextStyle(color: Colors.white, fontSize: 15),
-                    decoration: InputDecoration(
-                      hintText: 'Makan mie ayam...',
-                      hintStyle: TextStyle(color: Colors.white.withAlpha((0.6) * 255 ~/ 1)),
-                      filled: true,
-                      fillColor: Colors.white.withAlpha((0.15) * 255 ~/ 1),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide(color: Colors.white.withAlpha((0.3) * 255 ~/ 1)),
-                      ),
-                    ),
-                    onSubmitted: (_) => _sendMessage(),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                controller: _journalEntryController,
+                maxLines: null, // Allows for multiple lines
+                expands: true, // Allows the TextField to expand vertically
+                textAlignVertical: TextAlignVertical.top, // Aligns text to the top
+                keyboardType: TextInputType.multiline,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+                decoration: InputDecoration(
+                  hintText: 'Mulai tulis jurnalmu di sini...',
+                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.15),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
                   ),
                 ),
-                const SizedBox(width: 8),
-                Material(
-                  color: finlogButtonDark,
-                  borderRadius: BorderRadius.circular(20),
-                  child: InkWell(
-                    onTap: _sendMessage,
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      child: const Icon(
-                        Icons.send,
-                        color: Colors.white,
-                        size: 22,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ],
@@ -198,33 +103,33 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Input Jurnal (Chat)', // More specific title
+          'Input Jurnal', // Updated title
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         backgroundColor: Colors.grey[50],
         elevation: 0.5,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back, color: Colors.black87),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      backgroundColor: Colors.grey[200], // Standard screen background
-      resizeToAvoidBottomInset: false, // Prevent screen from resizing when keyboard appears
+      backgroundColor: Colors.grey[200],
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0), // Padding around the main content area
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Expanded( // This Expanded makes the chat card take available vertical space
-                child: _buildChatCard(),
+              Expanded(
+                child: _buildJournalInputCard(), // Use the new journal input card
               ),
             ],
           ),
         ),
       ),
       bottomNavigationBar: Container(
-        color: Colors.grey[50], // Background color for the bottom navigation bar
-        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0), // Adjust padding as needed
+        color: Colors.grey[50],
+        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
         child: Row(
           children: [
             Expanded(
@@ -241,7 +146,7 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
                   elevation: 1,
                 ),
                 child: const Text(
-                  'Back', // Or perhaps "Cancel"
+                  'Back',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -254,24 +159,23 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  // Find the last user message to send for verification
-                  final String lastUserMessage = _messages.lastWhere(
-                    (msg) => msg.isUserMessage,
-                    orElse: () => ChatMessage(text: '', isUserMessage: true),
-                  ).text;
+                  final String journalEntry = _journalEntryController.text.trim();
 
-                      if (lastUserMessage.isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VerifikasiInputScreen(journalInput: lastUserMessage),
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please enter a journal entry before confirming.')),
-                        );
-                      }
+                  if (journalEntry.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VerifikasiInputScreen(
+                          journalInput: journalEntry,
+                          journalDate: widget.selectedDate, // Pass the selected date
+                        ),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please enter a journal entry before confirming.')),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: finlogButtonDark,

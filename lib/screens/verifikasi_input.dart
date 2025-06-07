@@ -13,12 +13,14 @@ class VerifikasiInputScreen extends StatefulWidget {
   final String journalInput;
   final ManualInputData? manualInputData; // Optional manual input data
   final InputSource sourceScreen; // To determine where to navigate back
+  final DateTime? journalDate; // Add this parameter
 
   const VerifikasiInputScreen({
     super.key,
     required this.journalInput,
     this.manualInputData,
     this.sourceScreen = InputSource.journal, // Default to journal
+    this.journalDate, // Make it optional for now, but will be required for journal input flow
   });
 
   @override
@@ -31,9 +33,49 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   bool _isLoading = false;
   String? _errorMessage;
 
+  String _formatDateString(String? dateString) {
+    if (dateString == null || dateString.isEmpty) {
+      return 'N/A';
+    }
+    try {
+      // Attempt to parse various common date formats
+      DateTime date;
+      if (dateString.contains('/')) {
+        // Try DD/MM/YYYY or MM/DD/YYYY
+        List<String> parts = dateString.split('/');
+        if (parts.length == 3) {
+          if (parts[0].length == 4) { // YYYY/MM/DD
+            date = DateTime.parse('${parts[0]}-${parts[1]}-${parts[2]}');
+          } else if (int.parse(parts[0]) > 12) { // DD/MM/YYYY
+            date = DateFormat('dd/MM/yyyy').parse(dateString);
+          } else { // Assume MM/DD/YYYY or DD/MM/YYYY, try parsing
+            try {
+              date = DateFormat('dd/MM/yyyy').parse(dateString);
+            } catch (_) {
+              date = DateFormat('MM/dd/yyyy').parse(dateString);
+            }
+          }
+        } else {
+          return 'Invalid Date Format';
+        }
+      } else if (dateString.contains('-')) {
+        // Try YYYY-MM-DD
+        date = DateTime.parse(dateString);
+      } else {
+        return 'Invalid Date Format';
+      }
+      return DateFormat('dd/MM/yyyy').format(date);
+    } catch (e) {
+      debugPrint('Error parsing date string "$dateString": $e');
+      return 'Invalid Date';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    // Always parse with Gemini for journal or OCR inputs to get amount, category, etc.
+    // The date will be prioritized from widget.journalDate in _buildContentCard.
     if (widget.sourceScreen == InputSource.journal || widget.sourceScreen == InputSource.ocr) {
       _parseJournalEntry();
     } else {
@@ -73,7 +115,11 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const JournalInputTypeScreen()),
+        MaterialPageRoute(
+          builder: (context) => JournalInputTypeScreen(
+            selectedDate: widget.journalDate ?? DateTime.now(), // Pass the original journalDate back, or today's date as fallback
+          ),
+        ),
       );
     }
   }
@@ -132,7 +178,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Date: ${widget.manualInputData != null ? DateFormat('dd/MM/yyyy').format(widget.manualInputData!.date) : (_parsedExpenseData?['date'] ?? 'N/A')}',
+                            'Date: ${widget.manualInputData != null ? DateFormat('dd/MM/yyyy').format(widget.manualInputData!.date) : (widget.journalDate != null ? DateFormat('dd/MM/yyyy').format(widget.journalDate!) : _formatDateString(_parsedExpenseData?['displayDate']))}',
                             style: TextStyle(
                               color: Colors.white.withAlpha((255 * 0.9).round()),
                               fontSize: 15,
@@ -141,7 +187,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Amount: ${widget.manualInputData != null ? NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(widget.manualInputData!.nominal) : (_parsedExpenseData?['amount'] ?? 'N/A')} ${widget.manualInputData != null ? '' : (_parsedExpenseData?['currency'] ?? '')}',
+                            'Amount: ${widget.manualInputData != null ? NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(widget.manualInputData!.nominal) : (_parsedExpenseData?['jumlahTotal'] != null ? NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(_parsedExpenseData!['jumlahTotal']) : 'N/A')} IDR',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 18,
@@ -150,7 +196,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Category: ${widget.manualInputData != null ? widget.manualInputData!.category : (_parsedExpenseData?['category'] ?? 'N/A')}',
+                            'Category: ${widget.manualInputData != null ? widget.manualInputData!.category : (_parsedExpenseData?['category'] ?? 'Lainnya')}', // Use parsed category or default to 'Lainnya'
                             style: TextStyle(
                               color: Colors.white.withAlpha((255 * 0.9).round()),
                               fontSize: 15,
@@ -158,7 +204,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Description: ${widget.manualInputData != null ? (widget.manualInputData!.description ?? 'N/A') : (_parsedExpenseData?['description'] ?? 'N/A')}',
+                            'Description: ${widget.manualInputData != null ? (widget.manualInputData!.description ?? 'N/A') : widget.journalInput}', // Use original journal input as description
                             style: TextStyle(
                               color: Colors.white.withAlpha((255 * 0.9).round()),
                               fontSize: 15,
@@ -167,7 +213,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                           const SizedBox(height: 10),
                           if (widget.manualInputData == null) // Only show payment method for parsed data
                             Text(
-                              'Payment Method: ${_parsedExpenseData?['paymentMethod'] ?? 'N/A'}',
+                              'Payment Method: N/A', // Default for journal input
                               style: TextStyle(
                                 color: Colors.white.withAlpha((255 * 0.9).round()),
                                 fontSize: 15,

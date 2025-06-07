@@ -235,7 +235,11 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const JournalInputTypeScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => JournalInputTypeScreen(
+                              selectedDate: _selectedDate, // Pass the selected date
+                            ),
+                          ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
