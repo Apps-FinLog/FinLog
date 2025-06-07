@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 const Color finlogLoadingBlue = Color(0xFF0C6BFF);
-const Color finlogProfileBgPlaceholder = Color(0xFFD8D8D8);
 
 class LoadingOverlay extends StatelessWidget {
   final String message;
@@ -16,23 +15,6 @@ class LoadingOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text(
-          'FinLog',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundColor: finlogProfileBgPlaceholder,
-            ),
-          ),
-        ],
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
       backgroundColor: Colors.white,
       body: Center(
         child: Column(

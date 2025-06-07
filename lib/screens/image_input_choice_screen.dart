@@ -5,14 +5,6 @@ import 'package:finlog/services/ocr_service.dart';
 import 'package:finlog/screens/bill_details_screen.dart';
 import 'package:finlog/widgets/loading_overlay.dart';
 
-// Warna dari desain
-const Color finlogLoadingBlue = Color(
-  0xFF0C6BFF,
-); // Contoh biru dari desain Rincian Tagihan, sesuaikan jika beda untuk loading
-const Color finlogProfileBgPlaceholder = Color(
-  0xFFD8D8D8,
-); // Warna placeholder avatar
-
 class ImageInputChoiceScreen extends StatefulWidget {
   const ImageInputChoiceScreen({super.key});
 
