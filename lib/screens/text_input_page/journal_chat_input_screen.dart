@@ -10,14 +10,14 @@ class ChatMessage {
   ChatMessage({required this.text, required this.isUserMessage});
 }
 
-class JournalInputTypeScreen extends StatefulWidget {
-  const JournalInputTypeScreen({super.key});
+class JournalChatInputScreen extends StatefulWidget {
+  const JournalChatInputScreen({super.key});
 
   @override
-  State<JournalInputTypeScreen> createState() => _JournalInputTypeScreenState();
+  State<JournalChatInputScreen> createState() => _JournalChatInputScreenState();
 }
 
-class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
+class _JournalChatInputScreenState extends State<JournalChatInputScreen> {
   final TextEditingController _chatInputController = TextEditingController();
   final List<ChatMessage> _messages = [
     ChatMessage(
@@ -145,11 +145,14 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
             // color: finlogBluePrimaryDark.withAlpha((0.5) * 255 ~/ 1), // Keeping input area part of gradient
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end, // Align children to the bottom
               children: [
                 Expanded(
                   child: TextField(
                     controller: _chatInputController,
                     style: const TextStyle(color: Colors.white, fontSize: 15),
+                    maxLines: null, // Allows the TextField to expand vertically
+                    keyboardType: TextInputType.multiline, // Enables multiline input
                     decoration: InputDecoration(
                       hintText: 'Makan mie ayam...',
                       hintStyle: TextStyle(color: Colors.white.withAlpha((0.6) * 255 ~/ 1)),
@@ -209,7 +212,7 @@ class _JournalInputTypeScreenState extends State<JournalInputTypeScreen> {
         ),
       ),
       backgroundColor: Colors.grey[200], // Standard screen background
-      resizeToAvoidBottomInset: false, // Prevent screen from resizing when keyboard appears
+      resizeToAvoidBottomInset: true, // Prevent screen from resizing when keyboard appears
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0), // Padding around the main content area
