@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/screens/manual_input_screen.dart';
-import 'package:finlog/screens/journal_input_date.dart';
+import 'package:finlog/screens/text_input_page/manual_input_screen.dart';
+import 'package:finlog/screens/text_input_page/journal_input_date.dart';
 
-class InputChoiceScreenExpense extends StatefulWidget {
-  const InputChoiceScreenExpense({super.key});
+class TextInputChoiceScreen extends StatefulWidget {
+  const TextInputChoiceScreen({super.key});
 
   @override
-  State<InputChoiceScreenExpense> createState() => _InputChoiceScreenState();
+  State<TextInputChoiceScreen> createState() => _TextInputChoiceScreenState();
 }
 
-class _InputChoiceScreenState extends State<InputChoiceScreenExpense> {
+class _TextInputChoiceScreenState extends State<TextInputChoiceScreen> {
   // Helper widget to build each option item
   Widget _buildOptionItem(
     BuildContext context,
