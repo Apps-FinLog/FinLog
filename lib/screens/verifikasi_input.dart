@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:finlog/screens/bill_details_screen.dart';
-import 'package:finlog/screens/journal_input_type.dart';
-import 'package:finlog/screens/manual_input_screen.dart'; // Import ManualInputScreen
+import 'package:finlog/screens/text_input_page/journal_chat_input_screen.dart';
+import 'package:finlog/screens/text_input_page/manual_input_screen.dart'; // Import ManualInputScreen
 import 'package:finlog/services/gemini_service.dart';
 import 'package:finlog/models/manual_input_data.dart'; // Import ManualInputData
 import 'package:intl/intl.dart'; // Import for DateFormat
@@ -116,7 +116,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => JournalInputTypeScreen(
+          builder: (context) => JournalChatInputScreen(
             selectedDate: widget.journalDate ?? DateTime.now(), // Pass the original journalDate back, or today's date as fallback
           ),
         ),

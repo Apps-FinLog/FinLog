@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:intl/intl.dart'; // For date formatting if needed for calendar
-import 'package:finlog/screens/journal_input_type.dart';
+import 'package:finlog/screens/text_input_page/journal_chat_input_screen.dart';
 
 class JournalInputDateScreen extends StatefulWidget {
   const JournalInputDateScreen({super.key});
@@ -236,7 +236,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => JournalInputTypeScreen(
+                            builder: (context) => JournalChatInputScreen(
                               selectedDate: _selectedDate, // Pass the selected date
                             ),
                           ),

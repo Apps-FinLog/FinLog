@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/models/bill_item.dart';
+import 'package:intl/intl.dart'; // Import for date formatting
 
 class BillData extends ChangeNotifier {
-  String displayDate = "DD/MM/YYYY";
-  String displayTime = "HH:MM:SS";
+  String displayDate;
+  String displayTime;
   List<BillItem> billItems = [];
   double subtotal = 0.0;
   double pajak = 0.0;
@@ -11,9 +12,17 @@ class BillData extends ChangeNotifier {
   double lainnya = 0.0;
   double jumlahTotal = 0.0;
 
+  BillData()
+      : displayDate = DateFormat('dd/MM/yyyy').format(DateTime.now()),
+        displayTime = DateFormat('HH:mm:ss').format(DateTime.now());
+
   void parseOcrResult(Map<String, dynamic> ocrData) {
-    displayDate = ocrData['displayDate'] ?? "DD/MM/YYYY";
-    displayTime = ocrData['displayTime'] ?? "HH:MM:SS";
+    if (ocrData['displayDate'] != null && ocrData['displayDate'].isNotEmpty) {
+      displayDate = ocrData['displayDate'];
+    }
+    if (ocrData['displayTime'] != null && ocrData['displayTime'].isNotEmpty) {
+      displayTime = ocrData['displayTime'];
+    }
 
     billItems = [];
     if (ocrData['billItems'] is List) {

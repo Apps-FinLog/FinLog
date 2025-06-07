@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/screens/manual_input_screen.dart';
-import 'package:finlog/screens/journal_input_date.dart';
+import 'package:finlog/screens/text_input_page/manual_input_screen.dart';
+import 'package:finlog/screens/text_input_page/journal_input_date.dart';
 
 class TextInputChoiceScreen extends StatefulWidget {
   const TextInputChoiceScreen({super.key});
