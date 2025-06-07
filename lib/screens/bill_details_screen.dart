@@ -3,6 +3,7 @@ import 'package:finlog/styles/colors.dart'; // Import shared colors
 import 'package:finlog/screens/home_screen.dart';
 import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:provider/provider.dart'; // Import Provider
+import 'package:finlog/widgets/custom_app_bar.dart'; // Import CustomAppBar
 
 class BillDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> ocrResult;
@@ -71,21 +72,7 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
     return ChangeNotifierProvider<BillData>.value(
       value: _billData,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'FinLog',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-          actions: const [
-            Padding(
-              padding: EdgeInsets.only(right: 16.0),
-              child: CircleAvatar(backgroundColor: finlogProfileBgPlaceholder),
-            ),
-          ],
-          backgroundColor: Colors.white,
-          elevation: 1.0,
-          foregroundColor: Colors.black,
-        ),
+        appBar: const CustomAppBar(title: 'FinLog'),
         backgroundColor: Colors.grey[100], // Latar body utama sedikit abu-abu
         body: SafeArea(
           child: Consumer<BillData>(
@@ -118,7 +105,7 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'Splitt Bill',
+                              'Verifikasi Bill',
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
