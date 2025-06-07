@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
-import 'package:finlog/screens/bill_details_screen.dart';
+import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart';
 import 'package:finlog/screens/text_input_page/journal_chat_input_screen.dart';
 import 'package:finlog/screens/text_input_page/manual_input_screen.dart'; // Import ManualInputScreen
 import 'package:finlog/services/gemini_service.dart';

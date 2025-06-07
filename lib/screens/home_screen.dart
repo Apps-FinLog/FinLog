@@ -1,10 +1,10 @@
-import 'package:finlog/screens/image_input_choice_screen.dart';
-import 'package:finlog/screens/placeHolderPage/under_development.dart';
+import 'package:finlog/screens/input_modals/image_input_choice_screen.dart';
+import 'package:finlog/screens/utility_page/under_development.dart';
 import 'package:flutter/material.dart';
-import 'package:finlog/screens/text_input_choice_screen.dart'; // Import TextInputChoiceScreen
+import 'package:finlog/screens/input_modals/text_input_choice_screen.dart'; // Import TextInputChoiceScreen
 import 'package:finlog/widgets/headers/custom_app_bar.dart'; // Import CustomAppBar
 import 'package:finlog/widgets/navs/custom_bottom_navigation_bar.dart';
-
+import 'package:finlog/screens/history_screen.dart'; // Import HistoryScreen
 import 'package:finlog/screens/home_content_screen.dart'; // Import HomeContentScreen
 
 class HomeScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const HomeContentScreen(), // Index 0: Beranda
     const TextInputChoiceScreen(), // Index 1: Input Expense
     const ImageInputChoiceScreen(), // Index 2: Scan
-    const UnderDevelopmentPage(), // Index 3: Riwayat
+    const HistoryScreen(), // Index 3: Riwayat
     const UnderDevelopmentPage(), // Index 4: Profil
   ];
   //refactor these code to change the body value 

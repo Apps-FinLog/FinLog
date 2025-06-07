@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:finlog/screens/placeHolderPage/under_development.dart';
+import 'package:finlog/screens/utility_page/under_development.dart';
 import 'package:finlog/widgets/dataVisual/pie_chart_1.dart';
 import 'package:finlog/widgets/buttons/button_primary.dart';
 

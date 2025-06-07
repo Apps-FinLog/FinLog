@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; 
-import 'package:finlog/screens/placeHolderPage/under_development.dart';
+import 'package:finlog/screens/utility_page/under_development.dart';
 class ButtonPrimary extends StatefulWidget {
   final String text;
   final VoidCallback? onPressed;

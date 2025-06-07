@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
-import 'package:finlog/screens/verifikasi_input.dart';
+import 'package:finlog/screens/verifikasi_screens/verifikasi_input.dart';
 import 'package:finlog/models/manual_input_data.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart'; // For TextInputFormatter

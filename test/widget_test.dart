@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:finlog/screens/onboarding_screen.dart';
+import 'package:finlog/screens/splash_onboarding/onboarding_screen.dart';
 
 void main() {
   testWidgets('OnboardingScreen builds without errors', (WidgetTester tester) async {

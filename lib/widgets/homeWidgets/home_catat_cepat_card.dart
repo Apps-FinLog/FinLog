@@ -70,7 +70,7 @@ class _CatatCepatState extends State<CatatCepat> {
         Text(
           label,
           style: TextStyle(
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(),
             fontSize: 13,
           ),
         ),
@@ -88,7 +88,7 @@ class _CatatCepatState extends State<CatatCepat> {
             filled: true,
             fillColor: Colors.white,
             hintText: hintText,
-            hintStyle: TextStyle(color: Colors.black87.withOpacity(0.5)),
+            hintStyle: TextStyle(color: Colors.black87.withValues()),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 12,
@@ -117,7 +117,7 @@ class _CatatCepatState extends State<CatatCepat> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: finlogBluePrimary.withOpacity(0.3),
+            color: finlogBluePrimary.withValues(),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
