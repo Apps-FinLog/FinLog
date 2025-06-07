@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+
+const Color finlogLoadingBlue = Color(0xFF0C6BFF);
+const Color finlogProfileBgPlaceholder = Color(0xFFD8D8D8);
+
+class LoadingOverlay extends StatelessWidget {
+  final String message;
+  final String subMessage;
+
+  const LoadingOverlay({
+    super.key,
+    this.message = 'Membaca Item..',
+    this.subMessage = 'Tunggu beberapa saat',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text(
+          'FinLog',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 16.0),
+            child: CircleAvatar(
+              backgroundColor: finlogProfileBgPlaceholder,
+            ),
+          ),
+        ],
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.coffee_outlined,
+              size: 64,
+              color: Colors.grey[800],
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 70.0),
+              child: LinearProgressIndicator(
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  finlogLoadingBlue,
+                ),
+                backgroundColor: Colors.grey[300],
+                minHeight: 5,
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              message,
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              subMessage,
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

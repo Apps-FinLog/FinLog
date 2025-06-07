@@ -1,11 +1,9 @@
 import 'dart:io';
-import 'dart:math' as math; // Untuk animasi rotasi
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-// GANTI 'finlog' dengan nama proyek Anda yang sebenarnya jika berbeda
 import 'package:finlog/services/ocr_service.dart';
 import 'package:finlog/screens/bill_details_screen.dart';
-import 'package:finlog/screens/image_confirm_screen.dart';
+import 'package:finlog/widgets/loading_overlay.dart';
 
 // Warna dari desain
 const Color finlogLoadingBlue = Color(
@@ -22,32 +20,14 @@ class ImageInputChoiceScreen extends StatefulWidget {
   State<ImageInputChoiceScreen> createState() => _ImageInputChoiceScreenState();
 }
 
-class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen>
-    with SingleTickerProviderStateMixin {
+class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
   final ImagePicker _picker = ImagePicker();
   final OcrService _ocrService = OcrService();
   bool _isLoading = false;
 
-  AnimationController? _animationController;
-  Animation<double>? _rotationAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat();
-    _rotationAnimation = Tween<double>(
-      begin: 0,
-      end: 2 * math.pi,
-    ).animate(_animationController!);
-  }
-
   @override
   void dispose() {
     _ocrService.dispose();
-    _animationController?.dispose();
     super.dispose();
   }
 
@@ -86,28 +66,7 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen>
       );
       if (pickedFile != null) {
         File imageFile = File(pickedFile.path);
-        bool? useThisImage = true;
-
-        if (source == ImageSource.camera) {
-          if (!mounted) return;
-          useThisImage = await Navigator.push<bool>(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ImageConfirmScreen(imageFile: imageFile),
-            ),
-          );
-        }
-
-        if (useThisImage == true) {
-          await _processImage(imageFile);
-        } else {
-          // User membatalkan di ImageConfirmScreen
-          if (mounted) {
-            setState(() {
-              _isLoading = false;
-            });
-          }
-        }
+        await _processImage(imageFile);
       }
     } catch (e) {
       debugPrint("Error picking or processing image: $e");
@@ -159,70 +118,7 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen>
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      // Tampilan Loading (sesuai Galeri4.png)
-      return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text(
-            'FinLog',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-          actions: const [
-            Padding(
-              padding: EdgeInsets.only(right: 16.0),
-              child: CircleAvatar(
-                backgroundColor: finlogProfileBgPlaceholder,
-                // child: Image.asset('assets/images/profile_avatar.png'), // Ganti dengan avatar Anda
-              ),
-            ),
-          ],
-          backgroundColor: Colors.white,
-          elevation: 0,
-        ),
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Gunakan ikon kopi Material Design dengan animasi
-              RotationTransition(
-                turns: _rotationAnimation!,
-                child: Icon(
-                  Icons.coffee_outlined,
-                  size: 64,
-                  color: Colors.grey[800],
-                ),
-              ),
-              const SizedBox(height: 24),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 70.0),
-                child: LinearProgressIndicator(
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                    finlogLoadingBlue,
-                  ),
-                  backgroundColor: Colors.grey[300],
-                  minHeight: 5, // Ketebalan progress bar
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Membaca Item..',
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Tunggu beberapa saat',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-              ),
-            ],
-          ),
-        ),
-      );
+      return const LoadingOverlay();
     }
 
     // Tampilan Pilihan Input (sesuai Tampilan scanner.png)
