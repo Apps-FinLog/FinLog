@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:intl/intl.dart'; // For date formatting if needed for calendar
-import 'package:finlog/screens/text_input_page/journal_chat_input_screen.dart';
+import 'package:finlog/screens/text_input_page/journal_entry_input_screen.dart';
 
 class JournalInputDateScreen extends StatefulWidget {
   const JournalInputDateScreen({super.key});
@@ -141,10 +141,10 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
           ),
           const SizedBox(height: 16),
           const Text(
-            'Catat Keuangan\nseperti chat dengan\nsobat ^ ^', // New title
+            'Catat Keuanganmu\nhari ini!', // Updated title for journaling
             style: TextStyle(
               color: Colors.white,
-              fontSize: 26, // Slightly adjusted size for new text
+              fontSize: 26,
               fontWeight: FontWeight.bold,
               height: 1.3,
             ),
@@ -236,7 +236,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => JournalChatInputScreen(
+                            builder: (context) => JournalEntryInputScreen(
                               selectedDate: _selectedDate, // Pass the selected date
                             ),
                           ),
