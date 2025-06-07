@@ -14,12 +14,12 @@ class ManualInputScreen extends StatefulWidget {
 }
 
 class _ManualInputScreenState extends State<ManualInputScreen> {
+  // --- Controllers ---
   final TextEditingController _nominalController = TextEditingController();
-
+  final TextEditingController _descriptionController = TextEditingController(); // FIXED: Declared the missing controller
   late TextEditingController _dateController;
-  final TextEditingController _descriptionController = TextEditingController(); // New controller for description
 
-
+  // --- State Variables ---
   DateTime? _selectedDate;
   bool _isCategoryExpanded = false;
   String? _selectedCategory;
@@ -41,7 +41,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     super.initState();
     // Initialize with a default date and format it
     _selectedDate = DateTime.now();
-    _dateController = TextEditingController(text: "Pick a date");
+    _dateController = TextEditingController(text: DateFormat('dd/MM/yyyy').format(_selectedDate!));
     _nominalController.addListener(_formatNominal);
   }
 
@@ -50,7 +50,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     _nominalController.removeListener(_formatNominal);
     _nominalController.dispose();
     _dateController.dispose();
-    _descriptionController.dispose();
+    _descriptionController.dispose(); // This will now work correctly
     super.dispose();
   }
 
@@ -60,22 +60,19 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
       return;
     }
 
-    // Remove all non-digit characters
     String cleanText = text.replaceAll(RegExp(r'[^\d]'), '');
     if (cleanText.isEmpty) {
       return;
     }
 
-    // Parse to double, then format as currency
     double value = double.parse(cleanText);
     final formatter = NumberFormat.currency(
       locale: 'id_ID',
-      symbol: 'Rp ', // Added space for better formatting
+      symbol: 'Rp ',
       decimalDigits: 0,
     );
     String newText = formatter.format(value);
 
-    // Prevent infinite loop
     if (newText != text) {
       _nominalController.value = _nominalController.value.copyWith(
         text: newText,
@@ -94,13 +91,13 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: ColorScheme.light(
-              primary: finlogBluePrimary, // Header background color
-              onPrimary: Colors.white, // Header text color
-              onSurface: Colors.black87, // Body text color
+              primary: finlogBluePrimary,
+              onPrimary: Colors.white,
+              onSurface: Colors.black87,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: finlogBluePrimary, // Button text color
+                foregroundColor: finlogBluePrimary,
               ),
             ),
           ),
@@ -121,17 +118,16 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          width: 100, // Total width of the progress bar container
+          width: 100,
           height: 8,
           decoration: BoxDecoration(
-            color: Colors.white.withAlpha((0.3) * 255 ~/ 1),
+            color: Colors.white.withAlpha(77),
             borderRadius: BorderRadius.circular(4),
           ),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Container(
-              width:
-                  100, // Fill the entire width to indicate completion of this step
+              width: 100,
               height: 8,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -154,8 +150,8 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     TextInputType? keyboardType,
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
-    int? maxLines, // Added maxLines parameter
-    int? minLines, // Added minLines parameter
+    int? maxLines,
+    int? minLines,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +159,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
         Text(
           label,
           style: TextStyle(
-            color: Colors.white.withAlpha((0.9) * 255 ~/ 1),
+            color: Colors.white.withAlpha(230),
             fontSize: 14,
           ),
         ),
@@ -180,26 +176,26 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           ),
           validator: validator,
           inputFormatters: inputFormatters,
-          maxLines: maxLines, // Applied maxLines
-          minLines: minLines, // Applied minLines
+          maxLines: maxLines,
+          minLines: minLines,
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: TextStyle(
-              color: Colors.white.withAlpha((0.6) * 255 ~/ 1),
+              color: Colors.white.withAlpha(153),
             ),
             prefixIcon: prefixIcon != null
                 ? Padding(
                     padding: const EdgeInsets.only(left: 12.0, right: 8.0),
                     child: IconTheme(
                       data: IconThemeData(
-                        color: Colors.white.withAlpha((0.8) * 255 ~/ 1),
+                        color: Colors.white.withAlpha(204),
                       ),
                       child: prefixIcon,
                     ),
                   )
                 : null,
             filled: true,
-            fillColor: Colors.white.withAlpha((0.15) * 255 ~/ 1),
+            fillColor: Colors.white.withAlpha(38),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 14,
@@ -215,7 +211,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(
-                color: Colors.white.withAlpha((0.5) * 255 ~/ 1),
+                color: Colors.white.withAlpha(128),
               ),
             ),
             errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 12),
@@ -232,14 +228,13 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
         Text(
           "Kategori",
           style: TextStyle(
-            color: Colors.white.withAlpha((0.9) * 255 ~/ 1),
+            color: Colors.white.withAlpha(230),
             fontSize: 14,
           ),
         ),
         const SizedBox(height: 8),
         Material(
-          // To get InkWell effect
-          color: Colors.white.withAlpha((0.15) * 255 ~/ 1),
+          color: Colors.white.withAlpha(38),
           borderRadius: BorderRadius.circular(10),
           child: InkWell(
             borderRadius: BorderRadius.circular(10),
@@ -252,7 +247,6 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                // No borderSide: BorderSide.none, as Material's color handles the background
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -262,7 +256,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                     style: TextStyle(
                       color: _selectedCategory != null
                           ? Colors.white
-                          : Colors.white.withAlpha((0.6) * 255 ~/ 1),
+                          : Colors.white.withAlpha(153),
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -271,7 +265,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                     _isCategoryExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
-                    color: Colors.white.withAlpha((0.8) * 255 ~/ 1),
+                    color: Colors.white.withAlpha(204),
                   ),
                 ],
               ),
@@ -282,14 +276,10 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           Container(
             margin: const EdgeInsets.only(top: 4),
             decoration: BoxDecoration(
-              color: Colors.white.withAlpha(
-                (0.1) * 255 ~/ 1,
-              ), // Slightly different background for dropdown items
+              color: Colors.white.withAlpha(26),
               borderRadius: BorderRadius.circular(10),
             ),
-            constraints: BoxConstraints(
-              maxHeight: 200, // Limit the height of the dropdown
-            ),
+            constraints: const BoxConstraints(maxHeight: 200),
             child: ListView.builder(
               shrinkWrap: true,
               padding: EdgeInsets.zero,
@@ -302,7 +292,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                     onTap: () {
                       setState(() {
                         _selectedCategory = category;
-                        _isCategoryExpanded = false; // Collapse after selection
+                        _isCategoryExpanded = false;
                       });
                     },
                     child: Padding(
@@ -327,116 +317,106 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     );
   }
 
-Widget _buildContentCard() {
-  return Container(
-    margin: const EdgeInsets.all(16.0),
-    padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 30.0),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [finlogBluePrimaryDark, finlogBluePrimary],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        stops: const [0.0, 0.7],
-      ),
-      borderRadius: BorderRadius.circular(24.0),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // --- Header Section ---
-        _buildCardProgressBar(),
-        const SizedBox(height: 20),
-        const Icon(Icons.calculate_outlined, color: Colors.white, size: 48),
-        const SizedBox(height: 16),
-        const Text(
-          'Catat Keuangan\nSekarang Yuk!',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            height: 1.3,
-          ),
+  Widget _buildContentCard() {
+    return Container(
+      margin: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 30.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [finlogBluePrimaryDark, finlogBluePrimary],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0.0, 0.7],
         ),
-        const SizedBox(height: 24),
-
-        // --- Form Section ---
-        Form(
-          key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Merged and corrected 'Nominal' field
-              _buildTextField(
-                label: 'Nominal',
-                controller: _nominalController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                hintText: 'Contoh: Rp 1.000.000',
-                validator: (value) {
-                  if (value == null || value.isEmpty || value.replaceAll(RegExp(r'[^\d]'), '').isEmpty) {
-                    return 'Nominal tidak boleh kosong';
-                  }
-                  if (double.tryParse(value.replaceAll(RegExp(r'[^\d]'), '')) == null) {
-                    return 'Nominal tidak valid';
-                  }
-                  return null;
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 6.0, left: 4.0),
-                child: Text(
-                  'Estimasi nominal lebih penting dibanding detail rinci nominal',
-                  style: TextStyle(
-                    color: Colors.white.withAlpha(180), // Use a fixed alpha for transparency
-                    fontSize: 11,
+        borderRadius: BorderRadius.circular(24.0),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildCardProgressBar(),
+          const SizedBox(height: 20),
+          const Icon(Icons.calculate_outlined, color: Colors.white, size: 48),
+          const SizedBox(height: 16),
+          const Text(
+            'Catat Keuangan\nSekarang Yuk!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              height: 1.3,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTextField(
+                  label: 'Nominal',
+                  controller: _nominalController,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  hintText: 'Contoh: Rp 1.000.000',
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.replaceAll(RegExp(r'[^\d]'), '').isEmpty) {
+                      return 'Nominal tidak boleh kosong';
+                    }
+                    if (double.tryParse(value.replaceAll(RegExp(r'[^\d]'), '')) == null) {
+                      return 'Nominal tidak valid';
+                    }
+                    return null;
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 6.0, left: 4.0),
+                  child: Text(
+                    'Estimasi nominal lebih penting dibanding detail rinci nominal',
+                    style: TextStyle(
+                      color: Colors.white.withAlpha(180),
+                      fontSize: 11,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-
-              // Single 'Kategori' Accordion
-              _buildCategoryAccordion(),
-              const SizedBox(height: 20),
-
-              // Merged and corrected 'Tanggal' field with validator
-              _buildTextField(
-                label: 'Tanggal',
-                controller: _dateController,
-                readOnly: true,
-                onTap: () => _selectDate(context),
-                prefixIcon: const Icon(Icons.calendar_today_outlined, size: 20),
-                validator: (value) {
-                  if (_selectedDate == null) {
-                    return 'Tanggal tidak boleh kosong';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-
-              // Merged and corrected 'Deskripsi' field
-              _buildTextField(
-                label: 'Deskripsi (Opsional)',
-                controller: _descriptionController,
-                hintText: 'Contoh: Beli makan siang',
-                keyboardType: TextInputType.text,
-                maxLines: 3, // Constrained to 3 lines
-                minLines: 1,
-              ),
-            ],
+                const SizedBox(height: 20),
+                _buildCategoryAccordion(),
+                const SizedBox(height: 20),
+                _buildTextField(
+                  label: 'Tanggal',
+                  controller: _dateController,
+                  readOnly: true,
+                  onTap: () => _selectDate(context),
+                  prefixIcon: const Icon(Icons.calendar_today_outlined, size: 20),
+                  validator: (value) {
+                    if (_selectedDate == null) {
+                      return 'Tanggal tidak boleh kosong';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                _buildTextField(
+                  label: 'Deskripsi (Opsional)',
+                  controller: _descriptionController, // This will now work correctly
+                  hintText: 'Contoh: Beli makan siang',
+                  keyboardType: TextInputType.text,
+                  maxLines: 3,
+                  minLines: 1,
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
-        // Collapse category dropdown when tapping outside
         if (_isCategoryExpanded) {
           setState(() {
             _isCategoryExpanded = false;
@@ -460,79 +440,56 @@ Widget _buildContentCard() {
           ),
         ),
         backgroundColor: Colors.grey[200],
-        resizeToAvoidBottomInset: true, // Allow screen to resize when keyboard appears
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
-          child: SingleChildScrollView( // The content should be scrollable
+          child: SingleChildScrollView(
             child: _buildContentCard(),
           ),
         ),
+        // FIXED: The bottomNavigationBar now correctly uses only the DualActionButtons widget.
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0), // Adjust padding as needed
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: finlogButtonGrey,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    elevation: 1,
+          padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
+          child: DualActionButtons(
+            leftButtonText: 'Back',
+            rightButtonText: 'Continue',
+            onLeftButtonPressed: () {
+              Navigator.of(context).pop();
+            },
+            onRightButtonPressed: () {
+              FocusScope.of(context).unfocus();
+              if (_selectedCategory == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Pilih kategori terlebih dahulu.'),
+                    backgroundColor: Colors.redAccent,
                   ),
-                  child: const Text('Back', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: finlogButtonTextDark)),
-                ),
-              ),
-              DualActionButtons(
-  leftButtonText: 'Back',
-  rightButtonText: 'Continue',
-  onLeftButtonPressed: () {
-    Navigator.of(context).pop();
-  },
-  onRightButtonPressed: () {
-    // Unfocus to hide keyboard before validation/navigation
-    FocusScope.of(context).unfocus();
-
-    // Manually trigger validation for category first
-    if (_selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Pilih kategori terlebih dahulu.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return; // Stop execution if category is not selected
-    }
-    
-    // Validate the rest of the form if category is selected
-    if (_formKey.currentState!.validate()) {
-      final double nominal = double.parse(
-        _nominalController.text.replaceAll(RegExp(r'[^\d]'), ''),
-      );
-      final ManualInputData manualInputData = ManualInputData(
-        nominal: nominal,
-        category: _selectedCategory!,
-        date: _selectedDate!,
-        description: _descriptionController.text.isNotEmpty
-            ? _descriptionController.text
-            : null,
-      );
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => VerifikasiInputScreen(
-            journalInput: manualInputData.toString(),
-            manualInputData: manualInputData,
-            sourceScreen: InputSource.manual,
-          ),
-        ),
-      );
-    }
-  },
-)
-            ],
+                );
+                return;
+              }
+              if (_formKey.currentState!.validate()) {
+                final double nominal = double.parse(
+                  _nominalController.text.replaceAll(RegExp(r'[^\d]'), ''),
+                );
+                final ManualInputData manualInputData = ManualInputData(
+                  nominal: nominal,
+                  category: _selectedCategory!,
+                  date: _selectedDate!,
+                  description: _descriptionController.text.isNotEmpty
+                      ? _descriptionController.text
+                      : null, // This will now work correctly
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VerifikasiInputScreen(
+                      journalInput: manualInputData.toString(),
+                      manualInputData: manualInputData,
+                      sourceScreen: InputSource.manual,
+                    ),
+                  ),
+                );
+              }
+            },
           ),
         ),
       ),

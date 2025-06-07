@@ -8,7 +8,7 @@ import 'package:finlog/models/manual_input_data.dart'; // Import ManualInputData
 import 'package:intl/intl.dart'; // Import for DateFormat
 
 enum InputSource { manual, journal, ocr }
-enum InputSource { manual, journal, ocr }
+
 
 class VerifikasiInputScreen extends StatefulWidget {
   final String journalInput;
@@ -35,7 +35,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.sourceScreen == InputSource.journal || widget.sourceScreen == InputSource.ocr) {
+    
     if (widget.sourceScreen == InputSource.journal || widget.sourceScreen == InputSource.ocr) {
       _parseJournalEntry();
     } else {
@@ -78,7 +78,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const JournalChatInputScreen()),
-        MaterialPageRoute(builder: (context) => const JournalChatInputScreen()),
+        
       );
     }
   }
@@ -92,7 +92,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => BillDetailsScreen(ocrResult: _parsedExpenseData ?? {})),
-      MaterialPageRoute(builder: (context) => BillDetailsScreen(ocrResult: _parsedExpenseData ?? {})),
+      
     );
   }
 
