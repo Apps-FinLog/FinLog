@@ -88,7 +88,7 @@ class _CatatCepatState extends State<CatatCepat> {
             filled: true,
             fillColor: Colors.white,
             hintText: hintText,
-            hintStyle: TextStyle(color: Colors.black87.withValues()),
+            hintStyle: TextStyle(color: Colors.grey[400]),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 12,
