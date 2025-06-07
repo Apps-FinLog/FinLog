@@ -137,15 +137,15 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
       ),
       backgroundColor: Colors.grey[200],
       resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: _buildJournalInputCard(),
-              ),
-            ],
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                _buildJournalInputCard(),
+              ],
+            ),
           ),
         ),
       ),
