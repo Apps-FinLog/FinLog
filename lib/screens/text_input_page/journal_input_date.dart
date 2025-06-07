@@ -236,11 +236,8 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-<<<<<<< HEAD:lib/screens/text_input_page/journal_input_date.dart
-                            builder: (context) => JournalEntryInputScreen(
-=======
-                            builder: (context) => JournalInputTypeScreen(
->>>>>>> 5ea5090 (mencoba fix ui jurnal coyy):lib/screens/journal_input_date.dart
+                            builder:
+                                (context) => JournalEntryInputScreen(
                               selectedDate: _selectedDate, // Pass the selected date
                             ),
                           ),

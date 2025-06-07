@@ -116,11 +116,8 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-<<<<<<< HEAD
-          builder: (context) => JournalEntryInputScreen(
-=======
-          builder: (context) => JournalInputTypeScreen(
->>>>>>> 5ea5090 (mencoba fix ui jurnal coyy)
+          builder:
+              (context) => JournalEntryInputScreen(
             selectedDate: widget.journalDate ?? DateTime.now(), // Pass the original journalDate back, or today's date as fallback
           ),
         ),
