@@ -85,28 +85,31 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
             ),
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-              child: TextField(
-                controller: _journalInputController,
-                style: const TextStyle(color: Colors.white, fontSize: 16),
-                maxLines: null, // Allows the TextField to expand vertically
-                keyboardType: TextInputType.multiline, // Enables multiline input
-                expands: true, // Allows the TextField to take all available vertical space
-                textAlignVertical: TextAlignVertical.top, // Aligns text to the top
-                decoration: InputDecoration(
-                  hintText: 'Tuliskan pengeluaran atau pemasukanmu hari ini, contoh: "Makan siang di kantin Rp 25.000, beli buku Rp 50.000"',
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.15),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                child: TextField(
+                  controller: _journalInputController,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                  maxLines: null, // Allows the TextField to expand vertically
+                  keyboardType: TextInputType.multiline, // Enables multiline input
+                  // expands: true, // Removed as it's not compatible with SingleChildScrollView directly
+                  textAlignVertical: TextAlignVertical.top, // Aligns text to the top
+                  decoration: InputDecoration(
+                    hintText: 'Tuliskan pengeluaran atau pemasukanmu hari ini, contoh: "Makan siang di kantin Rp 25.000, beli buku Rp 50.000"',
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.15),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+                    ),
                   ),
                 ),
               ),
