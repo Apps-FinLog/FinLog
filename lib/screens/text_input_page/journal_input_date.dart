@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:intl/intl.dart'; // For date formatting if needed for calendar
-import 'package:finlog/screens/journal_input_type.dart';
+
+
 import 'package:finlog/widgets/navs/dual_action_buttons.dart';
+
+import 'package:finlog/screens/text_input_page/journal_chat_input_screen.dart';
+
 
 class JournalInputDateScreen extends StatefulWidget {
   const JournalInputDateScreen({super.key});
@@ -12,12 +16,10 @@ class JournalInputDateScreen extends StatefulWidget {
 }
 
 class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
-  DateTime _selectedDate = DateTime(
-    2024,
-    12,
-    5,
-  ); // Default selected date from image
-  late TextEditingController _dateController; // Initialize in initState
+// Default selected date from image
+
+  DateTime _selectedDate = DateTime.now();
+  TextEditingController _dateController = TextEditingController();
 
   @override
   void initState() {
@@ -55,7 +57,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
         );
       },
     );
-    if (picked != null && picked != _selectedDate) {
+    if (picked != null) {
       setState(() {
         _selectedDate = picked;
         _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
@@ -204,9 +206,6 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
       ),
     );
   }
-
-  @override
-  // Ganti seluruh method build Anda dengan ini
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -226,24 +225,18 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(child: SingleChildScrollView(child: _buildContentCard())),
-
-            // ========================================================
-            // == INI ADALAH IMPLEMENTASI YANG BENAR DAN BERSIH ==
-            // ========================================================
+            Expanded(child: SingleChildScrollView(child: _buildContentCard())),            
             DualActionButtons(
-              // Teks untuk tombol kiri (opsional)
+
               leftButtonText: 'Back',
 
-              // Teks untuk tombol kanan (opsional)
               rightButtonText: 'Continue',
 
-              // Perintah yang dijalankan saat tombol kiri ditekan
+
               onLeftButtonPressed: () {
                 Navigator.of(context).pop();
               },
 
-              // Perintah yang dijalankan saat tombol kanan ditekan
               onRightButtonPressed: () {
                 // Di sini Anda bisa menambahkan logika validasi jika perlu,
                 // misalnya, memastikan tanggal sudah dipilih.
@@ -252,7 +245,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const JournalInputTypeScreen(),
+                    builder: (context) => const JournalChatInputScreen(),
                   ),
                 );
               },

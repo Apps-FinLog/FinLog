@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/styles/colors.dart';
+
 import 'package:finlog/screens/placeHolderPage/under_development.dart';
-import 'package:finlog/widgets/pie_chart_1.dart';
+import 'package:finlog/widgets/dataVisual/pie_chart_1.dart';
 import 'package:finlog/widgets/buttons/button_primary.dart';
 
 class SummaryCard extends StatefulWidget {

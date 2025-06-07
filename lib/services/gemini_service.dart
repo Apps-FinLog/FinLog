@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
 
 class GeminiService {
-  static const String _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+  static const String _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent';
 
   Future<Map<String, dynamic>> parseExpense(String userInput) async {
     final String prompt = """
@@ -77,7 +77,6 @@ Please provide ONLY the JSON object. Do not include any additional text or markd
     final String prompt = """
 You are an OCR assistant. Your task is to extract bill details from the provided image and format them into a JSON object.
 Infer values if not explicitly mentioned, or use reasonable defaults.
-
 
 Expected JSON structure:
 {
