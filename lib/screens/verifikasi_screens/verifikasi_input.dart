@@ -8,6 +8,7 @@ import 'package:finlog/models/manual_input_data.dart'; // Import ManualInputData
 import 'package:intl/intl.dart'; // Import for DateFormat
 
 enum InputSource { manual, journal, ocr }
+enum InputSource { manual, journal, ocr }
 
 class VerifikasiInputScreen extends StatefulWidget {
   final String journalInput;
@@ -35,8 +36,10 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   void initState() {
     super.initState();
     if (widget.sourceScreen == InputSource.journal || widget.sourceScreen == InputSource.ocr) {
+    if (widget.sourceScreen == InputSource.journal || widget.sourceScreen == InputSource.ocr) {
       _parseJournalEntry();
     } else {
+      // If manualInputData is provided or source is manual, no need to parse with Gemini
       // If manualInputData is provided or source is manual, no need to parse with Gemini
       _isLoading = false;
     }
@@ -52,6 +55,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
       setState(() {
         _parsedExpenseData = parsedData;
       });
+      debugPrint('Parsed Expense Data: $_parsedExpenseData');
       debugPrint('Parsed Expense Data: $_parsedExpenseData');
     } catch (e) {
       setState(() {
@@ -74,6 +78,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const JournalChatInputScreen()),
+        MaterialPageRoute(builder: (context) => const JournalChatInputScreen()),
       );
     }
   }
@@ -86,6 +91,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
     );
     Navigator.push(
       context,
+      MaterialPageRoute(builder: (context) => BillDetailsScreen(ocrResult: _parsedExpenseData ?? {})),
       MaterialPageRoute(builder: (context) => BillDetailsScreen(ocrResult: _parsedExpenseData ?? {})),
     );
   }

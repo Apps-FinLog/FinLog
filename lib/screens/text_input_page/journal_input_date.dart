@@ -8,6 +8,7 @@ import 'package:finlog/widgets/navs/dual_action_buttons.dart';
 import 'package:finlog/screens/text_input_page/journal_chat_input_screen.dart';
 
 
+
 class JournalInputDateScreen extends StatefulWidget {
   const JournalInputDateScreen({super.key});
 
@@ -16,10 +17,9 @@ class JournalInputDateScreen extends StatefulWidget {
 }
 
 class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
-// Default selected date from image
+  DateTime _selectedDate = DateTime.now(); 
+  late TextEditingController _dateController; // Initialize in initState
 
-  DateTime _selectedDate = DateTime.now();
-  TextEditingController _dateController = TextEditingController();
 
   @override
   void initState() {
@@ -247,8 +247,10 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                   MaterialPageRoute(
                     builder: (context) => const JournalChatInputScreen(),
                   ),
+
                 );
               },
+
             ),
 
             // ========================================================

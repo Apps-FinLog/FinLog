@@ -13,17 +13,21 @@ class ChatMessage {
 
 class JournalChatInputScreen extends StatefulWidget {
   const JournalChatInputScreen({super.key});
+class JournalChatInputScreen extends StatefulWidget {
+  const JournalChatInputScreen({super.key});
 
   @override
   State<JournalChatInputScreen> createState() => _JournalChatInputScreenState();
+  State<JournalChatInputScreen> createState() => _JournalChatInputScreenState();
 }
 
+class _JournalChatInputScreenState extends State<JournalChatInputScreen> {
 class _JournalChatInputScreenState extends State<JournalChatInputScreen> {
   final TextEditingController _chatInputController = TextEditingController();
   final List<ChatMessage> _messages = [
     ChatMessage(
       text:
-          'Halo, selamat datang di FinLog, aplikasi pencatatan keuangan yang mudah dan menyenangkan! ^ ^\n\nCukup tuliskan pengeluaranmu dalam satu kalimat, contohnya:\n"Beli kopi kenangan 25rb"',
+          'Halo, selamat datang di FinLog, aplikasi pencatatan keuangan! ^ ^\n Cukup tuliskan pengeluaranmu dalam satu kalimat, contohnya:\n"Beli kopi kenangan 25rb"',
       isUserMessage: false,
     ),
   ];
@@ -142,12 +146,15 @@ class _JournalChatInputScreenState extends State<JournalChatInputScreen> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end, // Align children to the bottom
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
                   child: TextField(
                     controller: _chatInputController,
                     style: const TextStyle(color: Colors.white, fontSize: 15),
+                    maxLines: null, // Allows the TextField to expand vertically
+                    keyboardType: TextInputType.multiline, // Enables multiline input
                     maxLines: 5,
                     minLines: 1,
                     keyboardType: TextInputType.multiline,
@@ -192,6 +199,110 @@ class _JournalChatInputScreenState extends State<JournalChatInputScreen> {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Input Jurnal (Chat)', // More specific title
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
+        ),
+        backgroundColor: Colors.grey[50],
+        elevation: 0.5,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black87),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      backgroundColor: Colors.grey[200], // Standard screen background
+      resizeToAvoidBottomInset: true, // Prevent screen from resizing when keyboard appears
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // Padding around the main content area
+          child: Column(
+            children: [
+              Expanded( // This Expanded makes the chat card take available vertical space
+                child: _buildChatCard(),
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        color: Colors.grey[50], // Background color for the bottom navigation bar
+        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0), // Adjust padding as needed
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: finlogButtonGrey,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 1,
+                ),
+                child: const Text(
+                  'Back', // Or perhaps "Cancel"
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: finlogButtonTextDark,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  // Find the last user message to send for verification
+                  final String lastUserMessage = _messages.lastWhere(
+                    (msg) => msg.isUserMessage,
+                    orElse: () => ChatMessage(text: '', isUserMessage: true),
+                  ).text;
+
+                      if (lastUserMessage.isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VerifikasiInputScreen(journalInput: lastUserMessage),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please enter a journal entry before confirming.')),
+                        );
+                      }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: finlogButtonDark,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 1,
+                ),
+                child: const Text(
+                  'Confirm',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
