@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/screens/splash_onboarding/onboarding_screen.dart'; // This will be navigated to from SplashScreen
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
+import 'package:finlog/services/bill_storage_service.dart'; // Import BillStorageService
+import 'package:provider/provider.dart'; // Import Provider
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Required for async operations before runApp
   await dotenv.load(fileName: ".env"); // Load the .env file
-  runApp(const MyApp());
+  await BillStorageService().init(); // Initialize Hive
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider<BillStorageService>(
+          create: (_) => BillStorageService(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
