@@ -8,6 +8,7 @@ import 'package:finlog/widgets/bill_widgets/bill_summary_row.dart'; // Import Bi
 import 'package:finlog/widgets/bill_widgets/bill_item_list.dart'; // Import BillItemList
 import 'package:finlog/widgets/bill_widgets/bill_action_buttons.dart'; // Import BillActionButtons
 import 'package:intl/intl.dart'; // Import for NumberFormat
+import 'package:finlog/services/bill_storage_service.dart'; // Import BillStorageService
 
 class BillDetailsScreen extends StatefulWidget {
   final BillData billData;
@@ -31,8 +32,17 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
     // TODO: Implementasi navigasi ke layar edit atau tampilkan form edit
   }
 
-  void _konfirmasiBill() {
+  Future<void> _konfirmasiBill() async {
     debugPrint('Tombol Konfirmasi ditekan. Data: ${_billData.billItems}, Total: ${_billData.jumlahTotal}');
+    // Ensure context is valid before using it after an async operation
+    if (!mounted) return; 
+
+    final billStorageService = Provider.of<BillStorageService>(context, listen: false);
+    await billStorageService.saveBill(_billData); // Save the bill data
+    debugPrint('Bill data saved to Hive!');
+
+    if (!mounted) return; // Check again before navigation
+
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen(initialIndex: 2)),
