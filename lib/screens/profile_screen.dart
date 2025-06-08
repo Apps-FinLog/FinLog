@@ -550,41 +550,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const Text('Pengaturan API Gemini', style: TextStyle(color: Colors.black)),
           ],
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Untuk menggunakan fitur journaling AI, Anda perlu mengatur API Gemini:',
-                style: TextStyle(fontSize: 16, color: Colors.black),
+        contentPadding: EdgeInsets.zero, // Set content padding to zero
+        content: Builder( // Use Builder to get a new context
+          builder: (dialogContext) {
+            return SingleChildScrollView(
+              padding: EdgeInsets.only(
+                left: 24.0, // Add horizontal padding
+                right: 24.0, // Add horizontal padding
+                top: 20.0, // Add top padding
+                bottom: MediaQuery.of(dialogContext).viewInsets.bottom + 20.0, // Adjust padding for keyboard + extra space
               ),
-              const SizedBox(height: 16),
-              _buildSetupStep('1', 'Kunjungi Google AI Studio', 'https://aistudio.google.com'),
-              _buildSetupStep('2', 'Buat akun atau login', 'Gunakan akun Google Anda'),
-              _buildSetupStep('3', 'Buat API Key baru', 'Klik "Create API Key"'),
-              _buildSetupStep('4', 'Salin API Key', 'Simpan dengan aman'),
-              _buildSetupStep('5', 'Masukkan ke aplikasi', 'Paste di field API Key'),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _geminiApiKeyController, // Use the controller
-                style: const TextStyle(color: Colors.black),
-                decoration: InputDecoration(
-                  labelText: 'API Key Gemini',
-                  hintText: 'Masukkan API Key Anda...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                        'Untuk menggunakan fitur fitur kami, Anda perlu mengatur API Gemini:',
+                    style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: finlogBluePrimary),
+                  const SizedBox(height: 16),
+                  _buildSetupStep('1', 'Kunjungi Google AI Studio', 'https://aistudio.google.com'),
+                  _buildSetupStep('2', 'Buat akun atau login', 'Gunakan akun Google Anda'),
+                  _buildSetupStep('3', 'Buat API Key baru', 'Klik "Create API Key"'),
+                  _buildSetupStep('4', 'Salin API Key', 'Simpan dengan aman'),
+                  _buildSetupStep('5', 'Masukkan ke aplikasi', 'Paste di field API Key'),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _geminiApiKeyController, // Use the controller
+                    style: const TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      labelText: 'API Key Gemini',
+                      hintText: 'Masukkan API Key Anda...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: finlogBluePrimary),
+                      ),
+                      prefixIcon: Icon(Icons.key, color: finlogBluePrimary),
+                    ),
+                    obscureText: true,
                   ),
-                  prefixIcon: Icon(Icons.key, color: finlogBluePrimary),
-                ),
-                obscureText: true,
+                ],
               ),
-            ],
-          ),
+            );
+          }
         ),
         actions: [
           TextButton(
