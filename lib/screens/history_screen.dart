@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/widgets/components/card.dart';
-import 'package:finlog/models/bill_item.dart';
 import 'package:finlog/models/daily_expenditure.dart';
 import 'package:finlog/widgets/history/daily_expenditure_card.dart';
 import 'package:provider/provider.dart';
@@ -26,31 +25,30 @@ class _HistoryScreenState extends State<HistoryScreen> {
     _loadBillData();
   }
 
-  Future<void> _loadBillData() async {
-    final billStorageService = Provider.of<BillStorageService>(context, listen: false);
+  Future<void> _loadBillData() async {    final billStorageService = Provider.of<BillStorageService>(context, listen: false);
     final List<BillData> allBills = await billStorageService.getAllBills();
 
     // Group bills by date
-    final Map<DateTime, List<BillItem>> groupedItems = {};
+    final Map<DateTime, List<BillData>> groupedBills = {};
     for (var bill in allBills) {
       try {
         final date = DateFormat('dd/MM/yyyy').parseStrict(bill.displayDate);
         final normalizedDate = DateTime(date.year, date.month, date.day); // Normalize to remove time component
-        if (!groupedItems.containsKey(normalizedDate)) {
-          groupedItems[normalizedDate] = [];
+        if (!groupedBills.containsKey(normalizedDate)) {
+          groupedBills[normalizedDate] = [];
         }
-        groupedItems[normalizedDate]!.addAll(bill.billItems);
+        groupedBills[normalizedDate]!.add(bill);
       } catch (e) {
         debugPrint('Error parsing date for bill: ${bill.displayDate}. Error: $e');
         // Optionally, handle bills with unparseable dates, e.g., skip them or assign to a default date
       }
     }
 
-    // Convert grouped items to DailyExpenditure objects
-    final List<DailyExpenditure> dailyExpenditures = groupedItems.entries.map((entry) {
+    // Convert grouped bills to DailyExpenditure objects
+    final List<DailyExpenditure> dailyExpenditures = groupedBills.entries.map((entry) {
       return DailyExpenditure(
         date: entry.key,
-        items: entry.value,
+        bills: entry.value,
       );
     }).toList();
 
@@ -71,32 +69,35 @@ class _HistoryScreenState extends State<HistoryScreen> {
           SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, // Align the card itself to the start (left)
+              // Align the card itself to the start (left)
               children: [
-                ReusablePageCard(
-                  title: 'Transactions to PDF',
-                  subtitle: 'Donwload Transaksi menjadi PDF',
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, // Align content to the start (top)
-                    children: [
-                      if (_dailyExpenditures.isEmpty && !_isLoading) // Only show "No data" if not loading
-                        const Align(
-                          alignment: Alignment.topCenter,
-                          child: Padding(
-                            padding: EdgeInsets.all(24.0),
-                            child: Text('No bill data available.'),
-                          ),
-                        ),
+              SizedBox(
+                width: double.infinity, // Make the card expand to fill available width
+                child: ReusablePageCard(
+                title: 'Transactions to PDF',
+                subtitle: 'Donwload Transaksi menjadi PDF',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, // Align content to the start (top)
+                  children: [
+                  if (_dailyExpenditures.isEmpty && !_isLoading) // Only show "No data" if not loading
+                    const Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
+                      padding: EdgeInsets.all(24.0),
+                      child: Text('No bill data available.'),
+                    ),
+                    ),
+                  ],
+                ),
+                ),
+              ),
+                const SizedBox(height: 24), // Spacer between the two cards
                       ..._dailyExpenditures.map((dailyExp) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 24.0), // Space between cards
                           child: DailyExpenditureCard(dailyExpenditure: dailyExp),
                         );
                       }),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24), // Spacer between the two cards
                 // The existing "Transactions to PDF" card
               ],
             ),
