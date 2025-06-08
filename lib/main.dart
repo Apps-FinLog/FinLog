@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/screens/onboarding_screen.dart'; // This will be navigated to from SplashScreen
+import 'package:finlog/screens/splash_onboarding/onboarding_screen.dart'; // This will be navigated to from SplashScreen
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
 
 Future<void> main() async {

@@ -3,7 +3,7 @@ import 'package:finlog/styles/colors.dart'; // Import shared colors
 import 'package:finlog/screens/home_screen.dart';
 import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:provider/provider.dart'; // Import Provider
-import 'package:finlog/widgets/custom_app_bar.dart'; // Import CustomAppBar
+import 'package:finlog/widgets/headers/custom_app_bar.dart'; // Import CustomAppBar
 import 'package:finlog/widgets/bill_widgets/bill_summary_row.dart'; // Import BillSummaryRow
 import 'package:finlog/widgets/bill_widgets/bill_item_list.dart'; // Import BillItemList
 import 'package:finlog/widgets/bill_widgets/bill_action_buttons.dart'; // Import BillActionButtons

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:finlog/services/ocr_service.dart';
-import 'package:finlog/screens/bill_details_screen.dart';
+import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart';
 import 'package:finlog/widgets/loading_overlay.dart';
 
 class ImageInputChoiceScreen extends StatefulWidget {
