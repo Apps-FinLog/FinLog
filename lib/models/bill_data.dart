@@ -20,8 +20,22 @@ class BillData extends ChangeNotifier {
     if (ocrData['displayDate'] != null && ocrData['displayDate'].isNotEmpty) {
       displayDate = ocrData['displayDate'];
     }
-    if (ocrData['displayTime'] != null && ocrData['displayTime'].isNotEmpty) {
-      displayTime = ocrData['displayTime'];
+
+    // Robustly handle displayTime
+    String? ocrDisplayTime = ocrData['displayTime'];
+    if (ocrDisplayTime != null && ocrDisplayTime.isNotEmpty) {
+      try {
+        // Attempt to parse the time string to validate it
+        DateFormat('HH:mm:ss').parseStrict(ocrDisplayTime);
+        displayTime = ocrDisplayTime;
+      } catch (e) {
+        // If parsing fails, fall back to current time
+        debugPrint('Invalid displayTime from OCR: "$ocrDisplayTime". Falling back to current time. Error: $e');
+        displayTime = DateFormat('HH:mm:ss').format(DateTime.now());
+      }
+    } else {
+      // If ocrDisplayTime is null or empty, use current time (already set by constructor)
+      displayTime = DateFormat('HH:mm:ss').format(DateTime.now());
     }
 
     billItems = [];
