@@ -5,6 +5,8 @@ import 'package:finlog/services/ocr_service.dart';
 import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart';
 import 'package:finlog/widgets/loading/loading_overlay.dart';
 import 'package:finlog/models/bill_data.dart'; // Import BillData
+import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
+import 'package:provider/provider.dart'; // Import Provider
 
 class ImageInputChoiceScreen extends StatefulWidget {
   const ImageInputChoiceScreen({super.key});
@@ -15,8 +17,17 @@ class ImageInputChoiceScreen extends StatefulWidget {
 
 class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
   final ImagePicker _picker = ImagePicker();
-  final OcrService _ocrService = OcrService();
+  late OcrService _ocrService; // Declare OcrService
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userProfileService = Provider.of<UserProfileService>(context, listen: false);
+      _ocrService = OcrService(userProfileService); // Initialize OcrService with UserProfileService
+    });
+  }
 
   @override
   void dispose() {

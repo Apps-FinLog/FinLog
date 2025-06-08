@@ -7,6 +7,8 @@ import 'package:finlog/services/gemini_service.dart';
 import 'package:finlog/models/manual_input_data.dart'; // Import ManualInputData
 import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:intl/intl.dart'; // Import for DateFormat
+import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
+import 'package:provider/provider.dart'; // Import Provider
 
 enum InputSource { manual, journal, ocr }
 
@@ -30,7 +32,7 @@ class VerifikasiInputScreen extends StatefulWidget {
 }
 
 class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
-  final GeminiService _geminiService = GeminiService();
+  late GeminiService _geminiService; // Declare GeminiService instance
   Map<String, dynamic>? _parsedExpenseData;
   bool _isLoading = false;
   String? _errorMessage;
@@ -76,15 +78,19 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   @override
   void initState() {
     super.initState();
-    // Always parse with Gemini for journal or OCR inputs to get amount, category, etc.
-    // The date will be prioritized from widget.journalDate in _buildContentCard.
-    if (widget.sourceScreen == InputSource.journal || widget.sourceScreen == InputSource.ocr) {
-      _parseJournalEntry();
-    } else {
-      // If manualInputData is provided or source is manual, no need to parse with Gemini
-      // If manualInputData is provided or source is manual, no need to parse with Gemini
-      _isLoading = false;
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userProfileService = Provider.of<UserProfileService>(context, listen: false);
+      _geminiService = GeminiService(userProfileService); // Initialize GeminiService with UserProfileService
+
+      // Always parse with Gemini for journal or OCR inputs to get amount, category, etc.
+      // The date will be prioritized from widget.journalDate in _buildContentCard.
+      if (widget.sourceScreen == InputSource.journal || widget.sourceScreen == InputSource.ocr) {
+        _parseJournalEntry();
+      } else {
+        // If manualInputData is provided or source is manual, no need to parse with Gemini
+        _isLoading = false;
+      }
+    });
   }
 
   Future<void> _parseJournalEntry() async {

@@ -3,6 +3,8 @@ import 'package:finlog/styles/colors.dart';
 import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart'; // Import BillDetailsScreen
 import 'package:finlog/services/gemini_service.dart'; // Import GeminiService
 import 'package:finlog/models/bill_data.dart'; // Import BillData
+import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
+import 'package:provider/provider.dart'; // Import Provider
 
 class JournalEntryInputScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -18,9 +20,18 @@ class JournalEntryInputScreen extends StatefulWidget {
 
 class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
   final TextEditingController _journalInputController = TextEditingController();
-  final GeminiService _geminiService = GeminiService(); // Add GeminiService instance
+  late GeminiService _geminiService; // Declare GeminiService instance
   Map<String, dynamic>? _parsedExpenseData; // Add parsed data state
   String? _errorMessage; // Add error message state
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userProfileService = Provider.of<UserProfileService>(context, listen: false);
+      _geminiService = GeminiService(userProfileService); // Initialize GeminiService with UserProfileService
+    });
+  }
 
   @override
   void dispose() {

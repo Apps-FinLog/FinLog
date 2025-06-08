@@ -20,6 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Uint8List? _imageBytes; // Change type to Uint8List
   String _userName = "John Doe";
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _geminiApiKeyController = TextEditingController(); // New controller
   bool _isEditingName = false;
   bool _hasNameChanged = false; // New state variable
   bool _hasImageChanged = false; // New state variable
@@ -36,6 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
       _loadUserProfile();
       _nameController.addListener(_onNameChanged); // Add listener for name changes
+      _geminiApiKeyController.text = _userProfileService.getGeminiApiKey() ?? ''; // Load API key
     });
   }
 
@@ -565,7 +567,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _buildSetupStep('5', 'Masukkan ke aplikasi', 'Paste di field API Key'),
               const SizedBox(height: 16),
               TextField(
-                    style: const TextStyle(color: Colors.black),
+                controller: _geminiApiKeyController, // Use the controller
+                style: const TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   labelText: 'API Key Gemini',
                   hintText: 'Masukkan API Key Anda...',
@@ -589,9 +592,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: const Text('Batal'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async { // Make onPressed async
+              await _userProfileService.saveGeminiApiKey(_geminiApiKeyController.text); // Save API key
               Navigator.pop(context);
-              // Save API key logic here
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: finlogBluePrimary,
@@ -884,6 +887,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void dispose() {
     _nameController.removeListener(_onNameChanged); // Remove listener
     _nameController.dispose();
+    _geminiApiKeyController.dispose(); // Dispose new controller
     super.dispose();
   }
 }

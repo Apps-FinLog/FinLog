@@ -34,4 +34,16 @@ class UserProfileService extends ChangeNotifier { // Extend ChangeNotifier
     print('UserProfileService: Saved profileImageBase64: ${base64String.substring(0, 30)}...'); // Log a snippet
     notifyListeners(); // Notify listeners after saving
   }
+
+  String? getGeminiApiKey() {
+    final apiKey = _userProfileBox.get('geminiApiKey');
+    print('UserProfileService: Retrieved geminiApiKey: ${apiKey != null ? "exists" : "null"}');
+    return apiKey;
+  }
+
+  Future<void> saveGeminiApiKey(String apiKey) async {
+    await _userProfileBox.put('geminiApiKey', apiKey);
+    print('UserProfileService: Saved geminiApiKey: ${apiKey.substring(0, 10)}...'); // Log a snippet
+    notifyListeners(); // Notify listeners after saving
+  }
 }

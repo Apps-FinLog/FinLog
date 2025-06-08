@@ -2,9 +2,13 @@ import 'dart:io';
 import 'dart:convert'; // For base64Encode
 import 'package:flutter/foundation.dart';
 import './gemini_service.dart'; // Import your GeminiService
+import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 
 class OcrService {
-  final GeminiService _geminiService = GeminiService(); // Instantiate GeminiService
+  final GeminiService _geminiService; // Declare GeminiService
+
+  OcrService(UserProfileService userProfileService) // Constructor to receive UserProfileService
+      : _geminiService = GeminiService(userProfileService); // Instantiate GeminiService with UserProfileService
 
   Future<Map<String, dynamic>> extractTextFromImage(File imageFile) async {
     try {
