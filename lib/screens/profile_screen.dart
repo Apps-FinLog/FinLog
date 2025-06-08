@@ -74,16 +74,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       if (_hasNameChanged) {
         await _userProfileService.saveUserName(_nameController.text);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Nama pengguna berhasil diubah!')),
-        );
       }
       if (_hasImageChanged && _imageBytes != null) { // Use _imageBytes
         final base64String = base64Encode(_imageBytes!); // Encode Uint8List to Base64
         await _userProfileService.saveProfileImageBase64(base64String);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Foto profil berhasil diubah!')),
-        );
       }
       setState(() {
         // Update _userName with the current text from controller
@@ -94,9 +88,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print('ProfileScreen: _saveProfileChanges completed successfully.');
     } catch (e) {
       print('ProfileScreen: Error saving profile changes: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal menyimpan perubahan: $e')),
-      );
     }
   }
 
@@ -601,9 +592,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               Navigator.pop(context);
               // Save API key logic here
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('API Key berhasil disimpan!')),
-              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: finlogBluePrimary,
@@ -686,9 +674,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               activeColor: finlogBluePrimary,
               onChanged: (value) {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Bahasa diubah ke Indonesia')),
-                );
               },
             ),
             RadioListTile<String>(
@@ -698,9 +683,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               activeColor: finlogBluePrimary,
               onChanged: (value) {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Language changed to English')),
-                );
               },
             ),
           ],
