@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/text_styles.dart';
+import 'package:finlog/screens/profile_screen.dart'; // Import the profile screen
+import 'package:finlog/screens/home_screen.dart'; // Import the home screen
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -36,17 +38,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.purpleAccent, // Garis ungu
-                width: 0.5,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeScreen(initialIndex: 4)), // Navigate to HomeScreen with ProfileScreen selected
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.purpleAccent, // Garis ungu
+                  width: 0.5,
+                ),
               ),
-            ),
-            child: const CircleAvatar(
-              radius: 18,
-              backgroundImage: AssetImage('assets/images/user_profile.png'),
+              child: const CircleAvatar(
+                radius: 18,
+                backgroundImage: AssetImage('assets/images/user_profile.png'),
+              ),
             ),
           ),
         ),
