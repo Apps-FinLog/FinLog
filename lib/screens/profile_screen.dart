@@ -473,7 +473,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Icon(Icons.auto_awesome, color: finlogBluePrimary),
             const SizedBox(width: 8),
-            const Text('Pengaturan API Gemini'),
+            const Text('Pengaturan API Gemini', style: TextStyle(color: Colors.black)),
           ],
         ),
         content: SingleChildScrollView(
@@ -483,7 +483,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Text(
                 'Untuk menggunakan fitur journaling AI, Anda perlu mengatur API Gemini:',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16, color: Colors.black),
               ),
               const SizedBox(height: 16),
               _buildSetupStep('1', 'Kunjungi Google AI Studio', 'https://aistudio.google.com'),
@@ -570,12 +570,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
+                    color: Colors.black,
                   ),
                 ),
                 Text(
                   description,
-                  style: TextStyle(
-                    color: Colors.grey[600],
+                  style: const TextStyle(
+                    color: Colors.black54,
                     fontSize: 12,
                   ),
                 ),
@@ -685,7 +686,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Bantuan'),
+        title: const Text('Bantuan', style: TextStyle(color: Colors.black)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -731,13 +732,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 14,
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             answer,
-            style: TextStyle(
-              color: Colors.grey[600],
+            style: const TextStyle(
+              color: Colors.black54,
               fontSize: 13,
             ),
           ),
