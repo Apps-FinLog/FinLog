@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
 import 'package:intl/intl.dart'; // For date formatting if needed for calendar
-
-
+import 'package:finlog/screens/text_input_page/journal_entry_input_screen.dart'; // Import the next screen
 import 'package:finlog/widgets/navs/dual_action_buttons.dart';
-
-import 'package:finlog/screens/text_input_page/journal_chat_input_screen.dart';
-
 
 
 class JournalInputDateScreen extends StatefulWidget {
@@ -24,9 +20,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
   @override
   void initState() {
     super.initState();
-    _dateController = TextEditingController(text: "Pick a date");
-    // Optionally, initialize with the selected date formatted
-    // _dateController.text = DateFormat('d MMMM yyyy').format(_selectedDate);
+    _dateController = TextEditingController(text: DateFormat('dd/MM/yyyy').format(_selectedDate)); // Initialize with formatted date
   }
 
   @override
@@ -51,7 +45,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
               surface: Colors.white,
               onSurface: Colors.black,
             ),
-            dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+            dialogTheme: DialogThemeData(backgroundColor: Colors.white), // Use const for DialogTheme
           ),
           child: child!,
         );
@@ -163,17 +157,17 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
           // Progress bar is removed as per new image
           // _buildCardProgressBar(),
           // const SizedBox(height: 20), // Removed as progress bar is gone
-          Icon(
+          const Icon( // Added const
             Icons.auto_awesome_outlined, // Sparkling star icon
             color: Colors.white,
             size: 48,
           ),
           const SizedBox(height: 16),
           const Text(
-            'Catat Keuangan\nseperti chat dengan\nsobat ^ ^', // New title
+            'Catat Keuanganmu\nhari ini!', // Updated title for journaling
             style: TextStyle(
               color: Colors.white,
-              fontSize: 26, // Slightly adjusted size for new text
+              fontSize: 26,
               fontWeight: FontWeight.bold,
               height: 1.3,
             ),
@@ -187,14 +181,14 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             onTap: () {
               _selectDate(context); // Enable system date picker
             },
-            prefixIcon: Icon(Icons.calendar_today_outlined, size: 20),
+            prefixIcon: const Icon(Icons.calendar_today_outlined, size: 20), // Added const
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6.0, left: 4.0),
             child: Text(
               'Seingat kamu ya!', // New helper text
               style: TextStyle(
-                color: Colors.white.withAlpha((0.7) * 255 ~/ 1),
+                color: Colors.white.withAlpha((0.7 * 255).toInt()),
                 fontSize: 11,
               ),
             ),
@@ -217,7 +211,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
         backgroundColor: Colors.grey[50],
         elevation: 0.5,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back, color: Colors.black87), // Added const
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -227,16 +221,11 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
           children: [
             Expanded(child: SingleChildScrollView(child: _buildContentCard())),            
             DualActionButtons(
-
               leftButtonText: 'Back',
-
               rightButtonText: 'Continue',
-
-
               onLeftButtonPressed: () {
                 Navigator.of(context).pop();
               },
-
               onRightButtonPressed: () {
                 // Di sini Anda bisa menambahkan logika validasi jika perlu,
                 // misalnya, memastikan tanggal sudah dipilih.
@@ -245,14 +234,13 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const JournalChatInputScreen(),
+                    builder: (context) => JournalEntryInputScreen(
+                      selectedDate: _selectedDate, // Pass the selected date
+                    ),
                   ),
-
                 );
               },
-
             ),
-
             // ========================================================
           ],
         ),

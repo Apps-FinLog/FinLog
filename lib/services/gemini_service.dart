@@ -13,7 +13,7 @@ You are an expense journal assistant. Your task is to parse the following user i
 
 Expected JSON structure (similar to BillData object):
 {
-  "displayDate": "<string, DD/MM/YYYY, infer today's date if not specified>",
+  "displayDate": "<string, DD/MM/YYYY, only provide if explicitly mentioned in the input>",
   "displayTime": "<string, HH:MM:SS, infer current time if not specified>",
   "billItems": [
     {
@@ -27,7 +27,9 @@ Expected JSON structure (similar to BillData object):
   "pajak": <number>,
   "diskon": <number>,
   "lainnya": <number>,
-  "jumlahTotal": <number>
+  "jumlahTotal": <number>,
+  "category": "<string, choose from 'Makanan & Minuman', 'Transportasi', 'Belanja', 'Tagihan', 'Hiburan', 'Kesehatan', 'Pendidikan', 'Lainnya'. Infer 'Lainnya' if not specified or unclear>",
+  "summary": "<string, a concise summary of the user's input, e.g., 'Pembelian makanan dan minuman', 'Biaya transportasi', 'Pengeluaran belanja bulanan'. If the input is an income, summarize it as 'Pemasukan dari gaji' or 'Pemasukan dari penjualan'.>"
 }
 
 If the user input is not clear or does not contain enough information to extract all fields, return a JSON object with only the fields that could be confidently extracted. For billItems, if no items are found, return an empty array.
@@ -80,7 +82,7 @@ Infer values if not explicitly mentioned, or use reasonable defaults.
 
 Expected JSON structure:
 {
-  "displayDate": "<string, DD/MM/YYYY, infer today's date if not specified>",
+  "displayDate": "<string, DD/MM/YYYY, only provide if explicitly mentioned in the input>",
   "displayTime": "<string, HH:MM:SS, infer current time if not specified>",
   "billItems": [
     {
@@ -94,7 +96,9 @@ Expected JSON structure:
   "pajak": <number>,
   "diskon": <number>,
   "lainnya": <number>,
-  "jumlahTotal": <number>
+  "jumlahTotal": <number>,
+  "category": "<string, choose from 'Makanan & Minuman', 'Transportasi', 'Belanja', 'Tagihan', 'Hiburan', 'Kesehatan', 'Pendidikan', 'Lainnya'. Infer 'Lainnya' if not specified or unclear>",
+  "summary": "<string, a concise summary of the bill details, e.g., 'Pembelian makanan dan minuman', 'Biaya transportasi', 'Pengeluaran belanja bulanan'.>"
 }
 
 If the image does not contain enough information to extract all fields, return a JSON object with only the fields that could be confidently extracted. For billItems, if no items are found, return an empty array.

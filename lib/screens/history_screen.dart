@@ -58,7 +58,7 @@ class HistoryScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 24.0), // Space between cards
                     child: DailyExpenditureCard(dailyExpenditure: dailyExp),
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
