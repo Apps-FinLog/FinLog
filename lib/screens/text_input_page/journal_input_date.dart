@@ -45,7 +45,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
               surface: Colors.white,
               onSurface: Colors.black,
             ),
-            dialogTheme: const DialogTheme(backgroundColor: Colors.white), // Use const for DialogTheme
+            dialogTheme: DialogThemeData(backgroundColor: Colors.white), // Use const for DialogTheme
           ),
           child: child!,
         );

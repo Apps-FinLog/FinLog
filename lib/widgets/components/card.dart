@@ -6,11 +6,11 @@ class ReusablePageCard extends StatelessWidget {
   final Widget? child;
 
   const ReusablePageCard({
-    Key? key,
+    super.key,
     this.title,
     this.subtitle,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
