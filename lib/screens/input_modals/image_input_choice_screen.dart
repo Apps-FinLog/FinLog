@@ -143,12 +143,6 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
                     'Camera',  // line2 for first item
                     Icons.camera_alt_outlined, // Icon for Camera
                     () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Membuka kamera...'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
                       Future.delayed(const Duration(milliseconds: 800), () {
                         _pickImage(ImageSource.camera);
                       });

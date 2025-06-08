@@ -131,9 +131,6 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   void _konfirmasi() {
     // Handle confirmation logic
     debugPrint('Konfirmasi ditekan');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Input berhasil dikonfirmasi! (simulasi)')),
-    );
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => BillDetailsScreen(ocrResult: _parsedExpenseData ?? {})),

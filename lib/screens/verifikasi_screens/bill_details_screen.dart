@@ -33,9 +33,6 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
 
   void _konfirmasiBill() {
     debugPrint('Tombol Konfirmasi ditekan. Data: ${_billData.billItems}, Total: ${_billData.jumlahTotal}');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Tagihan berhasil dikonfirmasi!')),
-    );
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen(initialIndex: 2)),
