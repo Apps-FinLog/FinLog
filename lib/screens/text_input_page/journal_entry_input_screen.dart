@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
-import 'package:finlog/screens/verifikasi_screens/verifikasi_input.dart';
+import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart'; // Import BillDetailsScreen
+import 'package:finlog/services/gemini_service.dart'; // Import GeminiService
+import 'package:finlog/models/bill_data.dart'; // Import BillData
 
 class JournalEntryInputScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -16,6 +18,9 @@ class JournalEntryInputScreen extends StatefulWidget {
 
 class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
   final TextEditingController _journalInputController = TextEditingController();
+  final GeminiService _geminiService = GeminiService(); // Add GeminiService instance
+  Map<String, dynamic>? _parsedExpenseData; // Add parsed data state
+  String? _errorMessage; // Add error message state
 
   @override
   void dispose() {
@@ -23,19 +28,46 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
     super.dispose();
   }
 
-  void _confirmJournalEntry() {
+  Future<void> _parseJournalEntry() async {
+    _errorMessage = null; // Reset error message
+    try {
+      final parsedData = await _geminiService.parseExpense(_journalInputController.text.trim());
+      if (!mounted) return; // Check mounted before setState
+      setState(() {
+        _parsedExpenseData = parsedData;
+      });
+      debugPrint('Parsed Expense Data: $_parsedExpenseData');
+    } catch (e) {
+      if (!mounted) return; // Check mounted before setState
+      setState(() {
+        _errorMessage = 'Failed to parse expense: ${e.toString()}';
+      });
+    }
+  }
+
+  void _confirmJournalEntry() async { // Make it async
     final String journalEntry = _journalInputController.text.trim();
     if (journalEntry.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => VerifikasiInputScreen(
-            journalInput: journalEntry,
-            journalDate: widget.selectedDate,
+      await _parseJournalEntry(); // Call parsing logic
+
+      if (!mounted) return; // Check mounted before using context
+
+      if (_parsedExpenseData != null) {
+        final billData = BillData();
+        billData.parseOcrResult(_parsedExpenseData!);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BillDetailsScreen(billData: billData),
           ),
-        ),
-      );
+        );
+      } else if (_errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_errorMessage!)),
+        );
+      }
     } else {
+      if (!mounted) return; // Check mounted before using context
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter a journal entry before confirming.')),
       );

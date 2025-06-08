@@ -83,7 +83,7 @@ Infer values if not explicitly mentioned, or use reasonable defaults.
 Expected JSON structure:
 {
   "displayDate": "<string, DD/MM/YYYY, only provide if explicitly mentioned in the input>",
-  "displayTime": "<string, HH:MM:SS, infer current time if not specified>",
+  "displayTime": "<string, HH:MM:SS, only provide if explicitly mentioned in the input>",
   "billItems": [
     {
       "name": "<string>",

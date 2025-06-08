@@ -7,10 +7,11 @@ import 'package:finlog/widgets/headers/custom_app_bar.dart'; // Import CustomApp
 import 'package:finlog/widgets/bill_widgets/bill_summary_row.dart'; // Import BillSummaryRow
 import 'package:finlog/widgets/bill_widgets/bill_item_list.dart'; // Import BillItemList
 import 'package:finlog/widgets/bill_widgets/bill_action_buttons.dart'; // Import BillActionButtons
+import 'package:intl/intl.dart'; // Import for NumberFormat
 
 class BillDetailsScreen extends StatefulWidget {
-  final Map<String, dynamic> ocrResult;
-  const BillDetailsScreen({super.key, required this.ocrResult});
+  final BillData billData;
+  const BillDetailsScreen({super.key, required this.billData});
 
   @override
   State<BillDetailsScreen> createState() => _BillDetailsScreenState();
@@ -22,8 +23,7 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    _billData = BillData();
-    _billData.parseOcrResult(widget.ocrResult);
+    _billData = widget.billData;
   }
 
   void _ubahBill() {
@@ -33,9 +33,6 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
 
   void _konfirmasiBill() {
     debugPrint('Tombol Konfirmasi ditekan. Data: ${_billData.billItems}, Total: ${_billData.jumlahTotal}');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Tagihan berhasil dikonfirmasi!')),
-    );
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen(initialIndex: 2)),
@@ -53,6 +50,12 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
         body: SafeArea(
           child: Consumer<BillData>(
             builder: (context, billData, child) {
+              final currencyFormatter = NumberFormat.currency(
+                locale: 'id_ID',
+                symbol: 'Rp ',
+                decimalDigits: 0,
+              );
+
               return Column(
                 children: [
                   Expanded(
@@ -130,24 +133,24 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
 
                             BillSummaryRow(
                               label: 'Subtotal',
-                              value: 'Rp. ${billData.subtotal.toStringAsFixed(0)}',
+                              value: currencyFormatter.format(billData.subtotal),
                             ),
                             BillSummaryRow(
                               label: 'Pajak',
-                              value: 'Rp. ${billData.pajak.toStringAsFixed(0)}',
+                              value: currencyFormatter.format(billData.pajak),
                             ),
                             BillSummaryRow(
                               label: 'Diskon',
-                              value: 'Rp. ${billData.diskon.toStringAsFixed(0)}',
+                              value: currencyFormatter.format(billData.diskon),
                             ),
                             BillSummaryRow(
                               label: 'Lainnya',
-                              value: 'Rp. ${billData.lainnya.toStringAsFixed(0)}',
+                              value: currencyFormatter.format(billData.lainnya),
                             ),
                             const SizedBox(height: 8),
                             BillSummaryRow(
                               label: 'Jumlah Total',
-                              value: 'Rp. ${billData.jumlahTotal.toStringAsFixed(0)}',
+                              value: currencyFormatter.format(billData.jumlahTotal),
                               isTotal: true,
                             ),
                           ],

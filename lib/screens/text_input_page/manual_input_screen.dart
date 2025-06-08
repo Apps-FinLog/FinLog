@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
-import 'package:finlog/screens/verifikasi_screens/verifikasi_input.dart';
+import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart'; // Changed import
 import 'package:finlog/models/manual_input_data.dart';
+import 'package:finlog/models/bill_data.dart'; // New import
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart'; // For TextInputFormatter
 import 'package:finlog/widgets/navs/dual_action_buttons.dart';
@@ -476,16 +477,37 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                   date: _selectedDate!,
                   description: _descriptionController.text.isNotEmpty
                       ? _descriptionController.text
-                      : null, // This will now work correctly
+                      : null,
                 );
+
+                // Create a Map compatible with BillData.parseOcrResult
+                final Map<String, dynamic> billDataMap = {
+                  'displayDate': DateFormat('dd/MM/yyyy').format(manualInputData.date),
+                  'displayTime': DateFormat('HH:mm:ss').format(manualInputData.date),
+                  'billItems': [
+                    {
+                      'name': manualInputData.description ?? manualInputData.category,
+                      'price': manualInputData.nominal,
+                      'quantity': 1,
+                      'total': manualInputData.nominal,
+                    }
+                  ],
+                  'subtotal': manualInputData.nominal,
+                  'pajak': 0.0,
+                  'diskon': 0.0,
+                  'lainnya': 0.0,
+                  'jumlahTotal': manualInputData.nominal,
+                  'category': manualInputData.category, // Add category to the map
+                  'summary': manualInputData.description, // Add description as summary
+                };
+
+                final BillData billData = BillData();
+                billData.parseOcrResult(billDataMap);
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => VerifikasiInputScreen(
-                      journalInput: manualInputData.toString(),
-                      manualInputData: manualInputData,
-                      sourceScreen: InputSource.manual,
-                    ),
+                    builder: (context) => BillDetailsScreen(billData: billData),
                   ),
                 );
               }
