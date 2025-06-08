@@ -3,6 +3,7 @@ import 'package:finlog/screens/splash_onboarding/onboarding_screen.dart'; // Thi
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
 import 'package:finlog/services/bill_storage_service.dart'; // Import BillStorageService
 import 'package:provider/provider.dart'; // Import Provider
+import 'package:finlog/providers/background_provider.dart'; // Import BackgroundProvider
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Required for async operations before runApp
@@ -11,9 +12,8 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        Provider<BillStorageService>(
-          create: (_) => BillStorageService(),
-        ),
+        Provider<BillStorageService>(create: (_) => BillStorageService()),
+        ChangeNotifierProvider(create: (_) => BackgroundProvider()),
       ],
       child: const MyApp(),
     ),
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
-        )
+        ),
       ),
       home: const OnboardingScreen(), // Directly navigate to OnboardingScreen
       debugShowCheckedModeBanner: false,

@@ -6,6 +6,8 @@ import 'package:finlog/widgets/headers/custom_app_bar.dart'; // Import CustomApp
 import 'package:finlog/widgets/navs/custom_bottom_navigation_bar.dart';
 import 'package:finlog/screens/history_screen.dart'; // Import HistoryScreen
 import 'package:finlog/screens/home_content_screen.dart'; // Import HomeContentScreen
+import 'package:provider/provider.dart';
+import 'package:finlog/providers/background_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
@@ -26,18 +28,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Corrected order and number of widgets to align with BottomNavigationBar items
   static final List<Widget> _widgetOptions = <Widget>[
-
     const HomeContentScreen(), // Index 0: Beranda
     const TextInputChoiceScreen(), // Index 1: Input Expense
     const ImageInputChoiceScreen(), // Index 2: Scan
     const HistoryScreen(), // Index 3: Riwayat
     const UnderDevelopmentPage(), // Index 4: Profil
   ];
-  //refactor these code to change the body value 
+  //refactor these code to change the body value
   // this will route to the correct page that contain widget defintions
   // the route is hardcoded into the enum here
-  
+
   void _onItemTapped(int index) {
+    // If we're navigating to the input screens (index 1 or 2), capture the home screen
+    if ((index == 1 || index == 2) && _selectedIndex == 0) {
+      // Capture the current home screen content
+      final homeContent = _widgetOptions.elementAt(0);
+      // Store it in the provider
+      Provider.of<BackgroundProvider>(
+        context,
+        listen: false,
+      ).setHomeScreenWidget(homeContent);
+    }
+
     setState(() {
       _selectedIndex = index;
     });

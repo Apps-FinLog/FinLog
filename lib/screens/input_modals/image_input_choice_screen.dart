@@ -5,6 +5,8 @@ import 'package:finlog/services/ocr_service.dart';
 import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart';
 import 'package:finlog/widgets/loading/loading_overlay.dart';
 import 'package:finlog/models/bill_data.dart'; // Import BillData
+import 'package:provider/provider.dart';
+import 'package:finlog/providers/background_provider.dart';
 
 class ImageInputChoiceScreen extends StatefulWidget {
   const ImageInputChoiceScreen({super.key});
@@ -30,9 +32,8 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
       _isLoading = true;
     });
 
-    final Map<String, dynamic> extractedData = await _ocrService.extractTextFromImage(
-      imageFile,
-    );
+    final Map<String, dynamic> extractedData = await _ocrService
+        .extractTextFromImage(imageFile);
 
     if (!mounted) return;
     // Navigasi ke BillDetailsScreen dan set _isLoading jadi false saat kembali atau selesai
@@ -98,13 +99,7 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
               color: Colors.black,
             ),
           ),
-          Text(
-            line2,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black54,
-            ),
-          ),
+          Text(line2, style: TextStyle(fontSize: 14, color: Colors.black54)),
         ],
       ),
     );
@@ -122,20 +117,20 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              "assets/images/blurred-background.png",
-              fit: BoxFit.cover,
+            child: Consumer<BackgroundProvider>(
+              builder: (context, backgroundProvider, child) {
+                return backgroundProvider.getBlurredBackground();
+              },
             ),
           ),
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
-            
+
             // Pusatkan tombol pilihan
             child: Container(
-
-              padding: EdgeInsets.only(top:20, bottom: 20),
+              padding: EdgeInsets.only(top: 20, bottom: 20),
               color: Colors.white60,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -143,7 +138,7 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
                   _buildOptionItem(
                     context,
                     'Scan Bill', // line1 for first item
-                    'Camera',  // line2 for first item
+                    'Camera', // line2 for first item
                     Icons.camera_alt_outlined, // Icon for Camera
                     () {
                       _pickImage(ImageSource.camera);
@@ -152,7 +147,7 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
                   _buildOptionItem(
                     context,
                     'Scan Bill', // line1 for second item
-                    'Gallery',  // line2 for second item
+                    'Gallery', // line2 for second item
                     Icons.photo_library_outlined, // Icon for Gallery
                     () => _pickImage(ImageSource.gallery),
                   ),
