@@ -28,7 +28,8 @@ Expected JSON structure (similar to BillData object):
   "diskon": <number>,
   "lainnya": <number>,
   "jumlahTotal": <number>,
-  "category": "<string, choose from 'Makanan & Minuman', 'Transportasi', 'Belanja', 'Tagihan', 'Hiburan', 'Kesehatan', 'Pendidikan', 'Lainnya'. Infer 'Lainnya' if not specified or unclear>"
+  "category": "<string, choose from 'Makanan & Minuman', 'Transportasi', 'Belanja', 'Tagihan', 'Hiburan', 'Kesehatan', 'Pendidikan', 'Lainnya'. Infer 'Lainnya' if not specified or unclear>",
+  "summary": "<string, a concise summary of the user's input, e.g., 'Pembelian makanan dan minuman', 'Biaya transportasi', 'Pengeluaran belanja bulanan'. If the input is an income, summarize it as 'Pemasukan dari gaji' or 'Pemasukan dari penjualan'.>"
 }
 
 If the user input is not clear or does not contain enough information to extract all fields, return a JSON object with only the fields that could be confidently extracted. For billItems, if no items are found, return an empty array.
@@ -96,7 +97,8 @@ Expected JSON structure:
   "diskon": <number>,
   "lainnya": <number>,
   "jumlahTotal": <number>,
-  "category": "<string, choose from 'Makanan & Minuman', 'Transportasi', 'Belanja', 'Tagihan', 'Hiburan', 'Kesehatan', 'Pendidikan', 'Lainnya'. Infer 'Lainnya' if not specified or unclear>"
+  "category": "<string, choose from 'Makanan & Minuman', 'Transportasi', 'Belanja', 'Tagihan', 'Hiburan', 'Kesehatan', 'Pendidikan', 'Lainnya'. Infer 'Lainnya' if not specified or unclear>",
+  "summary": "<string, a concise summary of the bill details, e.g., 'Pembelian makanan dan minuman', 'Biaya transportasi', 'Pengeluaran belanja bulanan'.>"
 }
 
 If the image does not contain enough information to extract all fields, return a JSON object with only the fields that could be confidently extracted. For billItems, if no items are found, return an empty array.

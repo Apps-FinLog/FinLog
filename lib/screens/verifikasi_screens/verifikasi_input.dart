@@ -209,7 +209,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Description: ${widget.manualInputData != null ? (widget.manualInputData!.description ?? 'N/A') : widget.journalInput}', // Use original journal input as description
+                            'Description: ${widget.manualInputData != null ? (widget.manualInputData!.description ?? 'N/A') : (_parsedExpenseData?['summary'] ?? widget.journalInput)}', // Use Gemini summary or original journal input as description
                             style: TextStyle(
                               color: Colors.white.withAlpha((255 * 0.9).round()),
                               fontSize: 15,
