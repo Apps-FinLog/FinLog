@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:finlog/services/bill_storage_service.dart';
 import 'package:finlog/models/bill_data.dart';
 import 'package:intl/intl.dart';
+import 'package:finlog/widgets/loading_screen.dart'; // Import the new loading screen
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -64,19 +65,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
+    return SizedBox.expand( // Ensure the Stack takes all available space
+      child: Stack(
         children: [
-          ReusablePageCard(
-            title: 'Transactions to PDF',
-            subtitle: 'Donwload Transaksi menjadi PDF',
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : Column(
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, // Align the card itself to the start (left)
+              children: [
+                ReusablePageCard(
+                  title: 'Transactions to PDF',
+                  subtitle: 'Donwload Transaksi menjadi PDF',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, // Align content to the start (top)
                     children: [
-                      if (_dailyExpenditures.isEmpty)
-                        const Center(
+                      if (_dailyExpenditures.isEmpty && !_isLoading) // Only show "No data" if not loading
+                        const Align(
+                          alignment: Alignment.topCenter,
                           child: Padding(
                             padding: EdgeInsets.all(24.0),
                             child: Text('No bill data available.'),
@@ -90,9 +95,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       }),
                     ],
                   ),
+                ),
+                const SizedBox(height: 24), // Spacer between the two cards
+                // The existing "Transactions to PDF" card
+              ],
+            ),
           ),
-          const SizedBox(height: 24), // Spacer between the two cards
-          // The existing "Transactions to PDF" card
+          if (_isLoading)
+            const Positioned.fill(
+              child: LoadingScreen(
+                message: 'Memuat data transaksi...',
+                subMessage: 'Mohon tunggu sebentar.',
+              ),
+            ),
         ],
       ),
     );
