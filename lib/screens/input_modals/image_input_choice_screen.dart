@@ -143,9 +143,7 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
                     'Camera',  // line2 for first item
                     Icons.camera_alt_outlined, // Icon for Camera
                     () {
-                      Future.delayed(const Duration(milliseconds: 800), () {
-                        _pickImage(ImageSource.camera);
-                      });
+                      _pickImage(ImageSource.camera);
                     },
                   ),
                   _buildOptionItem(
