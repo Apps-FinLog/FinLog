@@ -5,6 +5,7 @@ import 'package:finlog/services/ocr_service.dart';
 import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart';
 import 'package:finlog/widgets/loading/loading_overlay.dart';
 import 'package:finlog/models/bill_data.dart'; // Import BillData
+import 'package:intl/intl.dart'; // Import for DateFormat
 
 class ImageInputChoiceScreen extends StatefulWidget {
   const ImageInputChoiceScreen({super.key});
@@ -35,6 +36,12 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
     );
 
     if (!mounted) return;
+
+    // Explicitly set displayDate and displayTime to current time
+    final now = DateTime.now();
+    extractedData['displayDate'] = DateFormat('dd/MM/yyyy').format(now);
+    extractedData['displayTime'] = DateFormat('HH:mm:ss').format(now);
+
     // Navigasi ke BillDetailsScreen dan set _isLoading jadi false saat kembali atau selesai
     final billData = BillData();
     billData.parseOcrResult(extractedData);
