@@ -2,17 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:finlog/screens/splash_onboarding/onboarding_screen.dart'; // This will be navigated to from SplashScreen
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
 import 'package:finlog/services/bill_storage_service.dart'; // Import BillStorageService
+import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 import 'package:provider/provider.dart'; // Import Provider
+
+late BillStorageService billStorageService;
+late UserProfileService userProfileService;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Required for async operations before runApp
   await dotenv.load(fileName: ".env"); // Load the .env file
-  await BillStorageService().init(); // Initialize Hive
+
+  billStorageService = BillStorageService();
+  await billStorageService.init(); // Initialize BillStorageService
+
+  userProfileService = UserProfileService();
+  await userProfileService.init(); // Initialize UserProfileService
+
   runApp(
     MultiProvider(
       providers: [
         Provider<BillStorageService>(
-          create: (_) => BillStorageService(),
+          create: (_) => billStorageService,
+        ),
+        ChangeNotifierProvider<UserProfileService>(
+          create: (_) => userProfileService,
         ),
       ],
       child: const MyApp(),

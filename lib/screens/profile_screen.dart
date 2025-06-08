@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'dart:convert'; // Import for Base64 encoding/decoding
+import 'dart:typed_data'; // Import for Uint8List
+import 'package:flutter/material.dart'; // Keep this for Material widgets
+import 'package:image_picker/image_picker.dart';
 import 'package:finlog/styles/text_styles.dart';
 import 'package:finlog/styles/colors.dart';
+import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
+import 'package:provider/provider.dart'; // Import Provider
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,15 +17,87 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  File? _image;
+  Uint8List? _imageBytes; // Change type to Uint8List
   String _userName = "John Doe";
   final TextEditingController _nameController = TextEditingController();
   bool _isEditingName = false;
+  bool _hasNameChanged = false; // New state variable
+  bool _hasImageChanged = false; // New state variable
+  late UserProfileService _userProfileService; // Declare UserProfileService
 
   @override
   void initState() {
     super.initState();
-    _nameController.text = _userName;
+    // Initialize _userProfileService after context is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _userProfileService = Provider.of<UserProfileService>(
+        context,
+        listen: false,
+      );
+      _loadUserProfile();
+      _nameController.addListener(_onNameChanged); // Add listener for name changes
+    });
+  }
+
+  void _onNameChanged() {
+    if (_nameController.text != _userName && !_hasNameChanged) {
+      setState(() {
+        _hasNameChanged = true;
+      });
+    } else if (_nameController.text == _userName && _hasNameChanged) {
+      setState(() {
+        _hasNameChanged = false;
+      });
+    }
+  }
+
+  Future<void> _loadUserProfile() async {
+    setState(() { // Move setState to encompass all updates
+      _userName = _userProfileService.getUserName();
+      final imageBase64 = _userProfileService.getProfileImageBase64();
+      if (imageBase64 != null) {
+        try {
+          _imageBytes = base64Decode(imageBase64); // Decode to Uint8List
+        } catch (e) {
+          print('Error decoding Base64 image: $e');
+          _imageBytes = null; // Fallback to default if decoding fails
+        }
+      } else {
+        _imageBytes = null; // Ensure it's null if no image is saved
+      }
+      _nameController.text = _userName;
+    });
+  }
+
+  Future<void> _saveProfileChanges() async {
+    print('ProfileScreen: _saveProfileChanges called.');
+    try {
+      if (_hasNameChanged) {
+        await _userProfileService.saveUserName(_nameController.text);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Nama pengguna berhasil diubah!')),
+        );
+      }
+      if (_hasImageChanged && _imageBytes != null) { // Use _imageBytes
+        final base64String = base64Encode(_imageBytes!); // Encode Uint8List to Base64
+        await _userProfileService.saveProfileImageBase64(base64String);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Foto profil berhasil diubah!')),
+        );
+      }
+      setState(() {
+        // Update _userName with the current text from controller
+        _userName = _nameController.text; 
+        _hasNameChanged = false;
+        _hasImageChanged = false;
+      });
+      print('ProfileScreen: _saveProfileChanges completed successfully.');
+    } catch (e) {
+      print('ProfileScreen: Error saving profile changes: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal menyimpan perubahan: $e')),
+      );
+    }
   }
 
   Future<void> _pickImage() async {
@@ -64,8 +141,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       imageQuality: 75,
                     );
                     if (pickedFile != null) {
+                      final bytes = await pickedFile.readAsBytes();
                       setState(() {
-                        _image = File(pickedFile.path);
+                        _imageBytes = bytes; // Assign bytes directly
+                        _hasImageChanged = true; // Set flag
                       });
                     }
                   },
@@ -82,8 +161,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       imageQuality: 75,
                     );
                     if (pickedFile != null) {
+                      final bytes = await pickedFile.readAsBytes();
                       setState(() {
-                        _image = File(pickedFile.path);
+                        _imageBytes = bytes; // Assign bytes directly
+                        _hasImageChanged = true; // Set flag
                       });
                     }
                   },
@@ -162,10 +243,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.white.withOpacity(0.2),
-                    backgroundImage: _image != null 
-                        ? FileImage(_image!) 
+                    backgroundImage: _imageBytes != null 
+                        ? MemoryImage(_imageBytes!) // Use MemoryImage with Uint8List
                         : const AssetImage('assets/images/user_profile.png') as ImageProvider,
-                    child: _image == null
+                    child: _imageBytes == null // Check _imageBytes for null
                         ? const Icon(Icons.person, color: Colors.white, size: 40)
                         : null,
                   ),
@@ -210,13 +291,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       isDense: true,
                       contentPadding: EdgeInsets.zero,
                     ),
-                    onSubmitted: (newValue) {
+                  onSubmitted: (newValue) {
                       setState(() {
                         _userName = newValue;
                         _isEditingName = false;
                       });
                     },
-                    onTapOutside: (event) {
+                  onTapOutside: (event) {
                       setState(() {
                         _userName = _nameController.text;
                         _isEditingName = false;
@@ -270,7 +351,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildInfoSection() {
+  Widget buildInfoSection() {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       decoration: BoxDecoration(
@@ -373,7 +454,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildMenuTile(
             icon: Icons.auto_awesome,
             title: 'Pengaturan API Gemini',
-            subtitle: 'Konfigurasi AI untuk journaling',
+            subtitle: 'Konfigurasi AI di sini',
             onTap: () {
               _showGeminiSetupDialog();
             },
@@ -804,11 +885,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+      floatingActionButton: (_hasNameChanged || _hasImageChanged)
+          ? FloatingActionButton.extended(
+              onPressed: _saveProfileChanges,
+              label: const Text('Simpan Perubahan'),
+              icon: const Icon(Icons.save),
+              backgroundColor: finlogBluePrimary,
+              foregroundColor: Colors.white,
+            )
+          : null,
     );
   }
 
   @override
   void dispose() {
+    _nameController.removeListener(_onNameChanged); // Remove listener
     _nameController.dispose();
     super.dispose();
   }
