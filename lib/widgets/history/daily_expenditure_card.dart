@@ -13,7 +13,7 @@ class DailyExpenditureCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ReusablePageCard(
       title: DateFormat('EEEE, dd MMMM yyyy').format(dailyExpenditure.date),
-      subtitle: 'Total: \$${dailyExpenditure.items.fold(0.0, (sum, item) => sum + item.total).toStringAsFixed(2)}',
+      subtitle: 'Total: ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(dailyExpenditure.items.fold(0.0, (sum, item) => sum + item.total))}',
       child: Column(
         children: dailyExpenditure.items
             .map((item) => HistoryListItem(billItem: item))

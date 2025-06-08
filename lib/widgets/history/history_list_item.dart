@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/models/bill_item.dart';
+import 'package:intl/intl.dart';
 
 /// A helper widget to represent a single row in the history list.
 class HistoryListItem extends StatelessWidget {
@@ -36,7 +37,7 @@ class HistoryListItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${billItem.quantity} x \$${billItem.price.toStringAsFixed(2)} = \$${billItem.total.toStringAsFixed(2)}',
+                  '${billItem.quantity} x ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(billItem.price)} = ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(billItem.total)}',
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.grey[600],
