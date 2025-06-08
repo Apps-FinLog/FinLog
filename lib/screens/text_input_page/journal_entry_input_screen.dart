@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
-import 'package:finlog/screens/verifikasi_input.dart';
+import 'package:finlog/screens/verifikasi_screens/verifikasi_input.dart';
 
 class JournalEntryInputScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -137,16 +137,16 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
       ),
       backgroundColor: Colors.grey[200],
       resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                _buildJournalInputCard(),
-              ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _buildJournalInputCard(),
+              ),
             ),
-          ),
+          ],
         ),
       ),
       bottomNavigationBar: Container(
