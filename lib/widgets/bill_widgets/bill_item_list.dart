@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/models/bill_data.dart';
+import 'package:intl/intl.dart'; // Import for NumberFormat
 
 class BillItemList extends StatelessWidget {
   final BillData billData;
@@ -28,6 +29,12 @@ class BillItemList extends StatelessWidget {
         itemCount: billData.billItems.length,
         itemBuilder: (context, index) {
           final item = billData.billItems[index];
+          final currencyFormatter = NumberFormat.currency(
+            locale: 'id_ID',
+            symbol: 'Rp ',
+            decimalDigits: 0,
+          );
+
           return Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 8.0,
@@ -50,7 +57,7 @@ class BillItemList extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Rp. ${item.price.toStringAsFixed(0)}',
+                        currencyFormatter.format(item.price),
                         style: TextStyle(
                           color: Colors.white.withAlpha(
                             (0.8) * 255 ~/ 1,
@@ -78,7 +85,7 @@ class BillItemList extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 1),
                     child: Text(
-                      'Rp. ${item.total.toStringAsFixed(0)}',
+                      currencyFormatter.format(item.total),
                       textAlign: TextAlign.right,
                       style: const TextStyle(
                         color: Colors.white,

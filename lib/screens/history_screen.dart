@@ -3,68 +3,111 @@ import 'package:finlog/widgets/components/card.dart';
 import 'package:finlog/models/bill_item.dart';
 import 'package:finlog/models/daily_expenditure.dart';
 import 'package:finlog/widgets/history/daily_expenditure_card.dart';
+import 'package:provider/provider.dart';
+import 'package:finlog/services/bill_storage_service.dart';
+import 'package:finlog/models/bill_data.dart';
+import 'package:intl/intl.dart';
+import 'package:finlog/widgets/loading_screen.dart'; // Import the new loading screen
 
-class HistoryScreen extends StatelessWidget {
+class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
 
-  // Mock data for demonstration
-  List<DailyExpenditure> get _mockDailyExpenditures {
-    return [
-      DailyExpenditure(
-        date: DateTime(2025, 6, 7),
-        items: [
-          BillItem(name: 'Kopi Janji Jiwa', price: 25000, quantity: 1, total: 25000),
-          BillItem(name: 'Makan Siang - Warteg Bahari', price: 30000, quantity: 1, total: 30000),
-        ],
-      ),
-      DailyExpenditure(
-        date: DateTime(2025, 6, 6),
-        items: [
-          BillItem(name: 'Transportasi Gojek', price: 15000, quantity: 1, total: 15000),
-          BillItem(name: 'Belanja Bulanan di Indomaret', price: 120000, quantity: 1, total: 120000),
-        ],
-      ),
-      DailyExpenditure(
-        date: DateTime(2025, 6, 5),
-        items: [
-          BillItem(name: 'Beli Buku', price: 75000, quantity: 1, total: 75000),
-          BillItem(name: 'Bayar Listrik', price: 150000, quantity: 1, total: 150000),
-        ],
-      ),
-      DailyExpenditure(
-        date: DateTime(2025, 6, 4),
-        items: [
-          BillItem(name: 'Pulsa Telepon', price: 50000, quantity: 1, total: 50000),
-          BillItem(name: 'Donasi Amal', price: 20000, quantity: 1, total: 20000),
-        ],
-      ),
-    ];
+  @override
+  State<HistoryScreen> createState() => _HistoryScreenState();
+}
+
+class _HistoryScreenState extends State<HistoryScreen> {
+  List<DailyExpenditure> _dailyExpenditures = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBillData();
+  }
+
+  Future<void> _loadBillData() async {
+    final billStorageService = Provider.of<BillStorageService>(context, listen: false);
+    final List<BillData> allBills = await billStorageService.getAllBills();
+
+    // Group bills by date
+    final Map<DateTime, List<BillItem>> groupedItems = {};
+    for (var bill in allBills) {
+      try {
+        final date = DateFormat('dd/MM/yyyy').parseStrict(bill.displayDate);
+        final normalizedDate = DateTime(date.year, date.month, date.day); // Normalize to remove time component
+        if (!groupedItems.containsKey(normalizedDate)) {
+          groupedItems[normalizedDate] = [];
+        }
+        groupedItems[normalizedDate]!.addAll(bill.billItems);
+      } catch (e) {
+        debugPrint('Error parsing date for bill: ${bill.displayDate}. Error: $e');
+        // Optionally, handle bills with unparseable dates, e.g., skip them or assign to a default date
+      }
+    }
+
+    // Convert grouped items to DailyExpenditure objects
+    final List<DailyExpenditure> dailyExpenditures = groupedItems.entries.map((entry) {
+      return DailyExpenditure(
+        date: entry.key,
+        items: entry.value,
+      );
+    }).toList();
+
+    // Sort by date in descending order
+    dailyExpenditures.sort((a, b) => b.date.compareTo(a.date));
+
+    setState(() {
+      _dailyExpenditures = dailyExpenditures;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
+    return SizedBox.expand( // Ensure the Stack takes all available space
+      child: Stack(
         children: [
-          ReusablePageCard(
-            title: 'Transactions to PDF',
-            subtitle: 'Donwload Transaksi menjadi PDF',
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, // Align the card itself to the start (left)
               children: [
-                // Map mock daily expenditures to DailyExpenditureCard widgets
-                ..._mockDailyExpenditures.map((dailyExp) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 24.0), // Space between cards
-                    child: DailyExpenditureCard(dailyExpenditure: dailyExp),
-                  );
-                }).toList(),
+                ReusablePageCard(
+                  title: 'Transactions to PDF',
+                  subtitle: 'Donwload Transaksi menjadi PDF',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, // Align content to the start (top)
+                    children: [
+                      if (_dailyExpenditures.isEmpty && !_isLoading) // Only show "No data" if not loading
+                        const Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: EdgeInsets.all(24.0),
+                            child: Text('No bill data available.'),
+                          ),
+                        ),
+                      ..._dailyExpenditures.map((dailyExp) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 24.0), // Space between cards
+                          child: DailyExpenditureCard(dailyExpenditure: dailyExp),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24), // Spacer between the two cards
+                // The existing "Transactions to PDF" card
               ],
             ),
           ),
-          const SizedBox(height: 24), // Spacer between the two cards
-          // The existing "Transactions to PDF" card
-          
+          if (_isLoading)
+            const Positioned.fill(
+              child: LoadingScreen(
+                message: 'Memuat data transaksi...',
+                subMessage: 'Mohon tunggu sebentar.',
+              ),
+            ),
         ],
       ),
     );

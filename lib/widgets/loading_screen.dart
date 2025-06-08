@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 const Color finlogLoadingBlue = Color(0xFF0C6BFF);
 
-class LoadingOverlay extends StatelessWidget {
+class LoadingScreen extends StatelessWidget {
   final String message;
   final String subMessage;
 
-  const LoadingOverlay({
+  const LoadingScreen({
     super.key,
     this.message = 'Membaca Item..',
     this.subMessage = 'Tunggu beberapa saat',

@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/models/bill_item.dart';
 import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:hive_ce/hive.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart'; // Import HiveObjectMixin
 
-class BillData extends ChangeNotifier {
+part 'bill_data.g.dart';
+
+@HiveType(typeId: 1)
+class BillData extends ChangeNotifier with HiveObjectMixin {
+  @HiveField(0)
   String displayDate;
+  @HiveField(1)
   String displayTime;
+  @HiveField(2)
   List<BillItem> billItems = [];
+  @HiveField(3)
   double subtotal = 0.0;
+  @HiveField(4)
   double pajak = 0.0;
+  @HiveField(5)
   double diskon = 0.0;
+  @HiveField(6)
   double lainnya = 0.0;
+  @HiveField(7)
   double jumlahTotal = 0.0;
 
   BillData()
@@ -20,8 +33,22 @@ class BillData extends ChangeNotifier {
     if (ocrData['displayDate'] != null && ocrData['displayDate'].isNotEmpty) {
       displayDate = ocrData['displayDate'];
     }
-    if (ocrData['displayTime'] != null && ocrData['displayTime'].isNotEmpty) {
-      displayTime = ocrData['displayTime'];
+
+    // Robustly handle displayTime
+    String? ocrDisplayTime = ocrData['displayTime'];
+    if (ocrDisplayTime != null && ocrDisplayTime.isNotEmpty) {
+      try {
+        // Attempt to parse the time string to validate it
+        DateFormat('HH:mm:ss').parseStrict(ocrDisplayTime);
+        displayTime = ocrDisplayTime;
+      } catch (e) {
+        // If parsing fails, fall back to current time
+        debugPrint('Invalid displayTime from OCR: "$ocrDisplayTime". Falling back to current time. Error: $e');
+        displayTime = DateFormat('HH:mm:ss').format(DateTime.now());
+      }
+    } else {
+      // If ocrDisplayTime is null or empty, use current time (already set by constructor)
+      displayTime = DateFormat('HH:mm:ss').format(DateTime.now());
     }
 
     billItems = [];
