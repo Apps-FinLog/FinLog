@@ -574,6 +574,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _buildSetupStep('5', 'Masukkan ke aplikasi', 'Paste di field API Key'),
               const SizedBox(height: 16),
               TextField(
+                    style: const TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   labelText: 'API Key Gemini',
                   hintText: 'Masukkan API Key Anda...',
