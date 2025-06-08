@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:finlog/screens/placeHolderPage/reusable_place_holder.dart';
+import 'package:finlog/screens/utility_page/reusable_place_holder.dart';
 class UnderDevelopmentPage extends StatelessWidget {
   const UnderDevelopmentPage({super.key});
 
