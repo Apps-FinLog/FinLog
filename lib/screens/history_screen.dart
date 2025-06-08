@@ -25,7 +25,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
     _loadBillData();
   }
 
-  Future<void> _loadBillData() async {    final billStorageService = Provider.of<BillStorageService>(context, listen: false);
+  Future<void> _loadBillData() async {
+    final billStorageService = Provider.of<BillStorageService>(
+      context,
+      listen: false,
+    );
     final List<BillData> allBills = await billStorageService.getAllBills();
 
     // Group bills by date
@@ -33,24 +37,28 @@ class _HistoryScreenState extends State<HistoryScreen> {
     for (var bill in allBills) {
       try {
         final date = DateFormat('dd/MM/yyyy').parseStrict(bill.displayDate);
-        final normalizedDate = DateTime(date.year, date.month, date.day); // Normalize to remove time component
+        final normalizedDate = DateTime(
+          date.year,
+          date.month,
+          date.day,
+        ); // Normalize to remove time component
         if (!groupedBills.containsKey(normalizedDate)) {
           groupedBills[normalizedDate] = [];
         }
         groupedBills[normalizedDate]!.add(bill);
       } catch (e) {
-        debugPrint('Error parsing date for bill: ${bill.displayDate}. Error: $e');
+        debugPrint(
+          'Error parsing date for bill: ${bill.displayDate}. Error: $e',
+        );
         // Optionally, handle bills with unparseable dates, e.g., skip them or assign to a default date
       }
     }
 
     // Convert grouped bills to DailyExpenditure objects
-    final List<DailyExpenditure> dailyExpenditures = groupedBills.entries.map((entry) {
-      return DailyExpenditure(
-        date: entry.key,
-        bills: entry.value,
-      );
-    }).toList();
+    final List<DailyExpenditure> dailyExpenditures =
+        groupedBills.entries.map((entry) {
+          return DailyExpenditure(date: entry.key, bills: entry.value);
+        }).toList();
 
     // Sort by date in descending order
     dailyExpenditures.sort((a, b) => b.date.compareTo(a.date));
@@ -63,42 +71,179 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand( // Ensure the Stack takes all available space
+    return SizedBox.expand(
+      // Ensure the Stack takes all available space
       child: Stack(
         children: [
           SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              // Align the card itself to the start (left)
               children: [
-              SizedBox(
-                width: double.infinity, // Make the card expand to fill available width
-                child: ReusablePageCard(
-                title: 'Transactions to PDF',
-                subtitle: 'Donwload Transaksi menjadi PDF',
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Align content to the start (top)
-                  children: [
-                  if (_dailyExpenditures.isEmpty && !_isLoading) // Only show "No data" if not loading
-                    const Align(
-                    alignment: Alignment.topCenter,
+                // Gradient PDF Export Card - Always show
+                SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      // Gradient background from dark blue to blue
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFF1E3A8A), // Finlog dark blue
+                          Color(0xFF3B82F6), // Blue
+                        ],
+                        stops: [0.0, 1.0],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      // Blue glow shadow effect
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFF3B82F6).withOpacity(0.3), // Blue glow
+                          blurRadius: 20,
+                          spreadRadius: 2,
+                          offset: Offset(0, 8),
+                        ),
+                        BoxShadow(
+                          color: Color(0xFF1E40AF).withOpacity(0.2), // Darker blue shadow
+                          blurRadius: 12,
+                          spreadRadius: 1,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
                     child: Padding(
-                      padding: EdgeInsets.all(24.0),
-                      child: Text('No bill data available.'),
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Header section
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Transactions to PDF',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Download Transaksi menjadi PDF',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white.withOpacity(0.8),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // PDF icon
+                              Icon(
+                                Icons.picture_as_pdf_outlined,
+                                color: Colors.white.withOpacity(0.9),
+                                size: 28,
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Divider
+                          Container(
+                            height: 1,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.white.withOpacity(0.0),
+                                  Colors.white.withOpacity(0.3),
+                                  Colors.white.withOpacity(0.0),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Status section
+                          if (_dailyExpenditures.isEmpty && !_isLoading)
+                            Center(
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.description_outlined,
+                                    size: 48,
+                                    color: Colors.white.withOpacity(0.6),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    'No bill data available.',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.8),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          else if (_dailyExpenditures.isNotEmpty)
+                            Center(
+                              child: Column(
+                                children: [
+                                  
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    '${_dailyExpenditures.length} days of transaction data available',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.9),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      // TODO: Implement PDF export functionality
+                                      
+                                    },
+                                    icon: Icon(Icons.download, size: 20),
+                                    label: Text('Export All to PDF'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Color(0xFF1E3A8A),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
+                  ),
+                ),
+
+                // Daily Expenditure Cards
+                if (_dailyExpenditures.isNotEmpty) ...[
+                  const SizedBox(height: 24),
+                  // Section header
+                    
+                    
+                  const SizedBox(height: 16),
+                  // Daily expenditure cards
+                  ..._dailyExpenditures.map(
+                    (dailyExpenditure) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: DailyExpenditureCard(dailyExpenditure: dailyExpenditure),
                     ),
-                  ],
-                ),
-                ),
-              ),
-                const SizedBox(height: 24), // Spacer between the two cards
-                      ..._dailyExpenditures.map((dailyExp) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 24.0), // Space between cards
-                          child: DailyExpenditureCard(dailyExpenditure: dailyExp),
-                        );
-                      }),
-                // The existing "Transactions to PDF" card
+                  ),
+                ],
               ],
             ),
           ),
@@ -114,3 +259,5 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 }
+
+// TODO: refactor the card into accordion to show details like the item entry
