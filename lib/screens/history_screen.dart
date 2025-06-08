@@ -3,7 +3,6 @@ import 'package:finlog/widgets/components/card.dart';
 import 'package:finlog/models/bill_item.dart';
 import 'package:finlog/models/daily_expenditure.dart';
 import 'package:finlog/widgets/history/daily_expenditure_card.dart';
-import 'package:finlog/widgets/history/history_list_item.dart'; // Import the public HistoryListItem
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
