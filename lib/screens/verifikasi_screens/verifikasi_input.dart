@@ -1,13 +1,15 @@
 import 'package:finlog/screens/text_input_page/journal_entry_input_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart'; // Assuming this file has the necessary colors
-import 'package:finlog/screens/bill_details_screen.dart';
+import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart';
+import 'package:finlog/screens/text_input_page/journal_chat_input_screen.dart';
 import 'package:finlog/screens/text_input_page/manual_input_screen.dart'; // Import ManualInputScreen
 import 'package:finlog/services/gemini_service.dart';
 import 'package:finlog/models/manual_input_data.dart'; // Import ManualInputData
 import 'package:intl/intl.dart'; // Import for DateFormat
 
 enum InputSource { manual, journal, ocr }
+
 
 class VerifikasiInputScreen extends StatefulWidget {
   final String journalInput;
@@ -80,6 +82,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
       _parseJournalEntry();
     } else {
       // If manualInputData is provided or source is manual, no need to parse with Gemini
+      // If manualInputData is provided or source is manual, no need to parse with Gemini
       _isLoading = false;
     }
   }
@@ -94,6 +97,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
       setState(() {
         _parsedExpenseData = parsedData;
       });
+      debugPrint('Parsed Expense Data: $_parsedExpenseData');
       debugPrint('Parsed Expense Data: $_parsedExpenseData');
     } catch (e) {
       setState(() {
@@ -134,6 +138,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => BillDetailsScreen(ocrResult: _parsedExpenseData ?? {})),
+      
     );
   }
 

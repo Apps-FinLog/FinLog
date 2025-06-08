@@ -38,6 +38,7 @@ class ImageConfirmScreen extends StatelessWidget {
                       Icons.close,
                       color: Colors.white,
                       size: 28,
+                      
                     ),
                   ),
                   ElevatedButton(

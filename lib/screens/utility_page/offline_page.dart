@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/screens/placeHolderPage/reusable_place_holder.dart';
+
+import 'package:finlog/screens/utility_page/reusable_place_holder.dart';
 class OfflinePage extends StatelessWidget {
   const OfflinePage({super.key});
 
@@ -8,9 +9,9 @@ class OfflinePage extends StatelessWidget {
     return const Scaffold(
       backgroundColor: Colors.white,
       body: ReusablePlaceholder(
-      imagePath: 'assets/images/flame.png',
-      titleText: 'Operasi Berhasil\nDilakukan',
-      subtitleText: 'mengalihkan ke \n halaman utama',
+      imagePath: 'assets/images/wifi-off.png',
+      titleText: 'Anda sedang \nmode offline',
+      subtitleText: 'mengalihkan ke \n pencatatan manual',
     ), 
     );
   }
