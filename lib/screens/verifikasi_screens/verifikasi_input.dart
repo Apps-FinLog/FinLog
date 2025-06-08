@@ -5,6 +5,7 @@ import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart';
 import 'package:finlog/screens/text_input_page/manual_input_screen.dart'; // Import ManualInputScreen
 import 'package:finlog/services/gemini_service.dart';
 import 'package:finlog/models/manual_input_data.dart'; // Import ManualInputData
+import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:intl/intl.dart'; // Import for DateFormat
 
 enum InputSource { manual, journal, ocr }
@@ -131,10 +132,11 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   void _konfirmasi() {
     // Handle confirmation logic
     debugPrint('Konfirmasi ditekan');
+    final billData = BillData();
+    billData.parseOcrResult(_parsedExpenseData ?? {});
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => BillDetailsScreen(ocrResult: _parsedExpenseData ?? {})),
-      
+      MaterialPageRoute(builder: (context) => BillDetailsScreen(billData: billData)),
     );
   }
 

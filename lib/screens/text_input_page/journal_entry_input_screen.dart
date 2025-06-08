@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
 import 'package:finlog/screens/verifikasi_screens/bill_details_screen.dart'; // Import BillDetailsScreen
 import 'package:finlog/services/gemini_service.dart'; // Import GeminiService
+import 'package:finlog/models/bill_data.dart'; // Import BillData
 
 class JournalEntryInputScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -52,10 +53,12 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
       if (!mounted) return; // Check mounted before using context
 
       if (_parsedExpenseData != null) {
+        final billData = BillData();
+        billData.parseOcrResult(_parsedExpenseData!);
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BillDetailsScreen(ocrResult: _parsedExpenseData!),
+            builder: (context) => BillDetailsScreen(billData: billData),
           ),
         );
       } else if (_errorMessage != null) {

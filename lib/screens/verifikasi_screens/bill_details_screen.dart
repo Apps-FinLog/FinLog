@@ -9,8 +9,8 @@ import 'package:finlog/widgets/bill_widgets/bill_item_list.dart'; // Import Bill
 import 'package:finlog/widgets/bill_widgets/bill_action_buttons.dart'; // Import BillActionButtons
 
 class BillDetailsScreen extends StatefulWidget {
-  final Map<String, dynamic> ocrResult;
-  const BillDetailsScreen({super.key, required this.ocrResult});
+  final BillData billData;
+  const BillDetailsScreen({super.key, required this.billData});
 
   @override
   State<BillDetailsScreen> createState() => _BillDetailsScreenState();
@@ -22,8 +22,7 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    _billData = BillData();
-    _billData.parseOcrResult(widget.ocrResult);
+    _billData = widget.billData;
   }
 
   void _ubahBill() {
