@@ -6,6 +6,7 @@ import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 import 'package:provider/provider.dart'; // Import Provider
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finlog/widgets/loading/loading_overlay.dart';
 
 class JournalEntryInputScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -57,12 +58,24 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
     }
   }
 
-  void _confirmJournalEntry() async { // Make it async
+  void _confirmJournalEntry() async {
     final String journalEntry = _journalInputController.text.trim();
     if (journalEntry.isNotEmpty) {
-      await _parseJournalEntry(); // Call parsing logic
+      // Show loading overlay
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          opaque: false,
+          pageBuilder: (BuildContext context, _, __) => const LoadingOverlay(),
+        ),
+      );
 
-      if (!mounted) return; // Check mounted before using context
+      await _parseJournalEntry();
+
+      if (!mounted) return;
+
+      // Pop loading overlay
+      Navigator.pop(context);
 
       if (_parsedExpenseData != null) {
         final billData = BillData();
@@ -79,7 +92,7 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
         );
       }
     } else {
-      if (!mounted) return; // Check mounted before using context
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.enterJournalEntryBeforeConfirming)),
       );
