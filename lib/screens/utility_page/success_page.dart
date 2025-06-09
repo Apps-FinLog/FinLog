@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/screens/utility_page/reusable_place_holder.dart';
 
+
 class SuccessPage extends StatelessWidget {
   final String? title;
   final String? subtitle;
@@ -12,6 +13,9 @@ class SuccessPage extends StatelessWidget {
     this.subtitle,
     this.imagePath,
   });
+
+import 'package:finlog/l10n/app_localizations.dart';
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +39,13 @@ class SuccessPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: ReusablePlaceholder(
-        imagePath: imagePath ?? 'assets/images/flame.png',
-        titleText: title ?? 'Operasi Berhasil\nDilakukan',
-        subtitleText: subtitle ?? 'mengalihkan ke \n halaman utama',
-      ),
+
+   
+      imagePath: 'assets/images/flame.png',
+      titleText: AppLocalizations.of(context)!.operationSuccessfulTitle,
+      subtitleText: AppLocalizations.of(context)!.redirectingToHomePage,
+    ), 
+
     );
   }
 }

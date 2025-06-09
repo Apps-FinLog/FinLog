@@ -3,12 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:finlog/widgets/components/card.dart';
 import 'package:finlog/models/daily_expenditure.dart';
+
 import 'package:finlog/widgets/history/bill_summary_item.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:finlog/widgets/pdf/generate_pdf.dart';
 import 'package:finlog/screens/utility_page/success_page.dart';
+
+import 'package:finlog/widgets/history/history_list_item.dart';
+import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
+import 'package:provider/provider.dart'; // Import Provider
+
 
 class DailyExpenditureCard extends StatefulWidget {
   final DailyExpenditure dailyExpenditure;
@@ -22,6 +28,7 @@ class DailyExpenditureCard extends StatefulWidget {
 class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
   @override
   Widget build(BuildContext context) {
+
     // Add safety check for empty bills list
     final bills = widget.dailyExpenditure.bills;
     if (bills.isEmpty) {
@@ -35,13 +42,17 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
     }
     
     final totalAmount = bills.fold(0.0, (sum, bill) => sum + bill.jumlahTotal);
-    
+    final userProfileService = Provider.of<UserProfileService>(context);
+    final currentLocale = userProfileService.currentLocale;
     return ReusablePageCard(
-      title: DateFormat(
-        'EEEE, dd MMMM yyyy',
+      title: DateFormat('EEEE, dd MMMM yyyy', currentLocale.languageCode).format(dailyExpenditure.date),
       ).format(widget.dailyExpenditure.date),
-      subtitle:
-          'Total: ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(totalAmount)}',
+      subtitle: 'Total: ${NumberFormat.currency(locale: currentLocale.languageCode, symbol: currentLocale.languageCode == 'id' ? 'Rp ' : '\$', decimalDigits: 0).format(dailyExpenditure.items.fold(0.0, (sum, item) => sum + item.total))}',
+
+   
+
+    
+
       child: Column(
         children: [
           Divider(color: Colors.grey[300], thickness: 1),

@@ -3,6 +3,8 @@ import 'package:finlog/widgets/homeWidgets/home_filter_buttons.dart';
 import 'package:finlog/widgets/homeWidgets/home_catat_cepat_card.dart';
 import 'package:finlog/widgets/homeWidgets/home_catat_jurnal_card.dart';
 import 'package:finlog/widgets/homeWidgets/home_summary_card.dart';
+import 'package:finlog/l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 class HomeContentScreen extends StatelessWidget {
   const HomeContentScreen({super.key});
@@ -24,7 +26,10 @@ class HomeContentScreen extends StatelessWidget {
               );
             },
             amount: 1300000, // Example amount
-            title: 'Pengeluaran Mei 2025', // Example title
+            title: AppLocalizations.of(context)!.expenditureMonthYear(
+              DateFormat.MMMM(Localizations.localeOf(context).languageCode).format(DateTime.now()),
+              DateTime.now().year.toString(),
+            ),
           ),
           const SizedBox(height: 24),
           CatatCepat(),
