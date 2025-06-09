@@ -28,13 +28,12 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
     super.initState();
     _loadBillData();
   }
-
   Future<void> _loadBillData() async {
     final billStorageService = Provider.of<BillStorageService>(
       context,
       listen: false,
     );
-    final List<BillData> allBills = await billStorageService.getAllBills();
+    final List<BillData> allBills = billStorageService.getAllBills();
 
     // Group bills by date
     final Map<DateTime, List<BillData>> groupedBills = {};
