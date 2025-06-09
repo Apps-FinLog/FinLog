@@ -22,6 +22,72 @@ class SummaryCard extends StatefulWidget {
 
 class _SummaryCardState extends State<SummaryCard> {
   bool _isHidden = false;
+  BillStorageService? _billStorageService;
+  double _amount = 0.0;
+  double _progressValue = 0.0;
+  String _monthName = '';
+  bool _hasData = false;
+  bool _isProviderInitialized = false; // Flag to ensure one-time setup
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialization logic moved to didChangeDependencies
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isProviderInitialized) {
+      _billStorageService = Provider.of<BillStorageService>(context, listen: false);
+      _billStorageService?.addListener(_onBillStorageChanged);
+      _updateSummaryData(); // Initial data load
+      _isProviderInitialized = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    _billStorageService?.removeListener(_onBillStorageChanged);
+    super.dispose();
+  }
+
+  void _onBillStorageChanged() {
+    if (mounted) {
+      _updateSummaryData();
+    }
+  }
+
+  void _updateSummaryData() {
+    if (!mounted) return;
+
+    if (_billStorageService == null) {
+      debugPrint("Error: BillStorageService is null in _updateSummaryData (SummaryCard). This should not happen if didChangeDependencies executed correctly.");
+      // Attempt to re-initialize as a fallback
+      _billStorageService = Provider.of<BillStorageService>(context, listen: false);
+      _billStorageService?.addListener(_onBillStorageChanged);
+      if (_billStorageService == null) {
+          if (mounted) {
+            setState(() {
+              _hasData = false;
+              _amount = 0.0;
+              _progressValue = 0.0;
+              _monthName = '';
+            });
+          }
+          return; // Cannot proceed
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _amount = _billStorageService!.getTargetMonthTotalExpenses();
+        _progressValue = _billStorageService!.getTargetMonthProgressValue();
+        _monthName = _billStorageService!.getCurrentMonthName(context);
+        _hasData = _billStorageService!.hasTargetMonthData();
+      });
+    }
+  }
 
   // Format amount to x.xx Jt format
   String formatAmount(double amount) {
@@ -36,89 +102,80 @@ class _SummaryCardState extends State<SummaryCard> {
     }
   }  @override
   Widget build(BuildContext context) {
-    return Consumer<BillStorageService>(
-      builder: (context, billStorageService, child) {
-        final double amount = billStorageService.getTargetMonthTotalExpenses();
-        final double progressValue = billStorageService.getTargetMonthProgressValue();
-        final String monthName = billStorageService.getCurrentMonthName(
-          context,
-        );
-        final bool hasData = billStorageService.hasTargetMonthData();
-
-        return Card(
-          elevation: 2.0,
-          margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: BorderSide(color: Colors.grey[300]!, width: 0.5),
-          ),
-          color: Colors.grey[100],
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          widget.title,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+    return Card(
+      elevation: 2.0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: Colors.grey[300]!, width: 0.5),
+      ),
+      color: Colors.grey[100],
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
                       ),
-                      IconButton(
-                        icon: Icon(
-                          !_isHidden
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility,
-                          color: Colors.grey[600],
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _isHidden = !_isHidden;
-                          });
-                        },
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                      ),
-                    ],
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                PieChart1(
-                  progressValue: progressValue,
-                  title: widget.title,
-                  hidden: _isHidden,
-                  amount: amount,
-                  monthName: monthName,
-                  hasData: hasData,
-                ),
-                const SizedBox(height: 20),
-                _buildStatusMessage(hasData, amount, progressValue),
-                const SizedBox(height: 16),
-                ButtonPrimary(
-                  text: AppLocalizations.of(context)!.viewDashboardButton,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const UnderDevelopmentPage(),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                  IconButton(
+                    icon: Icon(
+                      !_isHidden
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility,
+                      color: Colors.grey[600],
+                    ),
+                    onPressed: () {
+                      if (mounted) {
+                        setState(() {
+                          _isHidden = !_isHidden;
+                        });
+                      }
+                    },
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 20),
+            PieChart1(
+              progressValue: _progressValue, // USE STATE FIELD
+              title: widget.title,
+              hidden: _isHidden,
+              amount: _amount, // USE STATE FIELD
+              monthName: _monthName, // USE STATE FIELD
+              hasData: _hasData, // USE STATE FIELD
+            ),
+            const SizedBox(height: 20),
+            _buildStatusMessage(_hasData, _amount, _progressValue), // USE STATE FIELDS
+            const SizedBox(height: 16),
+            ButtonPrimary(
+              text: AppLocalizations.of(context)!.viewDashboardButton,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UnderDevelopmentPage(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
   Widget _buildStatusMessage(bool hasData, double amount, double progressValue) {

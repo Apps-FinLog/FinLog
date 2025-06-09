@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:finlog/models/daily_expenditure.dart';
 import 'package:finlog/widgets/history/daily_expenditure_card.dart';
 import 'package:provider/provider.dart';
 import 'package:finlog/services/bill_storage_service.dart';
 import 'package:finlog/models/bill_data.dart';
 import 'package:intl/intl.dart';
-import 'package:finlog/widgets/loading_screen.dart'; // Import the new loading screen
+import 'package:finlog/widgets/loading_screen.dart';
 import 'package:finlog/l10n/app_localizations.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -19,96 +18,124 @@ class HistoryScreen extends StatefulWidget {
 class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveClientMixin {
   List<DailyExpenditure> _dailyExpenditures = [];
   bool _isLoading = true;
+  BillStorageService? _billStorageService;
+  bool _isProviderInitialized = false;
 
   @override
   bool get wantKeepAlive => true;
 
   @override
-  void initState() {
-    super.initState();
-    _loadBillData();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isProviderInitialized) {
+      _billStorageService = Provider.of<BillStorageService>(context, listen: false);
+      _billStorageService?.addListener(_onBillStorageChanged);
+      _loadBillData(); // Initial data load
+      _isProviderInitialized = true;
+    }
   }
-  Future<void> _loadBillData() async {
-    final billStorageService = Provider.of<BillStorageService>(
-      context,
-      listen: false,
-    );
-    final List<BillData> allBills = billStorageService.getAllBills();
 
-    // Group bills by date
+  @override
+  void dispose() {
+    _billStorageService?.removeListener(_onBillStorageChanged);
+    super.dispose();
+  }
+
+  void _onBillStorageChanged() {
+    if (mounted) {
+      _loadBillData();
+    }
+  }
+
+  Future<void> _loadBillData() async {
+    if (!mounted) return;
+
+    // Ensure setState is called safely
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
+
+    // Guard against _billStorageService being null, though it should be set in didChangeDependencies
+    if (_billStorageService == null) {
+      debugPrint("Error: BillStorageService is null in _loadBillData (HistoryScreen). This should not happen if didChangeDependencies executed correctly.");
+      // Attempt to re-initialize as a fallback, though this indicates a deeper issue.
+      _billStorageService = Provider.of<BillStorageService>(context, listen: false);
+      _billStorageService?.addListener(_onBillStorageChanged);
+      if (_billStorageService == null) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        return; // Cannot proceed without the service
+      }
+    }
+    
+    final List<BillData> allBills = _billStorageService!.getAllBills();
+
     final Map<DateTime, List<BillData>> groupedBills = {};
     for (var bill in allBills) {
       try {
         final date = DateFormat('dd/MM/yyyy').parseStrict(bill.displayDate);
-        final normalizedDate = DateTime(
-          date.year,
-          date.month,
-          date.day,
-        ); // Normalize to remove time component
+        final normalizedDate = DateTime(date.year, date.month, date.day);
         if (!groupedBills.containsKey(normalizedDate)) {
           groupedBills[normalizedDate] = [];
         }
         groupedBills[normalizedDate]!.add(bill);
       } catch (e) {
-        debugPrint(
-          'Error parsing date for bill: ${bill.displayDate}. Error: $e',
-        );
-        // Optionally, handle bills with unparseable dates, e.g., skip them or assign to a default date
+        debugPrint('Error parsing date for bill: ${bill.displayDate}. Error: $e');
       }
     }
 
-    // Convert grouped bills to DailyExpenditure objects
-    final List<DailyExpenditure> dailyExpenditures =
-        groupedBills.entries.map((entry) {
-          return DailyExpenditure(date: entry.key, bills: entry.value);
-        }).toList();
+    final List<DailyExpenditure> dailyExpenditures = groupedBills.entries.map((entry) {
+      return DailyExpenditure(date: entry.key, bills: entry.value);
+    }).toList();
 
-    // Sort by date in descending order
     dailyExpenditures.sort((a, b) => b.date.compareTo(a.date));
 
-    setState(() {
-      _dailyExpenditures = dailyExpenditures;
-      _isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _dailyExpenditures = dailyExpenditures;
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Call super.build(context)
+    super.build(context);
     return SizedBox.expand(
-      // Ensure the Stack takes all available space
       child: Stack(
         children: [
           SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                // Gradient PDF Export Card - Always show
                 SizedBox(
                   width: double.infinity,
                   child: Container(
                     decoration: BoxDecoration(
-                      // Gradient background from dark blue to blue
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Color(0xFF1E3A8A), // Finlog dark blue
-                          Color(0xFF3B82F6), // Blue
+                          Color(0xFF1E3A8A),
+                          Color(0xFF3B82F6),
                         ],
                         stops: [0.0, 1.0],
                       ),
                       borderRadius: BorderRadius.circular(16),
-                      // Blue glow shadow effect
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF3B82F6).withValues(alpha:0.3), // Blue glow
+                          color: Color(0xFF3B82F6).withValues(alpha:0.3),
                           blurRadius: 20,
                           spreadRadius: 2,
                           offset: Offset(0, 8),
                         ),
                         BoxShadow(
-                          color: Color(0xFF1E40AF).withValues(alpha:0.2), // Darker blue shadow
+                          color: Color(0xFF1E40AF).withValues(alpha:0.2),
                           blurRadius: 12,
                           spreadRadius: 1,
                           offset: Offset(0, 4),
@@ -120,7 +147,6 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Header section
                           Row(
                             children: [
                               Expanded(
@@ -146,7 +172,6 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
                                   ],
                                 ),
                               ),
-                              // PDF icon
                               Icon(
                                 Icons.picture_as_pdf_outlined,
                                 color: Colors.white.withValues(alpha:0.9),
@@ -154,10 +179,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
                               ),
                             ],
                           ),
-
                           const SizedBox(height: 16),
-
-                          // Divider
                           Container(
                             height: 1,
                             decoration: BoxDecoration(
@@ -170,10 +192,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
                               ),
                             ),
                           ),
-
                           const SizedBox(height: 16),
-
-                          // Status section
                           if (_dailyExpenditures.isEmpty && !_isLoading)
                             Center(
                               child: Column(
@@ -200,7 +219,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
                                 children: [
                                   const SizedBox(height: 12),
                                   Text(
-                                    AppLocalizations.of(context)!.transactionDaysAvailable(_dailyExpenditures.length),
+                                    '${_dailyExpenditures.length} days of transaction data available',
                                     style: TextStyle(
                                       color: Colors.white.withValues(alpha:0.9),
                                       fontSize: 12,
@@ -211,13 +230,12 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
                                   ElevatedButton.icon(
                                     onPressed: () {
                                       // TODO: Implement PDF export functionality
-                                      
                                     },
-                                    icon: const Icon(Icons.download, size: 20),
-                                    label: Text(AppLocalizations.of(context)!.exportAllToPdf),
+                                    icon: Icon(Icons.download, size: 20),
+                                    label: Text('Export All to PDF'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
-                                      foregroundColor: const Color(0xFF1E3A8A),
+                                      foregroundColor: Color(0xFF1E3A8A),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -231,15 +249,9 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
                     ),
                   ),
                 ),
-
-                // Daily Expenditure Cards
                 if (_dailyExpenditures.isNotEmpty) ...[
                   const SizedBox(height: 24),
-                  // Section header
-                    
-                    
                   const SizedBox(height: 16),
-                  // Daily expenditure cards
                   ..._dailyExpenditures.map(
                     (dailyExpenditure) => Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
