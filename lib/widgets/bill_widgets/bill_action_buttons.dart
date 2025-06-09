@@ -4,11 +4,13 @@ import 'package:finlog/styles/colors.dart'; // Import shared colors
 class BillActionButtons extends StatelessWidget {
   final VoidCallback onUbahBill;
   final VoidCallback onKonfirmasiBill;
+  final bool isEditing;
 
   const BillActionButtons({
     super.key,
     required this.onUbahBill,
     required this.onKonfirmasiBill,
+    required this.isEditing,
   });
 
   @override
@@ -28,8 +30,8 @@ class BillActionButtons extends StatelessWidget {
                 ),
                 elevation: 0.5,
               ),
-              child: const Text(
-                'Ubah Bill',
+              child: Text(
+                isEditing ? 'Batalkan' : 'Ubah Bill',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,

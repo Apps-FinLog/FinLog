@@ -6,13 +6,13 @@ part 'bill_item.g.dart';
 @HiveType(typeId: 0)
 class BillItem extends HiveObject {
   @HiveField(0)
-  final String name;
+  String name;
   @HiveField(1)
-  final double price;
+  double price;
   @HiveField(2)
-  final int quantity;
+  int quantity;
   @HiveField(3)
-  final double total;
+  double total;
 
   BillItem({
     required this.name,
@@ -20,4 +20,8 @@ class BillItem extends HiveObject {
     required this.quantity,
     required this.total,
   });
+
+  void updateTotal() {
+    total = price * quantity;
+  }
 }
