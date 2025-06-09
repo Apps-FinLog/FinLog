@@ -28,11 +28,13 @@ class BillSummaryItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            child: Column(
+            child:            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  billData.billItems.first.name,
+                  billData.billItems.isNotEmpty 
+                    ? billData.billItems.first.name
+                    : 'No items',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

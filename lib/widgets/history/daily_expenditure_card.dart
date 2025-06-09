@@ -43,18 +43,28 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
       });
     }
   }
-
   @override
   Widget build(BuildContext context) {
-    final totalAmount = widget.dailyExpenditure.bills.fold(
+    // Add safety check for empty bills list
+    final bills = widget.dailyExpenditure.bills;
+    if (bills.isEmpty) {
+      return ReusablePageCard(
+        title: DateFormat('EEEE, dd MMMM yyyy').format(widget.dailyExpenditure.date),
+        subtitle: 'No bills for this date',
+        child: const Center(
+          child: Text('No expenditure data available'),
+        ),
+      );
+    }
+
+    final totalAmount = bills.fold(
       0.0,
       (sum, bill) => sum + bill.jumlahTotal,
     );
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (didPop) {
         _abortDownload();
-        return true;
       },
       child: ReusablePageCard(
         title: DateFormat(
@@ -62,29 +72,34 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
         ).format(widget.dailyExpenditure.date),
         subtitle:
             'Total: ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(totalAmount)}',
-        child: Column(
-          children: [
-            Divider(color: Colors.grey[300], thickness: 1),
-            ...widget.dailyExpenditure.bills.map(
-              (bill) => BillSummaryItem(billData: bill),
-            ),
+        child: Column(          children: [            Divider(color: Colors.grey[300], thickness: 1),
+            ...bills
+                .where((bill) => bill.billItems.isNotEmpty)
+                .map((bill) => BillSummaryItem(billData: bill)),
             const SizedBox(height: 24),
             Divider(color: Colors.grey[300], thickness: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                // SHARE BUTTON
+              children: [                // SHARE BUTTON
                 IconButton(
                   icon: Icon(Icons.share, size: 24, color: Colors.blue),
                   onPressed: () async {
-                    debugPrint(
-                      'share button pressed for ${widget.dailyExpenditure.date}',
-                    );
-                    final doc = await generatePdfDoc(
-                      widget.dailyExpenditure.bills,
-                      widget.dailyExpenditure.date,
-                    );
-                    await sharePdf(doc, widget.dailyExpenditure.date);
+                    if (!mounted || bills.isEmpty) return;
+                    
+                    try {
+                      debugPrint(
+                        'share button pressed for ${widget.dailyExpenditure.date}',
+                      );
+                      final doc = await generatePdfDoc(
+                        bills,
+                        widget.dailyExpenditure.date,
+                      );
+                      if (mounted) {
+                        await sharePdf(doc, widget.dailyExpenditure.date);
+                      }
+                    } catch (e) {
+                      debugPrint('Share error: $e');
+                    }
                   },
                 ),
 
@@ -108,9 +123,8 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
                     Icons.file_download_outlined,
                     size: 28,
                     color: Colors.blue,
-                  ),
-                  onPressed: () async {
-                    if (!mounted) return;
+                  ),                  onPressed: () async {
+                    if (!mounted || bills.isEmpty) return;
 
                     setState(() {
                       _isDownloading = true;
@@ -122,9 +136,11 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
                       );
 
                       final doc = await generatePdfDocument(
-                        widget.dailyExpenditure.bills,
+                        bills,
                         widget.dailyExpenditure.date,
                       );
+
+                      if (!mounted) return;
 
                       await savePdfToDevice(doc);
 
@@ -134,17 +150,14 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
                         _isDownloading = false;
                       });
 
-                      // Navigate to success page and return automatically after 2 seconds
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SuksesPage(),
-                        ),
-                      );
-
-                      if (mounted && Navigator.canPop(context)) {
-                        await Future.delayed(const Duration(seconds: 2));
-                        Navigator.pop(context);
+                      // Navigate to success page
+                      if (mounted) {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SuksesPage(),
+                          ),
+                        );
                       }
                     } catch (e) {
                       debugPrint('Download error: $e');
