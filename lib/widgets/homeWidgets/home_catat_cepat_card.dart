@@ -3,6 +3,8 @@ import 'package:finlog/styles/colors.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:finlog/l10n/app_localizations.dart';
+import 'package:finlog/screens/text_input_page/manual_input_screen.dart';
+
 
 class CatatCepat extends StatefulWidget {
   const CatatCepat({super.key});
@@ -99,6 +101,29 @@ class _CatatCepatState extends State<CatatCepat> {
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,
             ),
+            suffixIcon: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _nominalController,
+              builder: (context, value, child) {
+                if (value.text.isNotEmpty) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ManualInputScreen(initialNominal: _nominalController.text)),
+                      );
+                    },
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: finlogBluePrimaryDark.withAlpha(
+                        (255 * 0.7).round(),
+                      ),
+                      size: 20,
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           ),
           validator: validator,
         ),
@@ -131,7 +156,7 @@ class _CatatCepatState extends State<CatatCepat> {
           Row(
             children: [
               Text(
-                AppLocalizations.of(context)!.recordFinanceNow,
+                AppLocalizations.of(context)!.recordQuickly,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

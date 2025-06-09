@@ -52,20 +52,15 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
     }
   }
 
-  Future<void> _loadUserProfile() async {
-    setState(() { // Move setState to encompass all updates
+  void _loadUserProfile() {
+    setState(() {
+      // Ambil nama dari service
       _userName = _userProfileService.getUserName();
-      final imageBase64 = _userProfileService.getProfileImageBase64();
-      if (imageBase64 != null) {
-        try {
-          _imageBytes = base64Decode(imageBase64); // Decode to Uint8List
-        } catch (e) {
-          debugPrint('Error decoding Base64 image: $e');
-          _imageBytes = null; // Fallback to default if decoding fails
-        }
-      } else {
-        _imageBytes = null; // Ensure it's null if no image is saved
-      }
+      
+      // Ambil gambar dari CACHE, bukan decode ulang. Ini kuncinya!
+      _imageBytes = _userProfileService.cachedImageBytes;
+
+      // Sinkronkan controller dengan nama yang baru dimuat
       _nameController.text = _userName;
     });
   }
@@ -203,16 +198,31 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [finlogBluePrimaryDark, finlogBluePrimary],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF1E3A8A), // Finlog dark blue
+            Color(0xFF3B82F6), // Blue
+          ],
+          stops: [0.0, 1.0],
         ),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: finlogBluePrimary.withAlpha((255 * 0.3).round()),
+            color: const Color(
+              0xFF3B82F6,
+            ).withAlpha((255 * 0.3).round()), // Blue glow
+            blurRadius: 20,
+            spreadRadius: 2,
+            offset: const Offset(0, 8),
+          ),
+          BoxShadow(
+            color: const Color(
+              0xFF1E40AF,
+            ).withAlpha((255 * 0.2).round()), // Darker blue shadow
             blurRadius: 12,
-            offset: const Offset(0, 6),
+            spreadRadius: 1,
+            offset: const Offset(0, 4),
           ),
         ],
       ),

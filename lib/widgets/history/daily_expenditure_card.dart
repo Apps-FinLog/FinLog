@@ -57,8 +57,8 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
         currentLocale.languageCode,
       ).format(widget.dailyExpenditure.date),
       subtitle: 'Total: ${NumberFormat.currency(
-        locale: currentLocale.languageCode,
-        symbol: currentLocale.languageCode == 'id' ? 'Rp ' : '\$',
+        locale: 'id_ID', // Always use Indonesian locale for currency formatting
+        symbol: 'Rp ', // Always use Rp symbol
         decimalDigits: 0,
       ).format(totalAmount)}',
       child: Column(

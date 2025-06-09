@@ -3,6 +3,7 @@ import 'package:finlog/models/bill_data.dart';
 import 'package:finlog/constants/chart_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 class BillStorageService extends ChangeNotifier {
   static const String _billBoxName = 'bills';
@@ -102,13 +103,37 @@ class BillStorageService extends ChangeNotifier {
   }
 
   // Get current month name in Indonesian
-  String getCurrentMonthName() {
+  String getCurrentMonthName(BuildContext context) {
     final now = DateTime.now();
-    if (now.month == ChartConstants.targetMonth && now.year == ChartConstants.targetYear) {
-      return ChartConstants.monthName;
+    final month = now.month;
+    switch (month) {
+      case 1:
+        return AppLocalizations.of(context)!.monthJanuary;
+      case 2:
+        return AppLocalizations.of(context)!.monthFebruary;
+      case 3:
+        return AppLocalizations.of(context)!.monthMarch;
+      case 4:
+        return AppLocalizations.of(context)!.monthApril;
+      case 5:
+        return AppLocalizations.of(context)!.monthMay;
+      case 6:
+        return AppLocalizations.of(context)!.monthJune;
+      case 7:
+        return AppLocalizations.of(context)!.monthJuly;
+      case 8:
+        return AppLocalizations.of(context)!.monthAugust;
+      case 9:
+        return AppLocalizations.of(context)!.monthSeptember;
+      case 10:
+        return AppLocalizations.of(context)!.monthOctober;
+      case 11:
+        return AppLocalizations.of(context)!.monthNovember;
+      case 12:
+        return AppLocalizations.of(context)!.monthDecember;
+      default:
+        return ''; // Should not happen
     }
-    // If not current month, return the target month name
-    return ChartConstants.monthName;
   }
 
   // Check if target month has any data

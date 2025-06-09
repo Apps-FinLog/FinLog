@@ -221,7 +221,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get selectCategory => 'Pilih Kategori';
 
   @override
-  String get recordFinanceNow => 'Catat Keuangan\nSekarang Yuk!';
+  String get recordFinanceNow => 'Catat Keuanganmu\nSekarang Yuk!';
 
   @override
   String get nominalLabel => 'Nominal';
@@ -287,6 +287,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get recordFinanceToday => 'Yuk ~ catat!';
+
+  @override
+  String get recordQuickly => 'Catat Cepat!';
 
   @override
   String get rememberIt => 'Seingat kamu ya!';
@@ -467,4 +470,45 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get totalAmountLabel => 'Jumlah Total';
+
+  @override
+  String transactionDaysAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hari data transaksi tersedia',
+      one: '1 hari data transaksi tersedia',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exportAllToPdf => 'Ekspor Semua ke PDF';
+
+  @override
+  String get noExpenseData => 'Belum ada data pengeluaran';
+
+  @override
+  String get startScanningReceiptsForSummary =>
+      'Mulai scan struk untuk melihat ringkasan';
+
+  @override
+  String get spendingNearLimit => 'Pengeluaran mendekati batas!';
+
+  @override
+  String get considerReducingSpending =>
+      'Pertimbangkan untuk mengurangi pengeluaran';
+
+  @override
+  String get spendingWithinReasonableLimits => 'Pengeluaran dalam batas wajar';
+
+  @override
+  String get monitorYourSpending => 'Pantau terus pengeluaran Anda';
+
+  @override
+  String get spendingWellControlled => 'Pengeluaran terkendali dengan baik';
+
+  @override
+  String get continueGoodSavingHabits =>
+      'Lanjutkan kebiasaan menabung yang baik';
 }

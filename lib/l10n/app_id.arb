@@ -67,7 +67,7 @@
     "categoryOther": "Lainnya",
     "categoryTitle": "Kategori",
     "selectCategory": "Pilih Kategori",
-    "recordFinanceNow": "Catat Keuangan\nSekarang Yuk!",
+    "recordFinanceNow": "Catat Keuanganmu\nSekarang Yuk!",
     "nominalLabel": "Nominal",
     "nominalHint": "Contoh: Rp 1.000.000",
     "nominalEmptyValidation": "Nominal tidak boleh kosong",
@@ -88,6 +88,7 @@
     "failedToParseExpense": "Gagal memproses pengeluaran: {error}",
     "enterJournalEntryBeforeConfirming": "Mohon masukkan entri jurnal sebelum mengkonfirmasi.",
     "recordFinanceToday": "Yuk ~ catat!",
+    "recordQuickly": "Catat Cepat!",
     "rememberIt": "Seingat kamu ya!",
     "notAvailable": "N/A",
     "invalidDateFormat": "Format Tanggal Tidak Valid",
@@ -145,5 +146,22 @@
     "taxLabel": "Pajak",
     "discountLabel": "Diskon",
     "otherLabel": "Lainnya",
-    "totalAmountLabel": "Jumlah Total"
+    "totalAmountLabel": "Jumlah Total",
+    "transactionDaysAvailable": "{count, plural, one{1 hari data transaksi tersedia} other{{count} hari data transaksi tersedia}}",
+    "@transactionDaysAvailable": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "exportAllToPdf": "Ekspor Semua ke PDF",
+    "noExpenseData": "Belum ada data pengeluaran",
+    "startScanningReceiptsForSummary": "Mulai scan struk untuk melihat ringkasan",
+    "spendingNearLimit": "Pengeluaran mendekati batas!",
+    "considerReducingSpending": "Pertimbangkan untuk mengurangi pengeluaran",
+    "spendingWithinReasonableLimits": "Pengeluaran dalam batas wajar",
+    "monitorYourSpending": "Pantau terus pengeluaran Anda",
+    "spendingWellControlled": "Pengeluaran terkendali dengan baik",
+    "continueGoodSavingHabits": "Lanjutkan kebiasaan menabung yang baik"
 }

@@ -9,7 +9,9 @@ import 'package:finlog/widgets/navs/dual_action_buttons.dart';
 import 'package:finlog/l10n/app_localizations.dart';
 
 class ManualInputScreen extends StatefulWidget {
-  const ManualInputScreen({super.key});
+  final String? initialNominal;
+
+  const ManualInputScreen({super.key, this.initialNominal});
 
   @override
   State<ManualInputScreen> createState() => _ManualInputScreenState();
@@ -35,6 +37,9 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
     // Initialize with a default date and format it
     _selectedDate = DateTime.now();
     _dateController = TextEditingController(text: DateFormat('dd/MM/yyyy').format(_selectedDate!));
+    if (widget.initialNominal != null) {
+      _nominalController.text = widget.initialNominal!;
+    }
     _nominalController.addListener(_formatNominal);
   }
 
@@ -232,6 +237,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           child: InkWell(
             borderRadius: BorderRadius.circular(10),
             onTap: () {
+              FocusScope.of(context).unfocus(); // Dismiss keyboard
               setState(() {
                 _isCategoryExpanded = !_isCategoryExpanded;
               });

@@ -7,6 +7,7 @@ import 'package:finlog/services/user_profile_service.dart'; // Import UserProfil
 import 'package:provider/provider.dart'; // Import Provider
 import 'package:finlog/l10n/app_localizations.dart';
 import 'package:finlog/widgets/loading/loading_overlay.dart';
+import 'package:intl/intl.dart';
 
 class JournalEntryInputScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -78,6 +79,10 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
       Navigator.pop(context);
 
       if (_parsedExpenseData != null) {
+        // Add the selected date to the parsed data
+        _parsedExpenseData!['displayDate'] = DateFormat('dd/MM/yyyy').format(widget.selectedDate);
+        _parsedExpenseData!['displayTime'] = DateFormat('HH:mm:ss').format(widget.selectedDate);
+
         final billData = BillData();
         billData.parseOcrResult(_parsedExpenseData!);
         Navigator.push(
