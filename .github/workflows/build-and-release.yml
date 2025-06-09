@@ -1,13 +1,11 @@
-name: Flutter Build and Release APK on Merge
+name: Flutter Build and Release APK on Push to Main
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [ main ]
 
 jobs:
   build_and_release:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -25,17 +23,14 @@ jobs:
       - name: Read pubspec.yaml semantic version
         id: pubspec
         run: |
-          # Read the line starting with 'version:', extract the value, and remove everything from '+' onwards
           VERSION_LINE=$(grep '^version:' pubspec.yaml)
           SEMANTIC_VERSION=$(echo "$VERSION_LINE" | sed 's/version: //g' | sed 's/+\.*//g' | tr -d '[:space:]')
           echo "semantic_version=$SEMANTIC_VERSION" >> $GITHUB_OUTPUT
-          echo "Full version line from pubspec: $VERSION_LINE" # For debugging
-          echo "Extracted semantic version: $SEMANTIC_VERSION" # For debugging
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.3' # Adjusted to a more recent stable version, change if needed
+          flutter-version: '3.19.3' # Adjusted, change if needed
 
       - name: Install dependencies
         run: flutter pub get
@@ -43,8 +38,6 @@ jobs:
       - name: Create .env file
         run: |
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
-      
-      # Analyze and Test steps are removed as they are checked in the PR workflow
 
       # --- Build APK with Overridden Version ---
       - name: Build APK
@@ -63,14 +56,16 @@ jobs:
         with:
           tag_name: ${{ steps.create_tag.outputs.tag_name }}
           release_name: "Release v${{ steps.pubspec.outputs.semantic_version }}+${{ github.run_number }}"
+          # --- IMPORTANT: Updated body to use commit info ---
           body: |
-            Automated release triggered by merge of PR #${{ github.event.pull_request.number }}:
+            Automated release triggered by push to main.
             **Version:** v${{ steps.pubspec.outputs.semantic_version }}+${{ github.run_number }}
-            **Title:** ${{ github.event.pull_request.title }}
-            **Author:** ${{ github.event.pull_request.user.login }}
-            **Link:** ${{ github.event.pull_request.html_url }}
-
-            ${{ github.event.pull_request.body }}
+            
+            **Commit Details:**
+            ${{ github.event.head_commit.message }}
+            
+            Author: ${{ github.event.head_commit.author.name }}
+            Commit: ${{ github.sha }}
           draft: false
           prerelease: false
 
