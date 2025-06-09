@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/text_styles.dart';
 import 'package:finlog/screens/home_screen.dart'; // Import the new home screen
+import 'package:finlog/services/onboarding_service.dart'; // Import OnboardingService
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -13,6 +14,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   double _indicatorPosition = 0.0; // For smooth animation
+  bool _isCompleting = false; // Prevent multiple navigation calls
 
   @override
   void initState() {
@@ -23,11 +25,51 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       });
     });
   }
-
+  
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+  void _completeOnboarding(BuildContext context) async {
+    // Prevent multiple taps
+    if (_isCompleting) return;
+    
+    debugPrint('🔄 Starting onboarding completion...');
+    setState(() => _isCompleting = true);
+    
+    try {
+      await OnboardingService.markOnboardingComplete();
+      debugPrint('✅ Onboarding marked as complete');
+      
+      if (mounted && context.mounted) {
+        debugPrint('🧭 Navigating to home screen...');
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+            settings: const RouteSettings(name: '/home'),
+          ),
+          (route) => false, // Remove all previous routes
+        );
+        debugPrint('✅ Navigation completed');
+      } else {
+        debugPrint('❌ Context not mounted, skipping navigation');
+      }
+    } catch (e) {
+      debugPrint('❌ Error in onboarding completion: $e');
+      if (mounted) {
+        setState(() => _isCompleting = false);
+        // Optionally show error to user
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error completing onboarding: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
   }
 
   List<Widget> _buildPages() {
@@ -177,21 +219,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   textStyle: AppTextStyles.onboardingButton,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
-                onPressed: () {
+                  ),                ),
+                onPressed: _isCompleting ? null : () {
                   final isLastPage =
                       _pageController.page == _buildPages().length - 1;
                   if (isLastPage) {
                     if (kDebugMode) {
                       print("Onboarding completed!");
                     }
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
-                      ),
-                    );
+                    _completeOnboarding(context);
                   } else {
                     _pageController.nextPage(
                       duration: const Duration(milliseconds: 400),
@@ -199,14 +235,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     );
                   }
                 },
-                child: Text(
-                  _pageController.hasClients &&
-                          (_pageController.page ?? 0).round() ==
-                              _buildPages().length - 1
-                      ? 'Mulai'
-                      : 'Lanjut',
-                  style: const TextStyle(color: Colors.white),
-                ),
+                child: _isCompleting 
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Text(
+                      _pageController.hasClients &&
+                              (_pageController.page ?? 0).round() ==
+                                  _buildPages().length - 1
+                          ? 'Mulai'
+                          : 'Lanjut',
+                      style: const TextStyle(color: Colors.white),
+                    ),
               ),
             ),
           ),
