@@ -33,6 +33,7 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
   }
 
   void _abortDownload() {
+    if (_isCancelled) return; // Prevent multiple calls
     _isCancelled = true;
     if (_downloadCompleter != null && !_downloadCompleter!.isCompleted) {
       _downloadCompleter!.complete();
@@ -43,27 +44,24 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     // Add safety check for empty bills list
     final bills = widget.dailyExpenditure.bills;
     if (bills.isEmpty) {
       return ReusablePageCard(
-        title: DateFormat('EEEE, dd MMMM yyyy').format(widget.dailyExpenditure.date),
+        title: DateFormat(
+          'EEEE, dd MMMM yyyy',
+        ).format(widget.dailyExpenditure.date),
         subtitle: 'No bills for this date',
-        child: const Center(
-          child: Text('No expenditure data available'),
-        ),
+        child: const Center(child: Text('No expenditure data available')),
       );
     }
 
-    final totalAmount = bills.fold(
-      0.0,
-      (sum, bill) => sum + bill.jumlahTotal,
-    );
-
+    final totalAmount = bills.fold(0.0, (sum, bill) => sum + bill.jumlahTotal);
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         _abortDownload();
       },
       child: ReusablePageCard(
@@ -72,7 +70,9 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
         ).format(widget.dailyExpenditure.date),
         subtitle:
             'Total: ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(totalAmount)}',
-        child: Column(          children: [            Divider(color: Colors.grey[300], thickness: 1),
+        child: Column(
+          children: [
+            Divider(color: Colors.grey[300], thickness: 1),
             ...bills
                 .where((bill) => bill.billItems.isNotEmpty)
                 .map((bill) => BillSummaryItem(billData: bill)),
@@ -80,12 +80,13 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
             Divider(color: Colors.grey[300], thickness: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [                // SHARE BUTTON
+              children: [
+                // SHARE BUTTON
                 IconButton(
                   icon: Icon(Icons.share, size: 24, color: Colors.blue),
                   onPressed: () async {
                     if (!mounted || bills.isEmpty) return;
-                    
+
                     try {
                       debugPrint(
                         'share button pressed for ${widget.dailyExpenditure.date}',
@@ -117,57 +118,38 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
                     // Add edit logic here
                   },
                 ),
-
                 IconButton(
-                  icon: const Icon(
-                    Icons.file_download_outlined,
-                    size: 28,
-                    color: Colors.blue,
-                  ),                  onPressed: () async {
-                    if (!mounted || bills.isEmpty) return;
-
-                    setState(() {
-                      _isDownloading = true;
-                    });
-
-                    try {
-                      debugPrint(
-                        'Download started for ${widget.dailyExpenditure.date}',
-                      );
-
-                      final doc = await generatePdfDocument(
-                        bills,
-                        widget.dailyExpenditure.date,
-                      );
-
-                      if (!mounted) return;
-
-                      await savePdfToDevice(doc);
-
-                      if (!mounted) return;
-
-                      setState(() {
-                        _isDownloading = false;
-                      });
-
-                      // Navigate to success page
-                      if (mounted) {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SuksesPage(),
+                  icon:
+                      _isDownloading
+                          ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Icon(
+                            Icons.file_download_outlined,
+                            size: 28,
+                            color: Colors.blue,
                           ),
-                        );
-                      }
-                    } catch (e) {
-                      debugPrint('Download error: $e');
-                      if (mounted) {
-                        setState(() {
-                          _isDownloading = false;
-                        });
-                      }
-                    }
-                  },
+                  onPressed:
+                      _isDownloading
+                          ? null
+                          : () async {
+                            if (!mounted || bills.isEmpty) return;
+
+                            setState(() {
+                              _isDownloading = true;
+                            });
+
+                               if (mounted) {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SuksesPage(),
+                                  ),
+                                );
+                              }
+                          },
                 ),
               ],
             ),
@@ -194,3 +176,10 @@ Future<void> sharePdf(pw.Document doc, DateTime date) async {
 Future<pw.Document> generatePdfDoc(List<BillData> bills, DateTime date) async {
   return await generatePdfDocument(bills, date);
 }
+
+
+// TODO: implement the logic to handle the icon beside each item to show each bill detail in a modal that has the same table as the ones in the generated pdf 
+
+// TODO: implement edit each bill item in the card modal user can choose which bill to discard or even edit 
+
+// TODO: implement edit bill screen that is reusable in every flow 

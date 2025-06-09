@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/widgets/components/card.dart';
+
 import 'package:finlog/models/daily_expenditure.dart';
 import 'package:finlog/widgets/history/daily_expenditure_card.dart';
 import 'package:provider/provider.dart';
@@ -98,13 +98,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       // Blue glow shadow effect
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF3B82F6).withOpacity(0.3), // Blue glow
+                          color: Color(0xFF3B82F6).withValues(alpha:0.3), // Blue glow
                           blurRadius: 20,
                           spreadRadius: 2,
                           offset: Offset(0, 8),
                         ),
                         BoxShadow(
-                          color: Color(0xFF1E40AF).withOpacity(0.2), // Darker blue shadow
+                          color: Color(0xFF1E40AF).withValues(alpha:0.2), // Darker blue shadow
                           blurRadius: 12,
                           spreadRadius: 1,
                           offset: Offset(0, 4),
@@ -136,7 +136,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                       'Download Transaksi menjadi PDF',
                                       style: TextStyle(
                                         fontSize: 14,
-                                        color: Colors.white.withOpacity(0.8),
+                                        color: Colors.white.withValues(alpha:0.8),
                                       ),
                                     ),
                                   ],
@@ -145,7 +145,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               // PDF icon
                               Icon(
                                 Icons.picture_as_pdf_outlined,
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withValues(alpha:0.9),
                                 size: 28,
                               ),
                             ],
@@ -159,9 +159,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.white.withOpacity(0.0),
-                                  Colors.white.withOpacity(0.3),
-                                  Colors.white.withOpacity(0.0),
+                                  Colors.white.withValues(alpha:0.0),
+                                  Colors.white.withValues(alpha:0.3),
+                                  Colors.white.withValues(alpha:0.0),
                                 ],
                               ),
                             ),
@@ -177,13 +177,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                   Icon(
                                     Icons.description_outlined,
                                     size: 48,
-                                    color: Colors.white.withOpacity(0.6),
+                                    color: Colors.white.withValues(alpha:0.6),
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
                                     'No bill data available.',
                                     style: TextStyle(
-                                      color: Colors.white.withOpacity(0.8),
+                                      color: Colors.white.withValues(alpha:0.8),
                                       fontSize: 16,
                                     ),
                                   ),
@@ -199,7 +199,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                   Text(
                                     '${_dailyExpenditures.length} days of transaction data available',
                                     style: TextStyle(
-                                      color: Colors.white.withOpacity(0.9),
+                                      color: Colors.white.withValues(alpha:0.9),
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
                                     ),
