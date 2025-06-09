@@ -470,14 +470,15 @@ void _showGeminiSetupDialog() {
           (context) => AlertDialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-            ),
-            title: Row(
+            ),            title: Row(
               children: [
                 Icon(Icons.auto_awesome, color: finlogBluePrimary),
                 const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(context)!.geminiApiSetupTitle,
-                  style: const TextStyle(color: Colors.black),
+                Flexible(
+                  child: Text(
+                    AppLocalizations.of(context)!.geminiApiSetupTitle,
+                    style: const TextStyle(color: Colors.black),
+                  ),
                 ),
               ],
             ),

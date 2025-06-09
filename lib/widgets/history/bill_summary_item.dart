@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/models/bill_data.dart';
 import 'package:intl/intl.dart';
+import 'package:finlog/widgets/modals/bill_preview_modal.dart';
 
 class BillSummaryItem extends StatelessWidget {
   final BillData billData;
@@ -72,17 +73,37 @@ class BillSummaryItem extends StatelessWidget {
                     color: Color(0xFF888888),
                   ),
                   overflow: TextOverflow.ellipsis,
-                ),
-            ],
+                ),            ],
           ),
           const SizedBox(width: 16),
-          Icon(
-            icon,
-            color: Colors.grey[300],
-            size: 24,
+          GestureDetector(
+            onTap: () => _showBillPreviewModal(context),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.preview_outlined,
+                color: Colors.grey[600],
+                size: 20,
+              ),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  void _showBillPreviewModal(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black54,
+      builder: (BuildContext context) {
+        return BillPreviewModal(billData: billData);
+      },
     );
   }
 }
