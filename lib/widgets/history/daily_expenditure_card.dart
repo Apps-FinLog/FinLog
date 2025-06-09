@@ -10,6 +10,7 @@ import 'package:printing/printing.dart';
 import 'package:finlog/widgets/pdf/generate_pdf.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:finlog/screens/utility_page/success_page.dart';
 
 class DailyExpenditureCard extends StatefulWidget {
   final DailyExpenditure dailyExpenditure;
@@ -53,8 +54,7 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
           Divider(color: Colors.grey[300], thickness: 1),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              // SHARE BUTTON
+            children: [              // SHARE BUTTON
               IconButton(
                 icon: Icon(Icons.share, size: 24, color: Colors.blue),
                 onPressed: () async {
@@ -69,11 +69,23 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
                       widget.dailyExpenditure.date,
                     );
 
-                    // the flow couldnt reach beloww
                     debugPrint('PDF generated for ${widget.dailyExpenditure.date}');
 
                     if (mounted) {
                       await sharePdf(doc, widget.dailyExpenditure.date);
+                      
+                      // Navigate to success page after successful share
+                      if (mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SuccessPage(
+                              title: 'PDF Berhasil Dibagikan',
+                              subtitle: 'File telah berhasil dibagikan',
+                            ),
+                          ),
+                        );
+                      }
                     }
                   } catch (e) {
                     debugPrint('Share error: $e');
@@ -95,8 +107,7 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
                   // Add edit logic here
                 },
               ),
-              
-              IconButton(
+                IconButton(
                 icon: const Icon(
                   Icons.file_download_outlined,
                   size: 28,
@@ -118,6 +129,19 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
                     if (!mounted) return;
 
                     await savePdfToDevice(doc, widget.dailyExpenditure.date);
+                    
+                    // Navigate to success page after successful download
+                    if (mounted) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SuccessPage(
+                            title: 'PDF Berhasil Diunduh',
+                            subtitle: 'File telah tersimpan di perangkat',
+                          ),
+                        ),
+                      );
+                    }
                   } catch (e) {
                     debugPrint('Download error: $e');
                   }
