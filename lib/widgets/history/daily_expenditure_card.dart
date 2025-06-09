@@ -160,17 +160,7 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
       
       await sharePdf(doc, widget.dailyExpenditure.date);
       
-      if (mounted && context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const SuccessPage(
-              title: 'PDF Berhasil Dibagikan',
-              subtitle: 'File telah berhasil dibagikan',
-            ),
-          ),
-        );
-      }
+      
     } catch (e) {
       debugPrint('Share error: $e');
       if (mounted) {
@@ -196,18 +186,18 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
       
       final doc = await generatePdfDoc(bills, widget.dailyExpenditure.date);
       await savePdfToDevice(doc, widget.dailyExpenditure.date);
-      
-      if (mounted && context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const SuccessPage(
-              title: 'PDF Berhasil Diunduh',
-              subtitle: 'File telah tersimpan di perangkat',
-            ),
-          ),
-        );
-      }
+      // TODO: receive the event from the preview page that the user has download the pdf and then add to the if
+      // if (mounted && context.mounted) {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => const SuccessPage(
+      //         title: 'PDF Berhasil Diunduh',
+      //         subtitle: 'File telah tersimpan di perangkat',
+      //       ),
+      //     ),
+      //   );
+      // }
     } catch (e) {
       debugPrint('Download error: $e');
       if (mounted) {

@@ -837,18 +837,6 @@ void _showGeminiSetupDialog() {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.profileScreenTitle, style: AppTextStyles.appBarTitle),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0),
-          child: Container(
-            color: finlogButtonGrey,
-            height: 1.0,
-          ),
-        ),
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
