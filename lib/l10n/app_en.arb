@@ -155,5 +155,13 @@
             }
         }
     },
-    "exportAllToPdf": "Export All to PDF"
+    "exportAllToPdf": "Export All to PDF",
+    "noExpenseData": "No expense data available",
+    "startScanningReceiptsForSummary": "Start scanning receipts to see a summary",
+    "spendingNearLimit": "Spending near limit!",
+    "considerReducingSpending": "Consider reducing spending",
+    "spendingWithinReasonableLimits": "Spending within reasonable limits",
+    "monitorYourSpending": "Monitor your spending",
+    "spendingWellControlled": "Spending well controlled",
+    "continueGoodSavingHabits": "Continue good saving habits"
 }

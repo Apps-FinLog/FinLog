@@ -155,5 +155,13 @@
             }
         }
     },
-    "exportAllToPdf": "Ekspor Semua ke PDF"
+    "exportAllToPdf": "Ekspor Semua ke PDF",
+    "noExpenseData": "Belum ada data pengeluaran",
+    "startScanningReceiptsForSummary": "Mulai scan struk untuk melihat ringkasan",
+    "spendingNearLimit": "Pengeluaran mendekati batas!",
+    "considerReducingSpending": "Pertimbangkan untuk mengurangi pengeluaran",
+    "spendingWithinReasonableLimits": "Pengeluaran dalam batas wajar",
+    "monitorYourSpending": "Pantau terus pengeluaran Anda",
+    "spendingWellControlled": "Pengeluaran terkendali dengan baik",
+    "continueGoodSavingHabits": "Lanjutkan kebiasaan menabung yang baik"
 }

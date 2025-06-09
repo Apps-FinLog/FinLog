@@ -482,4 +482,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportAllToPdf => 'Export All to PDF';
+
+  @override
+  String get noExpenseData => 'No expense data available';
+
+  @override
+  String get startScanningReceiptsForSummary =>
+      'Start scanning receipts to see a summary';
+
+  @override
+  String get spendingNearLimit => 'Spending near limit!';
+
+  @override
+  String get considerReducingSpending => 'Consider reducing spending';
+
+  @override
+  String get spendingWithinReasonableLimits =>
+      'Spending within reasonable limits';
+
+  @override
+  String get monitorYourSpending => 'Monitor your spending';
+
+  @override
+  String get spendingWellControlled => 'Spending well controlled';
+
+  @override
+  String get continueGoodSavingHabits => 'Continue good saving habits';
 }

@@ -484,4 +484,31 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get exportAllToPdf => 'Ekspor Semua ke PDF';
+
+  @override
+  String get noExpenseData => 'Belum ada data pengeluaran';
+
+  @override
+  String get startScanningReceiptsForSummary =>
+      'Mulai scan struk untuk melihat ringkasan';
+
+  @override
+  String get spendingNearLimit => 'Pengeluaran mendekati batas!';
+
+  @override
+  String get considerReducingSpending =>
+      'Pertimbangkan untuk mengurangi pengeluaran';
+
+  @override
+  String get spendingWithinReasonableLimits => 'Pengeluaran dalam batas wajar';
+
+  @override
+  String get monitorYourSpending => 'Pantau terus pengeluaran Anda';
+
+  @override
+  String get spendingWellControlled => 'Pengeluaran terkendali dengan baik';
+
+  @override
+  String get continueGoodSavingHabits =>
+      'Lanjutkan kebiasaan menabung yang baik';
 }

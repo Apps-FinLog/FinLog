@@ -4,6 +4,7 @@ import 'package:finlog/widgets/dataVisual/pie_chart_1.dart';
 import 'package:finlog/widgets/buttons/button_primary.dart';
 import 'package:finlog/services/bill_storage_service.dart';
 import 'package:provider/provider.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 class SummaryCard extends StatefulWidget {
   final String title;
@@ -39,7 +40,9 @@ class _SummaryCardState extends State<SummaryCard> {
       builder: (context, billStorageService, child) {
         final double amount = billStorageService.getTargetMonthTotalExpenses();
         final double progressValue = billStorageService.getTargetMonthProgressValue();
-        final String monthName = billStorageService.getCurrentMonthName();
+        final String monthName = billStorageService.getCurrentMonthName(
+          context,
+        );
         final bool hasData = billStorageService.hasTargetMonthData();
 
         return Card(
@@ -101,7 +104,7 @@ class _SummaryCardState extends State<SummaryCard> {
                 _buildStatusMessage(hasData, amount, progressValue),
                 const SizedBox(height: 16),
                 ButtonPrimary(
-                  text: 'Lihat Dashboard',
+                  text: AppLocalizations.of(context)!.viewDashboardButton,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -127,7 +130,7 @@ class _SummaryCardState extends State<SummaryCard> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Belum ada data pengeluaran',
+                  AppLocalizations.of(context)!.noExpenseData,
                   style: TextStyle(fontSize: 13, color: Colors.grey[700]),
                 ),
                 const SizedBox(width: 4),
@@ -136,7 +139,7 @@ class _SummaryCardState extends State<SummaryCard> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Mulai scan struk untuk melihat ringkasan',
+              AppLocalizations.of(context)!.startScanningReceiptsForSummary,
               style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
@@ -154,7 +157,7 @@ class _SummaryCardState extends State<SummaryCard> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Pengeluaran mendekati batas!',
+                  AppLocalizations.of(context)!.spendingNearLimit,
                   style: TextStyle(fontSize: 13, color: Colors.red[700]),
                 ),
                 const SizedBox(width: 4),
@@ -163,7 +166,7 @@ class _SummaryCardState extends State<SummaryCard> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Pertimbangkan untuk mengurangi pengeluaran',
+              AppLocalizations.of(context)!.considerReducingSpending,
               style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
@@ -178,7 +181,7 @@ class _SummaryCardState extends State<SummaryCard> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Pengeluaran dalam batas wajar',
+                  AppLocalizations.of(context)!.spendingWithinReasonableLimits,
                   style: TextStyle(fontSize: 13, color: Colors.orange[700]),
                 ),
                 const SizedBox(width: 4),
@@ -187,7 +190,7 @@ class _SummaryCardState extends State<SummaryCard> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Pantau terus pengeluaran Anda',
+              AppLocalizations.of(context)!.monitorYourSpending,
               style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
@@ -202,7 +205,7 @@ class _SummaryCardState extends State<SummaryCard> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Pengeluaran terkendali dengan baik',
+                  AppLocalizations.of(context)!.spendingWellControlled,
                   style: TextStyle(fontSize: 13, color: Colors.green[700]),
                 ),
                 const SizedBox(width: 4),
@@ -211,7 +214,7 @@ class _SummaryCardState extends State<SummaryCard> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Lanjutkan kebiasaan menabung yang baik',
+              AppLocalizations.of(context)!.continueGoodSavingHabits,
               style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),

@@ -991,6 +991,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export All to PDF'**
   String get exportAllToPdf;
+
+  /// No description provided for @noExpenseData.
+  ///
+  /// In en, this message translates to:
+  /// **'No expense data available'**
+  String get noExpenseData;
+
+  /// No description provided for @startScanningReceiptsForSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Start scanning receipts to see a summary'**
+  String get startScanningReceiptsForSummary;
+
+  /// No description provided for @spendingNearLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending near limit!'**
+  String get spendingNearLimit;
+
+  /// No description provided for @considerReducingSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Consider reducing spending'**
+  String get considerReducingSpending;
+
+  /// No description provided for @spendingWithinReasonableLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending within reasonable limits'**
+  String get spendingWithinReasonableLimits;
+
+  /// No description provided for @monitorYourSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitor your spending'**
+  String get monitorYourSpending;
+
+  /// No description provided for @spendingWellControlled.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending well controlled'**
+  String get spendingWellControlled;
+
+  /// No description provided for @continueGoodSavingHabits.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue good saving habits'**
+  String get continueGoodSavingHabits;
 }
 
 class _AppLocalizationsDelegate
