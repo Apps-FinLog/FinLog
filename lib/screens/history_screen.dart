@@ -8,7 +8,7 @@ import 'package:finlog/services/bill_storage_service.dart';
 import 'package:finlog/models/bill_data.dart';
 import 'package:intl/intl.dart';
 import 'package:finlog/widgets/loading_screen.dart'; // Import the new loading screen
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});

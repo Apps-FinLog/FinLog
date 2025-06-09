@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 import 'package:finlog/screens/utility_page/reusable_place_holder.dart';
 class UnderDevelopmentPage extends StatelessWidget {

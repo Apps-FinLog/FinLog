@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
 import 'package:finlog/screens/text_input_page/journal_input_date.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 class HomeCatatJurnalCard extends StatelessWidget {
   const HomeCatatJurnalCard({super.key});

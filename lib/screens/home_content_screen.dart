@@ -3,7 +3,7 @@ import 'package:finlog/widgets/homeWidgets/home_filter_buttons.dart';
 import 'package:finlog/widgets/homeWidgets/home_catat_cepat_card.dart';
 import 'package:finlog/widgets/homeWidgets/home_catat_jurnal_card.dart';
 import 'package:finlog/widgets/homeWidgets/home_summary_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class HomeContentScreen extends StatelessWidget {

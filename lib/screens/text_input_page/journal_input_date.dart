@@ -3,7 +3,7 @@ import 'package:finlog/styles/colors.dart'; // Assuming this file has the necess
 import 'package:intl/intl.dart'; // For date formatting if needed for calendar
 import 'package:finlog/screens/text_input_page/journal_entry_input_screen.dart'; // Import the next screen
 import 'package:finlog/widgets/navs/dual_action_buttons.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 
 class JournalInputDateScreen extends StatefulWidget {

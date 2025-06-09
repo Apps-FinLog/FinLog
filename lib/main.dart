@@ -5,7 +5,7 @@ import 'package:finlog/services/bill_storage_service.dart'; // Import BillStorag
 import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 import 'package:provider/provider.dart'; // Import Provider
 import 'package:flutter_localizations/flutter_localizations.dart'; // Import for localization delegates
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import generated localizations
+import 'package:finlog/l10n/app_localizations.dart'; // Import generated localizations
 
 late BillStorageService billStorageService;
 late UserProfileService userProfileService;

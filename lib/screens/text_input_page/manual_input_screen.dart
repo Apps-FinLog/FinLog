@@ -6,7 +6,7 @@ import 'package:finlog/models/bill_data.dart'; // New import
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart'; // For TextInputFormatter
 import 'package:finlog/widgets/navs/dual_action_buttons.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 class ManualInputScreen extends StatefulWidget {
   const ManualInputScreen({super.key});

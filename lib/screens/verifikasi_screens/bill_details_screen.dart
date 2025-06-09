@@ -9,7 +9,7 @@ import 'package:finlog/widgets/bill_widgets/bill_item_list.dart'; // Import Bill
 import 'package:finlog/widgets/bill_widgets/bill_action_buttons.dart'; // Import BillActionButtons
 import 'package:intl/intl.dart'; // Import for NumberFormat
 import 'package:finlog/services/bill_storage_service.dart'; // Import BillStorageService
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 class BillDetailsScreen extends StatefulWidget {
   final BillData billData;

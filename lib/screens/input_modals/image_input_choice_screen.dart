@@ -7,7 +7,7 @@ import 'package:finlog/widgets/loading/loading_overlay.dart';
 import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 import 'package:provider/provider.dart'; // Import Provider
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 class ImageInputChoiceScreen extends StatefulWidget {
   const ImageInputChoiceScreen({super.key});

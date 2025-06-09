@@ -6,7 +6,7 @@ import 'package:finlog/styles/text_styles.dart';
 import 'package:finlog/styles/colors.dart';
 import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 import 'package:provider/provider.dart'; // Import Provider
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import generated localizations
+import 'package:finlog/l10n/app_localizations.dart'; // Import generated localizations
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
