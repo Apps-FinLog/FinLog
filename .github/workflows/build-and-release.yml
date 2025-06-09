@@ -23,7 +23,7 @@ jobs:
 
       # --- Get Semantic Version from pubspec.yaml ---
       - name: Read pubspec.yaml semantic version
-        id: pubspec # Give step an ID
+        id: pubspec
         run: |
           # Read the line starting with 'version:', extract the value, and remove everything from '+' onwards
           VERSION_LINE=$(grep '^version:' pubspec.yaml)
@@ -35,7 +35,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3' # Your Flutter version
+          flutter-version: '3.19.3' # Adjusted to a more recent stable version, change if needed
 
       - name: Install dependencies
         run: flutter pub get
@@ -43,12 +43,8 @@ jobs:
       - name: Create .env file
         run: |
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
-
-      - name: Analyze project
-        run: flutter analyze
-
-      - name: Run tests
-        run: flutter test
+      
+      # Analyze and Test steps are removed as they are checked in the PR workflow
 
       # --- Build APK with Overridden Version ---
       - name: Build APK

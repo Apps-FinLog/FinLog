@@ -1,0 +1,42 @@
+name: Flutter CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Create dummy .env file for analysis
+        run: |
+          echo "GEMINI_API_KEY=DUMMY_KEY_FOR_CI" > .env
+
+      - name: Analyze code
+        run: flutter analyze --fatal-infos
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Create dummy .env file for testing
+        run: |
+          echo "GEMINI_API_KEY=DUMMY_KEY_FOR_CI" > .env
+
+      - name: Run tests
+        run: flutter test
