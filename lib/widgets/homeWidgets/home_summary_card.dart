@@ -2,19 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:finlog/screens/utility_page/under_development.dart';
 import 'package:finlog/widgets/dataVisual/pie_chart_1.dart';
 import 'package:finlog/widgets/buttons/button_primary.dart';
-import 'package:finlog/l10n/app_localizations.dart';
+import 'package:finlog/services/bill_storage_service.dart';
+import 'package:provider/provider.dart';
 
 class SummaryCard extends StatefulWidget {
-  final double amount;
   final String title;
   final VoidCallback? onTap;
 
   const SummaryCard({
     super.key,
-    required this.amount,
     required this.title,
     this.onTap,
   });
+
+  @override
+  State<SummaryCard> createState() => _SummaryCardState();
+}
+
+class _SummaryCardState extends State<SummaryCard> {
+  bool _isHidden = false;
 
   // Format amount to x.xx Jt format
   String formatAmount(double amount) {
@@ -27,119 +33,191 @@ class SummaryCard extends StatefulWidget {
     } else {
       return amount.toStringAsFixed(0);
     }
-  }
-
-  @override
-  State<SummaryCard> createState() => _SummaryCardState();
-}
-
-// TODO : implement carousel from the material ui 3
-class _SummaryCardState extends State<SummaryCard> {
-  bool _isHidden = false;
-
-  @override
+  }  @override
   Widget build(BuildContext context) {
-    final double progressValue = 0.1;
-    //the progress value here would be used for the pie chart
-    // TODO: replace the progressvalue with the category aggregated
+    return Consumer<BillStorageService>(
+      builder: (context, billStorageService, child) {
+        final double amount = billStorageService.getTargetMonthTotalExpenses();
+        final double progressValue = billStorageService.getTargetMonthProgressValue();
+        final String monthName = billStorageService.getCurrentMonthName();
+        final bool hasData = billStorageService.hasTargetMonthData();
 
-    return Card(
-      elevation: 2.0,
-      margin: EdgeInsets.zero, // Reset margin as parent Padding will handle it
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(color: Colors.grey[300]!, width: 0.5),
-      ),
-      color: Colors.grey[100],
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      !_isHidden
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility,
-                      color: Colors.grey[600],
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isHidden = !_isHidden;
-                      });
-                      // TODO: Toggle visibility
-                    },
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            PieChart1(
-              progressValue: progressValue,
-              title: widget.title,
-              hidden: _isHidden,
-              amount: widget.amount,
-            ),
-            const SizedBox(height: 20),
-            Center(
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
+        return Card(
+          elevation: 2.0,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(color: Colors.grey[300]!, width: 0.5),
+          ),
+          color: Colors.grey[100],
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        AppLocalizations.of(
-                          context,
-                        )!.expenditureIncreaseMessage, // Assuming a new key for this
-                        style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+                      Expanded(
+                        child: Text(
+                          widget.title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      const SizedBox(width: 4),
-                      Icon(Icons.trending_up, color: Colors.red[400], size: 16),
+                      IconButton(
+                        icon: Icon(
+                          !_isHidden
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility,
+                          color: Colors.grey[600],
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isHidden = !_isHidden;
+                          });
+                        },
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    AppLocalizations.of(
+                ),
+                const SizedBox(height: 20),
+                PieChart1(
+                  progressValue: progressValue,
+                  title: widget.title,
+                  hidden: _isHidden,
+                  amount: amount,
+                  monthName: monthName,
+                  hasData: hasData,
+                ),
+                const SizedBox(height: 20),
+                _buildStatusMessage(hasData, amount, progressValue),
+                const SizedBox(height: 16),
+                ButtonPrimary(
+                  text: 'Lihat Dashboard',
+                  onPressed: () {
+                    Navigator.push(
                       context,
-                    )!.reviewFinancialDashboard, // Assuming a new key for this
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
+                      MaterialPageRoute(
+                        builder: (context) => const UnderDevelopmentPage(),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            ButtonPrimary(
-              text:
-                  AppLocalizations.of(
-                    context,
-                  )!.viewDashboardButton, // Assuming a new key for this
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UnderDevelopmentPage(),
-                  ),
-                );
-              },
+          ),
+        );
+      },
+    );
+  }
+  Widget _buildStatusMessage(bool hasData, double amount, double progressValue) {
+    if (!hasData) {
+      return Center(
+        child: Column(
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Belum ada data pengeluaran',
+                  style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+                ),
+                const SizedBox(width: 4),
+                Icon(Icons.info_outline, color: Colors.blue[400], size: 16),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Mulai scan struk untuk melihat ringkasan',
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
-      ),
-    );
+      );
+    }
+
+    // Show different messages based on spending level
+    if (progressValue >= 0.8) {
+      return Center(
+        child: Column(
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Pengeluaran mendekati batas!',
+                  style: TextStyle(fontSize: 13, color: Colors.red[700]),
+                ),
+                const SizedBox(width: 4),
+                Icon(Icons.warning, color: Colors.red[400], size: 16),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Pertimbangkan untuk mengurangi pengeluaran',
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    } else if (progressValue >= 0.5) {
+      return Center(
+        child: Column(
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Pengeluaran dalam batas wajar',
+                  style: TextStyle(fontSize: 13, color: Colors.orange[700]),
+                ),
+                const SizedBox(width: 4),
+                Icon(Icons.trending_up, color: Colors.orange[400], size: 16),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Pantau terus pengeluaran Anda',
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Center(
+        child: Column(
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Pengeluaran terkendali dengan baik',
+                  style: TextStyle(fontSize: 13, color: Colors.green[700]),
+                ),
+                const SizedBox(width: 4),
+                Icon(Icons.check_circle, color: Colors.green[400], size: 16),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Lanjutkan kebiasaan menabung yang baik',
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

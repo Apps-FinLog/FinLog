@@ -88,6 +88,8 @@ Please provide ONLY the JSON object. Do not include any additional text or markd
 You are an OCR assistant. Your task is to extract bill details from the provided image and format them into a JSON object.
 Infer values if not explicitly mentioned, or use reasonable defaults.
 
+dont forget that in Indonesia (our main market) the format for expense would be represented in Rupiah(Rp) and the format for the thousand would be using (.) instead of(,)
+
 Expected JSON structure:
 {
   "displayDate": "<string, DD/MM/YYYY, only provide if explicitly mentioned in the input>",
