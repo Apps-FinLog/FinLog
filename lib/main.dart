@@ -26,11 +26,10 @@ Future<void> main() async {
 
   userProfileService = UserProfileService();
   await userProfileService.init();
-
   runApp(
     MultiProvider(
       providers: [
-        Provider<BillStorageService>(
+        ChangeNotifierProvider<BillStorageService>(
           create: (_) => billStorageService,
         ),
         ChangeNotifierProvider<UserProfileService>(
