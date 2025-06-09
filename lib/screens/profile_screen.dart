@@ -15,7 +15,7 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin {
   Uint8List? _imageBytes; // Change type to Uint8List
   String _userName = ""; // Initialize as empty, will be loaded from service
   final TextEditingController _nameController = TextEditingController();
@@ -26,18 +26,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late UserProfileService _userProfileService; // Declare UserProfileService
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     super.initState();
-    // Initialize _userProfileService after context is available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _userProfileService = Provider.of<UserProfileService>(
-        context,
-        listen: false,
-      );
-      _loadUserProfile();
-      _nameController.addListener(_onNameChanged); // Add listener for name changes
-      _geminiApiKeyController.text = _userProfileService.getGeminiApiKey() ?? ''; // Load API key
-    });
+    _userProfileService = Provider.of<UserProfileService>(
+      context,
+      listen: false,
+    );
+    _loadUserProfile();
+    _nameController.addListener(_onNameChanged); // Add listener for name changes
+    _geminiApiKeyController.text = _userProfileService.getGeminiApiKey() ?? ''; // Load API key
   }
 
   void _onNameChanged() {
@@ -835,6 +835,7 @@ void _showGeminiSetupDialog() {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Call super.build(context)
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: SingleChildScrollView(
@@ -867,4 +868,3 @@ void _showGeminiSetupDialog() {
     super.dispose();
   }
 }
-

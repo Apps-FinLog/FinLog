@@ -6,10 +6,20 @@ import 'package:finlog/widgets/homeWidgets/home_summary_card.dart';
 import 'package:finlog/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
-class HomeContentScreen extends StatelessWidget {
+class HomeContentScreen extends StatefulWidget {
   const HomeContentScreen({super.key});
+
+  @override
+  State<HomeContentScreen> createState() => _HomeContentScreenState();
+}
+
+class _HomeContentScreenState extends State<HomeContentScreen> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Call super.build(context)
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 16.0), // Added top padding
       child: Column(
