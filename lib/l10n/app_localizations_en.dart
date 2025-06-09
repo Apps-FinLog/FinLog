@@ -220,7 +220,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectCategory => 'Select Category';
 
   @override
-  String get recordFinanceNow => 'Record Finance\nNow!';
+  String get recordFinanceNow => 'Record Your\nFinance Now!';
 
   @override
   String get nominalLabel => 'Nominal';
@@ -270,7 +270,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Write your expenses or income today, example: \"Lunch at canteen Rp 25,000, bought a book Rp 50,000\"';
 
   @override
-  String get journalInputCardTitle => 'Write Your Financial Journal\nHere!';
+  String get journalInputCardTitle => 'Write Your Financial\nJournal Here!';
 
   @override
   String get confirmButton => 'Confirm';
@@ -286,6 +286,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recordFinanceToday => 'Let\'s ~ take note!';
+
+  @override
+  String get recordQuickly => 'Record Quickly!';
 
   @override
   String get rememberIt => 'Remember it!';

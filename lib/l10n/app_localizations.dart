@@ -503,7 +503,7 @@ abstract class AppLocalizations {
   /// No description provided for @recordFinanceNow.
   ///
   /// In en, this message translates to:
-  /// **'Record Finance\nNow!'**
+  /// **'Record Your\nFinance Now!'**
   String get recordFinanceNow;
 
   /// No description provided for @nominalLabel.
@@ -599,7 +599,7 @@ abstract class AppLocalizations {
   /// No description provided for @journalInputCardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Write Your Financial Journal\nHere!'**
+  /// **'Write Your Financial\nJournal Here!'**
   String get journalInputCardTitle;
 
   /// No description provided for @confirmButton.
@@ -625,6 +625,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Let\'s ~ take note!'**
   String get recordFinanceToday;
+
+  /// No description provided for @recordQuickly.
+  ///
+  /// In en, this message translates to:
+  /// **'Record Quickly!'**
+  String get recordQuickly;
 
   /// No description provided for @rememberIt.
   ///

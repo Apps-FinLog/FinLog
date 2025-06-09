@@ -165,7 +165,9 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context)!.recordFinanceToday, // Updated title for journaling
+            AppLocalizations.of(
+              context,
+            )!.recordFinanceNow, // Updated title for journaling
             style: const TextStyle(
               color: Colors.white,
               fontSize: 26,

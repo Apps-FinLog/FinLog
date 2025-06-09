@@ -221,7 +221,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get selectCategory => 'Pilih Kategori';
 
   @override
-  String get recordFinanceNow => 'Catat Keuangan\nSekarang Yuk!';
+  String get recordFinanceNow => 'Catat Keuanganmu\nSekarang Yuk!';
 
   @override
   String get nominalLabel => 'Nominal';
@@ -287,6 +287,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get recordFinanceToday => 'Yuk ~ catat!';
+
+  @override
+  String get recordQuickly => 'Catat Cepat!';
 
   @override
   String get rememberIt => 'Seingat kamu ya!';

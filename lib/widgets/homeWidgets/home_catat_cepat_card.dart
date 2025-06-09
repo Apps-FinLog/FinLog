@@ -150,7 +150,7 @@ class _CatatCepatState extends State<CatatCepat> {
           Row(
             children: [
               Text(
-                AppLocalizations.of(context)!.recordFinanceNow,
+                AppLocalizations.of(context)!.recordQuickly,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
