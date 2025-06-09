@@ -112,7 +112,13 @@ class _CatatCepatState extends State<CatatCepat> {
                         MaterialPageRoute(builder: (context) => ManualInputScreen(initialNominal: _nominalController.text)),
                       );
                     },
-                    child: Icon(Icons.arrow_forward_ios, color: finlogBluePrimaryDark.withOpacity(0.7), size: 20),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: finlogBluePrimaryDark.withAlpha(
+                        (255 * 0.7).round(),
+                      ),
+                      size: 20,
+                    ),
                   );
                 }
                 return const SizedBox.shrink();

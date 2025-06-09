@@ -1,7 +1,6 @@
 import 'package:hive_ce/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'dart:typed_data'; // <-- TAMBAHKAN IMPORT INI
 import 'dart:convert'; // <-- TAMBAHKAN IMPORT INI
 
 class UserProfileService extends ChangeNotifier {

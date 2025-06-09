@@ -209,13 +209,17 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF3B82F6).withOpacity(0.3), // Blue glow
+            color: const Color(
+              0xFF3B82F6,
+            ).withAlpha((255 * 0.3).round()), // Blue glow
             blurRadius: 20,
             spreadRadius: 2,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: const Color(0xFF1E40AF).withOpacity(0.2), // Darker blue shadow
+            color: const Color(
+              0xFF1E40AF,
+            ).withAlpha((255 * 0.2).round()), // Darker blue shadow
             blurRadius: 12,
             spreadRadius: 1,
             offset: const Offset(0, 4),
