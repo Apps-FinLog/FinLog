@@ -201,7 +201,7 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
                                 children: [
                                   const SizedBox(height: 12),
                                   Text(
-                                    '${_dailyExpenditures.length} days of transaction data available',
+                                    AppLocalizations.of(context)!.transactionDaysAvailable(_dailyExpenditures.length),
                                     style: TextStyle(
                                       color: Colors.white.withValues(alpha:0.9),
                                       fontSize: 12,
@@ -214,11 +214,11 @@ class _HistoryScreenState extends State<HistoryScreen> with AutomaticKeepAliveCl
                                       // TODO: Implement PDF export functionality
                                       
                                     },
-                                    icon: Icon(Icons.download, size: 20),
-                                    label: Text('Export All to PDF'),
+                                    icon: const Icon(Icons.download, size: 20),
+                                    label: Text(AppLocalizations.of(context)!.exportAllToPdf),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
-                                      foregroundColor: Color(0xFF1E3A8A),
+                                      foregroundColor: const Color(0xFF1E3A8A),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),

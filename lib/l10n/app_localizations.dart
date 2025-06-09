@@ -973,6 +973,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Amount'**
   String get totalAmountLabel;
+
+  /// No description provided for @transactionDaysAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 day of transaction data available} other{{count} days of transaction data available}}'**
+  String transactionDaysAvailable(int count);
+
+  /// No description provided for @exportAllToPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export All to PDF'**
+  String get exportAllToPdf;
 }
 
 class _AppLocalizationsDelegate

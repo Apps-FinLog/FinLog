@@ -145,5 +145,14 @@
     "taxLabel": "Tax",
     "discountLabel": "Discount",
     "otherLabel": "Other",
-    "totalAmountLabel": "Total Amount"
+    "totalAmountLabel": "Total Amount",
+    "transactionDaysAvailable": "{count, plural, one{1 day of transaction data available} other{{count} days of transaction data available}}",
+    "@transactionDaysAvailable": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "exportAllToPdf": "Export All to PDF"
 }

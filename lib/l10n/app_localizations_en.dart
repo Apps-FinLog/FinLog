@@ -465,4 +465,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get totalAmountLabel => 'Total Amount';
+
+  @override
+  String transactionDaysAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days of transaction data available',
+      one: '1 day of transaction data available',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exportAllToPdf => 'Export All to PDF';
 }

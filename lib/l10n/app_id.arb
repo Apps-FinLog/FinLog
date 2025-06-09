@@ -145,5 +145,14 @@
     "taxLabel": "Pajak",
     "discountLabel": "Diskon",
     "otherLabel": "Lainnya",
-    "totalAmountLabel": "Jumlah Total"
+    "totalAmountLabel": "Jumlah Total",
+    "transactionDaysAvailable": "{count, plural, one{1 hari data transaksi tersedia} other{{count} hari data transaksi tersedia}}",
+    "@transactionDaysAvailable": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "exportAllToPdf": "Ekspor Semua ke PDF"
 }
