@@ -5,7 +5,6 @@ on:
     branches: [ main ]
 
 jobs:
-  # This is the original job from the previous example
   analyze:
     runs-on: ubuntu-latest
     steps:
@@ -13,12 +12,17 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Create dummy .env file for analysis
+        run: |
+          echo "GEMINI_API_KEY=DUMMY_KEY_FOR_CI" > .env
+
       - name: Analyze code
         run: flutter analyze --fatal-infos
 
-  # This is the new job for running tests
   test:
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +30,13 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Create dummy .env file for testing
+        run: |
+          echo "GEMINI_API_KEY=DUMMY_KEY_FOR_CI" > .env
+
       - name: Run tests
         run: flutter test
