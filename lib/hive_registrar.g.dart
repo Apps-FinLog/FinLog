@@ -5,11 +5,13 @@
 import 'package:hive_ce/hive.dart';
 import 'package:finlog/models/bill_data.dart';
 import 'package:finlog/models/bill_item.dart';
+import 'package:finlog/models/onboarding_state.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
     registerAdapter(BillDataAdapter());
     registerAdapter(BillItemAdapter());
+    registerAdapter(OnboardingStateAdapter());
   }
 }
 
@@ -17,5 +19,6 @@ extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
     registerAdapter(BillDataAdapter());
     registerAdapter(BillItemAdapter());
+    registerAdapter(OnboardingStateAdapter());
   }
 }
