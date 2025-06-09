@@ -15,7 +15,7 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin {
   Uint8List? _imageBytes; // Change type to Uint8List
   String _userName = ""; // Initialize as empty, will be loaded from service
   final TextEditingController _nameController = TextEditingController();
@@ -26,18 +26,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late UserProfileService _userProfileService; // Declare UserProfileService
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     super.initState();
-    // Initialize _userProfileService after context is available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _userProfileService = Provider.of<UserProfileService>(
-        context,
-        listen: false,
-      );
-      _loadUserProfile();
-      _nameController.addListener(_onNameChanged); // Add listener for name changes
-      _geminiApiKeyController.text = _userProfileService.getGeminiApiKey() ?? ''; // Load API key
-    });
+    _userProfileService = Provider.of<UserProfileService>(
+      context,
+      listen: false,
+    );
+    _loadUserProfile();
+    _nameController.addListener(_onNameChanged); // Add listener for name changes
+    _geminiApiKeyController.text = _userProfileService.getGeminiApiKey() ?? ''; // Load API key
   }
 
   void _onNameChanged() {
@@ -470,14 +470,15 @@ void _showGeminiSetupDialog() {
           (context) => AlertDialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-            ),
-            title: Row(
+            ),            title: Row(
               children: [
                 Icon(Icons.auto_awesome, color: finlogBluePrimary),
                 const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(context)!.geminiApiSetupTitle,
-                  style: const TextStyle(color: Colors.black),
+                Flexible(
+                  child: Text(
+                    AppLocalizations.of(context)!.geminiApiSetupTitle,
+                    style: const TextStyle(color: Colors.black),
+                  ),
                 ),
               ],
             ),
@@ -835,20 +836,9 @@ void _showGeminiSetupDialog() {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Call super.build(context)
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.profileScreenTitle, style: AppTextStyles.appBarTitle),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0),
-          child: Container(
-            color: finlogButtonGrey,
-            height: 1.0,
-          ),
-        ),
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -879,4 +869,3 @@ void _showGeminiSetupDialog() {
     super.dispose();
   }
 }
-

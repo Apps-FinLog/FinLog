@@ -47,7 +47,7 @@ class HistoryListItem extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          Icon(icon, color: iconColor, size: 28),
+          
         ],
       ),
     );

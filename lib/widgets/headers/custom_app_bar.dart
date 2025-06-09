@@ -99,7 +99,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.purpleAccent,
+                    color: Colors.grey[300]!,
                   width: 0.5,
                 ),
               ),

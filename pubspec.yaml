@@ -41,12 +41,14 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_launcher_icons: ^0.14.3
   image_picker: ^1.1.2 # Selalu cek versi terbaru di pub.dev
-  intl: ^0.20.2 # Added for DateFormat
+  intl: 0.20.2 # Added for DateFormat
   provider: ^6.1.5
   http: ^1.2.1
   flutter_dotenv: ^5.2.1
   hive_ce: ^2.11.3
   hive_ce_flutter: ^2.3.1
+  pdf: ^3.11.3
+  printing: ^5.14.2
 
 dev_dependencies:
   flutter_test:
