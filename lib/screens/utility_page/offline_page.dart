@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 import 'package:finlog/screens/utility_page/reusable_place_holder.dart';
 class OfflinePage extends StatelessWidget {
@@ -6,12 +7,12 @@ class OfflinePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
       body: ReusablePlaceholder(
       imagePath: 'assets/images/wifi-off.png',
-      titleText: 'Anda sedang \nmode offline',
-      subtitleText: 'mengalihkan ke \n pencatatan manual',
+      titleText: AppLocalizations.of(context)!.offlineModeTitle,
+      subtitleText: AppLocalizations.of(context)!.redirectingToManualInput,
     ), 
     );
   }

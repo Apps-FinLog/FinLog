@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
 
+
 class HomeCatatCepatCard extends StatelessWidget {
   const HomeCatatCepatCard({super.key});
 

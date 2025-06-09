@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 const Color finlogLoadingBlue = Color(0xFF0C6BFF);
 
 class LoadingOverlay extends StatelessWidget {
-  final String message;
-  final String subMessage;
-
-  const LoadingOverlay({
-    super.key,
-    this.message = 'Membaca Item..',
-    this.subMessage = 'Tunggu beberapa saat',
-  });
+  const LoadingOverlay({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +33,7 @@ class LoadingOverlay extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              message,
+              AppLocalizations.of(context)!.readingItem,
               style: const TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w600,
@@ -48,7 +42,7 @@ class LoadingOverlay extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              subMessage,
+              AppLocalizations.of(context)!.pleaseWait,
               style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
           ],

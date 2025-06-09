@@ -8,6 +8,7 @@ import 'package:finlog/services/bill_storage_service.dart';
 import 'package:finlog/models/bill_data.dart';
 import 'package:intl/intl.dart';
 import 'package:finlog/widgets/loading_screen.dart'; // Import the new loading screen
+import 'package:finlog/l10n/app_localizations.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -74,17 +75,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
               crossAxisAlignment: CrossAxisAlignment.start, // Align the card itself to the start (left)
               children: [
                 ReusablePageCard(
-                  title: 'Transactions to PDF',
-                  subtitle: 'Donwload Transaksi menjadi PDF',
+                  title: AppLocalizations.of(context)!.transactionsToPdfTitle,
+                  subtitle: AppLocalizations.of(context)!.downloadTransactionsPdfSubtitle,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start, // Align content to the start (top)
                     children: [
                       if (_dailyExpenditures.isEmpty && !_isLoading) // Only show "No data" if not loading
-                        const Align(
+                        Align(
                           alignment: Alignment.topCenter,
                           child: Padding(
-                            padding: EdgeInsets.all(24.0),
-                            child: Text('No bill data available.'),
+                            padding: const EdgeInsets.all(24.0),
+                            child: Text(AppLocalizations.of(context)!.noBillDataAvailable),
                           ),
                         ),
                       ..._dailyExpenditures.map((dailyExp) {
@@ -102,10 +103,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
           ),
           if (_isLoading)
-            const Positioned.fill(
+            Positioned.fill(
               child: LoadingScreen(
-                message: 'Memuat data transaksi...',
-                subMessage: 'Mohon tunggu sebentar.',
+                message: AppLocalizations.of(context)!.loadingTransactionsData,
+                subMessage: AppLocalizations.of(context)!.pleaseWait,
               ),
             ),
         ],
