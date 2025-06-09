@@ -71,7 +71,9 @@ Future<pw.Document> generatePdfDocument(
                         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                         children: [
                           pw.Text(
-                            bill.billItems.first.name,
+                            bill.billItems.isNotEmpty
+                                ? bill.billItems.first.name
+                                : 'No items',
                             style: pw.TextStyle(
                               fontSize: 14,
                               fontWeight: pw.FontWeight.bold,
@@ -190,4 +192,4 @@ Future<pw.Document> generatePdfDocument(
 }
 
 
-//TODO : implement badge for type of category 
+//TODO : implement badge for type of category
