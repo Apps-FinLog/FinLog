@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
@@ -32,11 +33,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
             backgroundColor: Colors.white, // White background
             elevation: 0, // Remove shadow
             items: <BottomNavigationBarItem>[
-              _buildNavItem(0, 'assets/svgs/home.svg', 'Beranda'),
-              _buildNavItem(1, 'assets/svgs/calculator.svg', 'Input Expense'),
-              _buildNavItem(2, 'assets/svgs/scan.svg', 'Scan'),
-              _buildNavItem(3, 'assets/svgs/pie-chart.svg', 'Riwayat'),
-              _buildNavItem(4, null, 'Profil', materialIcon: Icons.person, materialIconInactive: Icons.person_outline), // Use filled/unfilled Material Icon for Profile
+              _buildNavItem(0, 'assets/svgs/home.svg', AppLocalizations.of(context)!.home),
+              _buildNavItem(1, 'assets/svgs/calculator.svg', AppLocalizations.of(context)!.inputExpense),
+              _buildNavItem(2, 'assets/svgs/scan.svg', AppLocalizations.of(context)!.scan),
+              _buildNavItem(3, 'assets/svgs/pie-chart.svg', AppLocalizations.of(context)!.history),
+              _buildNavItem(4, null, AppLocalizations.of(context)!.profile, materialIcon: Icons.person, materialIconInactive: Icons.person_outline), // Use filled/unfilled Material Icon for Profile
             ],
             currentIndex: selectedIndex,
             selectedItemColor: Colors.blue.shade700,

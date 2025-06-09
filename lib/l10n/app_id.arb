@@ -87,7 +87,7 @@
     "confirmButton": "Konfirmasi",
     "failedToParseExpense": "Gagal memproses pengeluaran: {error}",
     "enterJournalEntryBeforeConfirming": "Mohon masukkan entri jurnal sebelum mengkonfirmasi.",
-    "recordFinanceToday": "Catat Keuanganmu\nhari ini!",
+    "recordFinanceToday": "Yuk ~ catat!",
     "rememberIt": "Seingat kamu ya!",
     "notAvailable": "N/A",
     "invalidDateFormat": "Format Tanggal Tidak Valid",
@@ -106,6 +106,7 @@
     "downloadTransactionsPdfSubtitle": "Unduh Transaksi menjadi PDF",
     "noBillDataAvailable": "Tidak ada data tagihan tersedia.",
     "loadingTransactionsData": "Memuat data transaksi...",
+    "readingItem": "Membaca Item..",
     "pleaseWait": "Mohon tunggu sebentar.",
     "offlineModeTitle": "Anda sedang \nmode offline",
     "redirectingToManualInput": "mengalihkan ke \n pencatatan manual",
@@ -126,5 +127,15 @@
     "monthNovember": "November",
     "monthDecember": "Desember",
     "errorOccurred": "Terjadi kesalahan: {error}",
-    "scanBill": "Pindai Tagihan"
+    "scanBill": "Pindai Tagihan",
+    "expenditureTitle": "Pengeluaran",
+    "expenditureIncreaseMessage" : "Pengeluaran kamu naik 3% nih",
+    "reviewFinancialDashboard": "Tinjau keuangan kamu di dashboard rinci",
+    "viewDashboardButton": "Lihat Dashboard",
+    "home": "Beranda",
+    "inputExpense": "Input Pengeluaran",
+    "scan": "Pindai",
+    "history": "Riwayat",
+    "profile": "Profil",
+    "letsTakeNoteToday": "~yuk catat hari ini!"
 }

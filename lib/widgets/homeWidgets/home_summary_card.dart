@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:finlog/screens/utility_page/under_development.dart';
 import 'package:finlog/widgets/dataVisual/pie_chart_1.dart';
 import 'package:finlog/widgets/buttons/button_primary.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SummaryCard extends StatefulWidget {
   final double amount;
@@ -102,7 +102,9 @@ class _SummaryCardState extends State<SummaryCard> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Pengeluaran kamu naik 3% nih',
+                        AppLocalizations.of(
+                          context,
+                        )!.expenditureIncreaseMessage, // Assuming a new key for this
                         style: TextStyle(fontSize: 13, color: Colors.grey[700]),
                       ),
                       const SizedBox(width: 4),
@@ -111,7 +113,9 @@ class _SummaryCardState extends State<SummaryCard> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Tinjau keuangan kamu di dashboard rinci',
+                    AppLocalizations.of(
+                      context,
+                    )!.reviewFinancialDashboard, // Assuming a new key for this
                     style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     textAlign: TextAlign.center,
                   ),
@@ -120,7 +124,10 @@ class _SummaryCardState extends State<SummaryCard> {
             ),
             const SizedBox(height: 16),
             ButtonPrimary(
-              text: 'Lihat Dashboard',
+              text:
+                  AppLocalizations.of(
+                    context,
+                  )!.viewDashboardButton, // Assuming a new key for this
               onPressed: () {
                 Navigator.push(
                   context,

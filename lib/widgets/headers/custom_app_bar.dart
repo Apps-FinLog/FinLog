@@ -5,6 +5,7 @@ import 'package:finlog/services/user_profile_service.dart'; // Import UserProfil
 import 'package:provider/provider.dart'; // Import Provider
 import 'dart:convert'; // Import for Base64 encoding/decoding
 import 'dart:typed_data'; // Import for Uint8List
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -76,7 +77,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ),
           Expanded(
             child: Text(
-              '~yuk catat hari ini!',
+              AppLocalizations.of(context)!.letsTakeNoteToday,
               style: AppTextStyles.appBarSubtitle,
               textAlign: TextAlign.center,
             ),

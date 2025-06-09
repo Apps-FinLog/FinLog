@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeFilterButtons extends StatelessWidget {
   const HomeFilterButtons({super.key});
@@ -35,9 +36,9 @@ class HomeFilterButtons extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _buildFilterButton(context, 'Pengeluaran', Icons.arrow_upward, isActive: true),
+        _buildFilterButton(context, AppLocalizations.of(context)!.expenditureTitle, Icons.arrow_upward, isActive: true),
         const SizedBox(width: 12),
-        _buildFilterButton(context, 'Kategori', Icons.arrow_downward),
+        _buildFilterButton(context, AppLocalizations.of(context)!.categoryTitle, Icons.arrow_downward),
       ],
     );
   }

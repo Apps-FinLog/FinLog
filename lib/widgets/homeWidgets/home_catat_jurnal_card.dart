@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
 import 'package:finlog/screens/text_input_page/journal_input_date.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeCatatJurnalCard extends StatelessWidget {
   const HomeCatatJurnalCard({super.key});
@@ -32,18 +33,18 @@ class HomeCatatJurnalCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  children: const [
+                  children: [
                     Text(
-                      'Catat Jurnal',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                      AppLocalizations.of(context)!.journalInputTitle,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
-                    SizedBox(width: 8),
-                    Icon(Icons.chat_bubble_outline, color: Colors.white, size: 20),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.chat_bubble_outline, color: Colors.white, size: 20),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Ada guilty confession kamu\njajan apa aja hari ini?',
+                  AppLocalizations.of(context)!.journalInputCardTitle,
                   style: TextStyle(color: Colors.white.withAlpha((0.9 * 255).round()), fontSize: 14, height: 1.4),
                 ),
               ],
@@ -62,7 +63,7 @@ class HomeCatatJurnalCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
-            child: const Text('Yuk ~ catat!', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
+            child: Text(AppLocalizations.of(context)!.recordFinanceToday, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
           ),
         ],
       ),
