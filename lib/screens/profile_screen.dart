@@ -52,20 +52,15 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
     }
   }
 
-  Future<void> _loadUserProfile() async {
-    setState(() { // Move setState to encompass all updates
+  void _loadUserProfile() {
+    setState(() {
+      // Ambil nama dari service
       _userName = _userProfileService.getUserName();
-      final imageBase64 = _userProfileService.getProfileImageBase64();
-      if (imageBase64 != null) {
-        try {
-          _imageBytes = base64Decode(imageBase64); // Decode to Uint8List
-        } catch (e) {
-          debugPrint('Error decoding Base64 image: $e');
-          _imageBytes = null; // Fallback to default if decoding fails
-        }
-      } else {
-        _imageBytes = null; // Ensure it's null if no image is saved
-      }
+      
+      // Ambil gambar dari CACHE, bukan decode ulang. Ini kuncinya!
+      _imageBytes = _userProfileService.cachedImageBytes;
+
+      // Sinkronkan controller dengan nama yang baru dimuat
       _nameController.text = _userName;
     });
   }

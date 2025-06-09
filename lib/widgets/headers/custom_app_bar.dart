@@ -1,74 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/text_styles.dart';
-import 'package:finlog/screens/home_screen.dart'; // Import the home screen
-import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
-import 'package:provider/provider.dart'; // Import Provider
-import 'dart:convert'; // Import for Base64 encoding/decoding
-import 'dart:typed_data'; // Import for Uint8List
+import 'package:finlog/screens/home_screen.dart';
+import 'package:finlog/services/user_profile_service.dart';
+import 'package:provider/provider.dart';
+// import 'dart:convert'; // Tidak perlu lagi
+import 'dart:typed_data'; // Tetap perlu untuk tipe data di service
 import 'package:finlog/l10n/app_localizations.dart';
 
-class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-
+  
   const CustomAppBar({
     super.key,
     required this.title,
   });
 
   @override
-  State<CustomAppBar> createState() => _CustomAppBarState();
-
-  @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 1.0);
-}
-
-class _CustomAppBarState extends State<CustomAppBar> {
-  Uint8List? _imageBytes;
-
-  late UserProfileService _userProfileService;
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize _userProfileService after context is available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _userProfileService = Provider.of<UserProfileService>(context, listen: false);
-      _userProfileService.addListener(_updateImage);
-      _updateImage(); // Initial load
-    });
-  }
-
-  void _updateImage() {
-    final imageBase64 = _userProfileService.getProfileImageBase64();
-    if (imageBase64 != null) {
-      try {
-        setState(() {
-          _imageBytes = base64Decode(imageBase64);
-        });
-      } catch (e) {
-        debugPrint('Error decoding Base64 image in CustomAppBar: $e');
-        setState(() {
-          _imageBytes = null;
-        });
-      }
-    } else {
-      setState(() {
-        _imageBytes = null;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _userProfileService.removeListener(_updateImage);
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
+    final userProfileService = context.watch<UserProfileService>();
+    final imageBytes = userProfileService.cachedImageBytes;
+
     return AppBar(
       backgroundColor: Colors.white,
+      automaticallyImplyLeading: true,
+      iconTheme: const IconThemeData(color: Colors.black),
       centerTitle: false,
+      titleSpacing: 0.0,
       title: GestureDetector(
         onTap: () {
           Navigator.pushReplacement(
@@ -78,15 +38,18 @@ class _CustomAppBarState extends State<CustomAppBar> {
         },
         child: Row(
           children: [
-            Text(
-              widget.title,
-              style: AppTextStyles.appBarTitle,
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: Text(title, style: AppTextStyles.appBarTitle),
             ),
             Expanded(
-              child: Text(
-                AppLocalizations.of(context)!.letsTakeNoteToday,
-                style: AppTextStyles.appBarSubtitle,
-                textAlign: TextAlign.center,
+              child: Transform.translate(
+                offset: const Offset(-20.0, 0.0), // Geser ke kiri
+                child: Text(
+                  AppLocalizations.of(context)!.letsTakeNoteToday,
+                  style: AppTextStyles.appBarSubtitle,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ],
@@ -107,15 +70,17 @@ class _CustomAppBarState extends State<CustomAppBar> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                    color: Colors.grey[300]!,
+                  color: Colors.grey[300]!,
                   width: 0.5,
                 ),
               ),
               child: CircleAvatar(
                 radius: 18,
-                backgroundImage: _imageBytes != null
-                    ? MemoryImage(_imageBytes!)
-                    : const AssetImage('assets/images/user_profile.png') as ImageProvider,
+                backgroundImage:
+                    imageBytes != null
+                        ? MemoryImage(imageBytes)
+                        : const AssetImage('assets/images/user_profile.png')
+                            as ImageProvider,
               ),
             ),
           ),
