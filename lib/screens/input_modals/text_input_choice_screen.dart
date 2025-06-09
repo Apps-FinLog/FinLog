@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/screens/text_input_page/manual_input_screen.dart';
 import 'package:finlog/screens/text_input_page/journal_input_date.dart';
+import 'package:provider/provider.dart';
+import 'package:finlog/providers/background_provider.dart';
 
 class TextInputChoiceScreen extends StatefulWidget {
   const TextInputChoiceScreen({super.key});
@@ -33,13 +35,7 @@ class _TextInputChoiceScreenState extends State<TextInputChoiceScreen> {
               color: Colors.black,
             ),
           ),
-          Text(
-            line2,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black54,
-            ),
-          ),
+          Text(line2, style: TextStyle(fontSize: 14, color: Colors.black54)),
         ],
       ),
     );
@@ -52,44 +48,50 @@ class _TextInputChoiceScreenState extends State<TextInputChoiceScreen> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              "assets/images/blurred-background.png",
-              fit: BoxFit.cover,
+            child: Consumer<BackgroundProvider>(
+              builder: (context, backgroundProvider, child) {
+                return backgroundProvider.getBlurredBackground();
+              },
             ),
           ),
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
-            
+
             // Pusatkan tombol pilihan
             child: Container(
-              padding: EdgeInsets.only(top:20, bottom: 20),
+              padding: EdgeInsets.only(top: 20, bottom: 20),
               color: Colors.white60,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[ // ADDED CHILDREN LIST AS REQUESTED
+                children: <Widget>[
+                  // ADDED CHILDREN LIST AS REQUESTED
                   _buildOptionItem(
                     context,
                     'Manual', // line1 for first item
-                    'Input',  // line2 for first item
-                     Icons.edit, // Using Icons.edit for Manual Input
+                    'Input', // line2 for first item
+                    Icons.edit, // Using Icons.edit for Manual Input
                     () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ManualInputScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const ManualInputScreen(),
+                        ),
                       );
                     },
                   ),
                   _buildOptionItem(
                     context,
                     'Jurnal', // line1 for second item
-                    'Input',  // line2 for second item
+                    'Input', // line2 for second item
                     Icons.book, // Using Icons.book for Jurnal Input
                     () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const JournalInputDateScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const JournalInputDateScreen(),
+                        ),
                       );
                     },
                   ),
