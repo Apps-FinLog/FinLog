@@ -3,6 +3,7 @@ import 'package:finlog/styles/colors.dart'; // Assuming this file has the necess
 import 'package:intl/intl.dart'; // For date formatting if needed for calendar
 import 'package:finlog/screens/text_input_page/journal_entry_input_screen.dart'; // Import the next screen
 import 'package:finlog/widgets/navs/dual_action_buttons.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class JournalInputDateScreen extends StatefulWidget {
@@ -163,9 +164,9 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
             size: 48,
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Catat Keuanganmu\nhari ini!', // Updated title for journaling
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.recordFinanceToday, // Updated title for journaling
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 26,
               fontWeight: FontWeight.bold,
@@ -175,7 +176,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
           const SizedBox(height: 30), // Increased spacing
           // Nominal field is removed
           _buildTextField(
-            label: 'Tanggal',
+            label: AppLocalizations.of(context)!.dateLabel,
             controller: _dateController,
             readOnly: true,
             onTap: () {
@@ -186,7 +187,7 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 6.0, left: 4.0),
             child: Text(
-              'Seingat kamu ya!', // New helper text
+              AppLocalizations.of(context)!.rememberIt, // New helper text
               style: TextStyle(
                 color: Colors.white.withAlpha((0.7 * 255).toInt()),
                 fontSize: 11,
@@ -204,9 +205,9 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Input Jurnal',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
+        title: Text(
+          AppLocalizations.of(context)!.journalInputTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         backgroundColor: Colors.grey[50],
         elevation: 0.5,
@@ -221,8 +222,8 @@ class _JournalInputDateScreenState extends State<JournalInputDateScreen> {
           children: [
             Expanded(child: SingleChildScrollView(child: _buildContentCard())),            
             DualActionButtons(
-              leftButtonText: 'Back',
-              rightButtonText: 'Continue',
+              leftButtonText: AppLocalizations.of(context)!.backButton,
+              rightButtonText: AppLocalizations.of(context)!.continueButton,
               onLeftButtonPressed: () {
                 Navigator.of(context).pop();
               },

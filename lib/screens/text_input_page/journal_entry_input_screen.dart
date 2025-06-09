@@ -5,6 +5,7 @@ import 'package:finlog/services/gemini_service.dart'; // Import GeminiService
 import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 import 'package:provider/provider.dart'; // Import Provider
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class JournalEntryInputScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -48,10 +49,10 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
         _parsedExpenseData = parsedData;
       });
       debugPrint('Parsed Expense Data: $_parsedExpenseData');
-    } catch (e) {
+    } catch (error) { // Changed 'e' to 'error'
       if (!mounted) return; // Check mounted before setState
       setState(() {
-        _errorMessage = 'Failed to parse expense: ${e.toString()}';
+        _errorMessage = 'Failed to parse expense: ${error.toString()}';
       });
     }
   }
@@ -74,13 +75,13 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
         );
       } else if (_errorMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_errorMessage!)),
+          SnackBar(content: Text(AppLocalizations.of(context)!.failedToParseExpense(_errorMessage!))),
         );
       }
     } else {
       if (!mounted) return; // Check mounted before using context
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a journal entry before confirming.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.enterJournalEntryBeforeConfirming)),
       );
     }
   }
@@ -113,10 +114,10 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
                   size: 36,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Tulis Jurnal Keuanganmu\ndi sini!',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.journalInputCardTitle,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -140,7 +141,7 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
                   // expands: true, // Removed as it's not compatible with SingleChildScrollView directly
                   textAlignVertical: TextAlignVertical.top, // Aligns text to the top
                   decoration: InputDecoration(
-                    hintText: 'Tuliskan pengeluaran atau pemasukanmu hari ini, contoh: "Makan siang di kantin Rp 25.000, beli buku Rp 50.000"',
+                    hintText: AppLocalizations.of(context)!.journalInputHint,
                     hintStyle: TextStyle(color: Colors.white.withAlpha((0.6 * 255).toInt())),
                     filled: true,
                     fillColor: Colors.white.withAlpha((0.15 * 255).toInt()),
@@ -167,9 +168,9 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Input Jurnal',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
+        title: Text(
+          AppLocalizations.of(context)!.journalInputTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         backgroundColor: Colors.grey[50],
         elevation: 0.5,
@@ -210,9 +211,9 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
                   ),
                   elevation: 1,
                 ),
-                child: const Text(
-                  'Back',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.backButton,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: finlogButtonTextDark,
@@ -232,9 +233,9 @@ class _JournalEntryInputScreenState extends State<JournalEntryInputScreen> {
                   ),
                   elevation: 1,
                 ),
-                child: const Text(
-                  'Confirm',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.confirmButton,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

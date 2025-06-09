@@ -4,6 +4,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
 import 'package:finlog/services/bill_storage_service.dart'; // Import BillStorageService
 import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 import 'package:provider/provider.dart'; // Import Provider
+import 'package:flutter_localizations/flutter_localizations.dart'; // Import for localization delegates
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import generated localizations
 
 late BillStorageService billStorageService;
 late UserProfileService userProfileService;
@@ -38,24 +40,36 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FinLog',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'Inter', // Menggunakan font Inter
-        scaffoldBackgroundColor: Colors.white, // Default background
-        textTheme: const TextTheme(
-          // Default text styles
-          bodyLarge: TextStyle(color: Colors.white),
-          bodyMedium: TextStyle(color: Colors.white70),
-          titleLarge: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+    return Consumer<UserProfileService>(
+      builder: (context, userProfileService, child) {
+        return MaterialApp(
+          title: 'FinLog',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            fontFamily: 'Inter', // Menggunakan font Inter
+            scaffoldBackgroundColor: Colors.white, // Default background
+            textTheme: const TextTheme(
+              // Default text styles
+              bodyLarge: TextStyle(color: Colors.white),
+              bodyMedium: TextStyle(color: Colors.white70),
+              titleLarge: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            )
           ),
-        )
-      ),
-      home: const OnboardingScreen(), // Directly navigate to OnboardingScreen
-      debugShowCheckedModeBanner: false,
+          locale: userProfileService.currentLocale, // Use the locale from UserProfileService
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales, // Use supported locales from generated file
+          home: const OnboardingScreen(), // Directly navigate to OnboardingScreen
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }

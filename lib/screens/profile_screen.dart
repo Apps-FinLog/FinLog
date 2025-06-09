@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert'; // Import for Base64 encoding/decoding
 import 'dart:typed_data'; // Import for Uint8List
-import 'package:flutter/material.dart'; // Keep this for Material widgets
-import 'package:image_picker/image_picker.dart';
 import 'package:finlog/styles/text_styles.dart';
 import 'package:finlog/styles/colors.dart';
 import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 import 'package:provider/provider.dart'; // Import Provider
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import generated localizations
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,7 +17,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   Uint8List? _imageBytes; // Change type to Uint8List
-  String _userName = "John Doe";
+  String _userName = ""; // Initialize as empty, will be loaded from service
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _geminiApiKeyController = TextEditingController(); // New controller
   bool _isEditingName = false;
@@ -61,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         try {
           _imageBytes = base64Decode(imageBase64); // Decode to Uint8List
         } catch (e) {
-          print('Error decoding Base64 image: $e');
+          debugPrint('Error decoding Base64 image: $e');
           _imageBytes = null; // Fallback to default if decoding fails
         }
       } else {
@@ -72,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _saveProfileChanges() async {
-    print('ProfileScreen: _saveProfileChanges called.');
+    debugPrint('ProfileScreen: _saveProfileChanges called.');
     try {
       if (_hasNameChanged) {
         await _userProfileService.saveUserName(_nameController.text);
@@ -87,9 +86,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _hasNameChanged = false;
         _hasImageChanged = false;
       });
-      print('ProfileScreen: _saveProfileChanges completed successfully.');
+      debugPrint('ProfileScreen: _saveProfileChanges completed successfully.');
     } catch (e) {
-      print('ProfileScreen: Error saving profile changes: $e');
+      debugPrint('ProfileScreen: Error saving profile changes: $e');
     }
   }
 
@@ -115,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             Text(
-              'Pilih Foto Profil',
+              AppLocalizations.of(context)!.selectProfilePhoto,
               style: AppTextStyles.appBarTitle,
             ),
             const SizedBox(height: 20),
@@ -124,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 _buildImagePickerOption(
                   icon: Icons.camera_alt,
-                  label: 'Kamera',
+                  label: AppLocalizations.of(context)!.camera,
                   onTap: () async {
                     Navigator.pop(context);
                     final pickedFile = await picker.pickImage(
@@ -144,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 _buildImagePickerOption(
                   icon: Icons.photo_library,
-                  label: 'Galeri',
+                  label: AppLocalizations.of(context)!.gallery,
                   onTap: () async {
                     Navigator.pop(context);
                     final pickedFile = await picker.pickImage(
@@ -209,7 +208,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: finlogBluePrimary.withOpacity(0.3),
+            color: finlogBluePrimary.withAlpha((255 * 0.3).round()),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -235,7 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundColor: Colors.white.withOpacity(0.2),
+                    backgroundColor: Colors.white.withAlpha((255 * 0.2).round()),
                     backgroundImage: _imageBytes != null 
                         ? MemoryImage(_imageBytes!) // Use MemoryImage with Uint8List
                         : const AssetImage('assets/images/user_profile.png') as ImageProvider,
@@ -268,7 +267,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ? Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withAlpha((255 * 0.2).round()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextField(
@@ -319,7 +318,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withAlpha((255 * 0.2).round()),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Icon(
@@ -333,90 +332,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
           const SizedBox(height: 8),
           Text(
-            'Member sejak 2024',
+            AppLocalizations.of(context)!.memberSince(2024),
             style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withAlpha((255 * 0.9).round()),
               fontSize: 16,
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget buildInfoSection() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              'Informasi Personal',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
-              ),
-            ),
-          ),
-          _buildInfoTile(
-            icon: Icons.location_on_outlined,
-            title: 'Lokasi',
-            value: 'Jakarta, Indonesia',
-            onTap: () {
-              // Handle location edit
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoTile({
-    required IconData icon,
-    required String title,
-    required String value,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: finlogBluePrimary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, color: finlogBluePrimary, size: 20),
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: Colors.grey[600],
-          fontSize: 14,
-        ),
-      ),
-      subtitle: Text(
-        value,
-        style: const TextStyle(
-          color: Colors.black87,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      trailing: Icon(Icons.chevron_right, color: Colors.grey[400]),
-      onTap: onTap,
     );
   }
 
@@ -436,7 +359,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withAlpha((255 * 0.1).round()),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -446,8 +369,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           _buildMenuTile(
             icon: Icons.auto_awesome,
-            title: 'Pengaturan API Gemini',
-            subtitle: 'Konfigurasi AI di sini',
+            title: AppLocalizations.of(context)!.geminiApiSettings,
+            subtitle: AppLocalizations.of(context)!.configureAiHere,
             onTap: () {
               _showGeminiSetupDialog();
             },
@@ -455,8 +378,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildDivider(),
           _buildMenuTile(
             icon: Icons.language,
-            title: 'Pengaturan Bahasa',
-            subtitle: 'Indonesia',
+            title: AppLocalizations.of(context)!.languageSettingsTitle,
+            subtitle: _getLanguageSubtitle(context),
             onTap: () {
               _showLanguageDialog();
             },
@@ -464,8 +387,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildDivider(),
           _buildMenuTile(
             icon: Icons.notifications_outlined,
-            title: 'Pengaturan Notifikasi',
-            subtitle: 'Kelola notifikasi aplikasi',
+            title: AppLocalizations.of(context)!.notificationSettings,
+            subtitle: AppLocalizations.of(context)!.manageAppNotifications,
             onTap: () {
               _showNotificationSettings();
             },
@@ -473,8 +396,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildDivider(),
           _buildMenuTile(
             icon: Icons.help_outline,
-            title: 'Bantuan',
-            subtitle: 'FAQ dan panduan penggunaan',
+            title: AppLocalizations.of(context)!.help,
+            subtitle: AppLocalizations.of(context)!.faqAndUsageGuide,
             onTap: () {
               _showHelpDialog();
             },
@@ -482,8 +405,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildDivider(),
           _buildMenuTile(
             icon: Icons.logout,
-            title: 'Keluar',
-            subtitle: 'Keluar dari aplikasi',
+            title: AppLocalizations.of(context)!.logout,
+            subtitle: AppLocalizations.of(context)!.logoutFromApp, // Assuming a new key for this
             textColor: Colors.red,
             iconColor: Colors.red,
             onTap: () {
@@ -507,7 +430,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: (iconColor ?? finlogBluePrimary).withOpacity(0.1),
+          color: (iconColor ?? finlogBluePrimary).withAlpha((255 * 0.1).round()),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(
@@ -547,7 +470,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Icon(Icons.auto_awesome, color: finlogBluePrimary),
             const SizedBox(width: 8),
-            const Text('Pengaturan API Gemini', style: TextStyle(color: Colors.black)),
+            Text(AppLocalizations.of(context)!.geminiApiSetupTitle, style: const TextStyle(color: Colors.black)),
           ],
         ),
         contentPadding: EdgeInsets.zero, // Set content padding to zero
@@ -564,23 +487,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                        'Untuk menggunakan fitur fitur kami, Anda perlu mengatur API Gemini:',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  Text(
+                        AppLocalizations.of(context)!.geminiApiSetupDescription,
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
                   ),
                   const SizedBox(height: 16),
-                  _buildSetupStep('1', 'Kunjungi Google AI Studio', 'https://aistudio.google.com'),
-                  _buildSetupStep('2', 'Buat akun atau login', 'Gunakan akun Google Anda'),
-                  _buildSetupStep('3', 'Buat API Key baru', 'Klik "Create API Key"'),
-                  _buildSetupStep('4', 'Salin API Key', 'Simpan dengan aman'),
-                  _buildSetupStep('5', 'Masukkan ke aplikasi', 'Paste di field API Key'),
+                  _buildSetupStep('1', AppLocalizations.of(context)!.step1, AppLocalizations.of(context)!.step1Description),
+                  _buildSetupStep('2', AppLocalizations.of(context)!.step2, AppLocalizations.of(context)!.step2Description),
+                  _buildSetupStep('3', AppLocalizations.of(context)!.step3, AppLocalizations.of(context)!.step3Description),
+                  _buildSetupStep('4', AppLocalizations.of(context)!.step4, AppLocalizations.of(context)!.step4Description),
+                  _buildSetupStep('5', AppLocalizations.of(context)!.step5, AppLocalizations.of(context)!.step5Description),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _geminiApiKeyController, // Use the controller
                     style: const TextStyle(color: Colors.black),
                     decoration: InputDecoration(
-                      labelText: 'API Key Gemini',
-                      hintText: 'Masukkan API Key Anda...',
+                      labelText: AppLocalizations.of(context)!.geminiApiKey,
+                      hintText: AppLocalizations.of(context)!.enterYourApiKey,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -600,7 +523,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () async { // Make onPressed async
@@ -613,7 +536,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('Simpan', style: TextStyle(color: Colors.white)),
+            child: Text(AppLocalizations.of(context)!.saveChanges, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -673,30 +596,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showLanguageDialog() {
+    final userProfileService = Provider.of<UserProfileService>(context, listen: false);
+    String currentLanguageCode = userProfileService.currentLocale.languageCode;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Pilih Bahasa'),
+        title: Text(AppLocalizations.of(context)!.selectLanguage),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             RadioListTile<String>(
-              title: const Text('Bahasa Indonesia'),
+              title: Text(AppLocalizations.of(context)!.indonesianLanguage),
               value: 'id',
-              groupValue: 'id',
+              groupValue: currentLanguageCode,
               activeColor: finlogBluePrimary,
               onChanged: (value) {
-                Navigator.pop(context);
+                if (value != null) {
+                  userProfileService.saveLocale(Locale(value));
+                  Navigator.pop(context);
+                }
               },
             ),
             RadioListTile<String>(
-              title: const Text('English'),
+              title: Text(AppLocalizations.of(context)!.englishLanguage),
               value: 'en',
-              groupValue: 'id',
+              groupValue: currentLanguageCode,
               activeColor: finlogBluePrimary,
               onChanged: (value) {
-                Navigator.pop(context);
+                if (value != null) {
+                  userProfileService.saveLocale(Locale(value));
+                  Navigator.pop(context);
+                }
               },
             ),
           ],
@@ -705,18 +637,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  String _getLanguageSubtitle(BuildContext context) {
+    final userProfileService = Provider.of<UserProfileService>(context);
+    final currentLocale = userProfileService.currentLocale;
+    if (currentLocale.languageCode == 'id') {
+      return AppLocalizations.of(context)!.languageSettingsSubtitleId;
+    } else {
+      return AppLocalizations.of(context)!.languageSettingsSubtitleEn;
+    }
+  }
+
   void _showNotificationSettings() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Pengaturan Notifikasi'),
+        title: Text(AppLocalizations.of(context)!.notificationSettings),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SwitchListTile(
-              title: const Text('Notifikasi Harian'),
-              subtitle: const Text('Pengingat untuk mencatat pengeluaran'),
+              title: Text(AppLocalizations.of(context)!.dailyNotifications),
+              subtitle: Text(AppLocalizations.of(context)!.dailyNotificationsSubtitle),
               value: true,
               activeColor: finlogBluePrimary,
               onChanged: (value) {
@@ -724,8 +666,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
             ),
             SwitchListTile(
-              title: const Text('Notifikasi Mingguan'),
-              subtitle: const Text('Ringkasan pengeluaran mingguan'),
+              title: Text(AppLocalizations.of(context)!.weeklyNotifications),
+              subtitle: Text(AppLocalizations.of(context)!.weeklyNotificationsSubtitle),
               value: true,
               activeColor: finlogBluePrimary,
               onChanged: (value) {
@@ -733,8 +675,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
             ),
             SwitchListTile(
-              title: const Text('Notifikasi Budget'),
-              subtitle: const Text('Peringatan ketika mendekati batas budget'),
+              title: Text(AppLocalizations.of(context)!.budgetNotifications),
+              subtitle: Text(AppLocalizations.of(context)!.budgetNotificationsSubtitle),
               value: false,
               activeColor: finlogBluePrimary,
               onChanged: (value) {
@@ -743,18 +685,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-        actions: [
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: finlogBluePrimary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: const Text('Tutup', style: TextStyle(color: Colors.white)),
-          ),
-        ],
       ),
     );
   }
@@ -764,22 +694,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Bantuan', style: TextStyle(color: Colors.black)),
+        title: Text(AppLocalizations.of(context)!.help, style: const TextStyle(color: Colors.black)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHelpItem('❓ Cara menggunakan journaling AI?', 
-                'Tulis pengeluaran Anda dalam bahasa natural, AI akan memproses dan mengkategorikan secara otomatis'),
-              _buildHelpItem('🔑 Bagaimana cara mengatur API Gemini?', 
-                'Kunjungi Google AI Studio, buat API Key, lalu masukkan ke pengaturan aplikasi'),
-              _buildHelpItem('📊 Cara melihat laporan keuangan?', 
-                'Buka menu Laporan untuk melihat analisis pengeluaran bulanan dan kategori'),
-              _buildHelpItem('🔔 Mengatur notifikasi?', 
-                'Masuk ke Pengaturan Notifikasi untuk mengatur pengingat harian dan mingguan'),
-              _buildHelpItem('💡 Tips menggunakan aplikasi?', 
-                'Catat pengeluaran secara rutin, gunakan fitur AI untuk kategorisasi otomatis'),
+              _buildHelpItem(AppLocalizations.of(context)!.howToUseJournalingAi, 
+                AppLocalizations.of(context)!.howToUseJournalingAiAnswer),
+              _buildHelpItem(AppLocalizations.of(context)!.howToSetupGeminiApi, 
+                AppLocalizations.of(context)!.howToSetupGeminiApiAnswer),
+              _buildHelpItem(AppLocalizations.of(context)!.howToViewFinancialReports, 
+                AppLocalizations.of(context)!.howToViewFinancialReportsAnswer),
+              _buildHelpItem(AppLocalizations.of(context)!.howToManageNotifications, 
+                AppLocalizations.of(context)!.howToManageNotificationsAnswer),
+              _buildHelpItem(AppLocalizations.of(context)!.appUsageTips, 
+                AppLocalizations.of(context)!.appUsageTipsAnswer),
             ],
           ),
         ),
@@ -792,7 +722,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('Tutup', style: TextStyle(color: Colors.white)),
+            child: Text(AppLocalizations.of(context)!.close, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -831,12 +761,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Konfirmasi Keluar'),
-        content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
+        title: Text(AppLocalizations.of(context)!.logoutConfirmation),
+        content: Text(AppLocalizations.of(context)!.logoutConfirmationMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -849,7 +779,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('Keluar', style: TextStyle(color: Colors.white)),
+            child: Text(AppLocalizations.of(context)!.logout, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -861,7 +791,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text("Profil", style: AppTextStyles.appBarTitle),
+        title: Text(AppLocalizations.of(context)!.profileScreenTitle, style: AppTextStyles.appBarTitle),
         backgroundColor: Colors.white,
         elevation: 0,
         bottom: PreferredSize(
@@ -885,7 +815,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       floatingActionButton: (_hasNameChanged || _hasImageChanged)
           ? FloatingActionButton.extended(
               onPressed: _saveProfileChanges,
-              label: const Text('Simpan Perubahan'),
+              label: Text(AppLocalizations.of(context)!.saveChanges),
               icon: const Icon(Icons.save),
               backgroundColor: finlogBluePrimary,
               foregroundColor: Colors.white,

@@ -7,6 +7,7 @@ import 'package:finlog/widgets/loading/loading_overlay.dart';
 import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 import 'package:provider/provider.dart'; // Import Provider
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImageInputChoiceScreen extends StatefulWidget {
   const ImageInputChoiceScreen({super.key});
@@ -74,14 +75,14 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
         File imageFile = File(pickedFile.path);
         await _processImage(imageFile);
       }
-    } catch (e) {
-      debugPrint("Error picking or processing image: $e");
+    } catch (error) { // Changed 'e' to 'error'
+      debugPrint("Error picking or processing image: $error");
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Terjadi kesalahan: ${e.toString()}")),
+          SnackBar(content: Text(AppLocalizations.of(context)!.errorOccurred(error.toString()))),
         );
       }
     }
@@ -153,8 +154,8 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
                 children: <Widget>[
                   _buildOptionItem(
                     context,
-                    'Scan Bill', // line1 for first item
-                    'Camera',  // line2 for first item
+                    AppLocalizations.of(context)!.scanBill, // line1 for first item
+                    AppLocalizations.of(context)!.camera,  // line2 for first item
                     Icons.camera_alt_outlined, // Icon for Camera
                     () {
                       _pickImage(ImageSource.camera);
@@ -162,8 +163,8 @@ class _ImageInputChoiceScreenState extends State<ImageInputChoiceScreen> {
                   ),
                   _buildOptionItem(
                     context,
-                    'Scan Bill', // line1 for second item
-                    'Gallery',  // line2 for second item
+                    AppLocalizations.of(context)!.scanBill, // line1 for second item
+                    AppLocalizations.of(context)!.gallery,  // line2 for second item
                     Icons.photo_library_outlined, // Icon for Gallery
                     () => _pickImage(ImageSource.gallery),
                   ),

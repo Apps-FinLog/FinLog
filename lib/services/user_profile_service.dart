@@ -1,14 +1,18 @@
 import 'package:flutter/foundation.dart'; // Import for ChangeNotifier
 import 'package:hive_ce/hive.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:flutter/material.dart'; // Import for Locale
 
-class UserProfileService extends ChangeNotifier { // Extend ChangeNotifier
+class UserProfileService extends ChangeNotifier {
   late Box _userProfileBox;
+  Locale? _currentLocale;
+
+  Locale get currentLocale => _currentLocale ?? const Locale('id'); // Default to Indonesian
 
   Future<void> init() async {
-    // Hive.initFlutter() is called once in main.dart by BillStorageService
     _userProfileBox = await Hive.openBox('userProfileBox');
     print('UserProfileService: Hive box "userProfileBox" opened.');
+    _loadLocale(); // Load locale on initialization
   }
 
   String getUserName() {
@@ -45,5 +49,18 @@ class UserProfileService extends ChangeNotifier { // Extend ChangeNotifier
     await _userProfileBox.put('geminiApiKey', apiKey);
     print('UserProfileService: Saved geminiApiKey: ${apiKey.substring(0, 10)}...'); // Log a snippet
     notifyListeners(); // Notify listeners after saving
+  }
+
+  void _loadLocale() {
+    final languageCode = _userProfileBox.get('languageCode', defaultValue: 'id');
+    _currentLocale = Locale(languageCode);
+    print('UserProfileService: Loaded locale: $_currentLocale');
+  }
+
+  Future<void> saveLocale(Locale locale) async {
+    await _userProfileBox.put('languageCode', locale.languageCode);
+    _currentLocale = locale;
+    print('UserProfileService: Saved locale: $_currentLocale');
+    notifyListeners(); // Notify listeners when locale changes
   }
 }
