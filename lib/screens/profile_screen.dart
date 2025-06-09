@@ -463,86 +463,130 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showGeminiSetupDialog() {
+void _showGeminiSetupDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.auto_awesome, color: finlogBluePrimary),
-            const SizedBox(width: 8),
-            Text(AppLocalizations.of(context)!.geminiApiSetupTitle, style: const TextStyle(color: Colors.black)),
-          ],
-        ),
-        contentPadding: EdgeInsets.zero, // Set content padding to zero
-        content: Builder( // Use Builder to get a new context
-          builder: (dialogContext) {
-            return SingleChildScrollView(
-              padding: EdgeInsets.only(
-                left: 24.0, // Add horizontal padding
-                right: 24.0, // Add horizontal padding
-                top: 20.0, // Add top padding
-                bottom: MediaQuery.of(dialogContext).viewInsets.bottom + 20.0, // Adjust padding for keyboard + extra space
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                        AppLocalizations.of(context)!.geminiApiSetupDescription,
-                    style: const TextStyle(fontSize: 16, color: Colors.black),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildSetupStep('1', AppLocalizations.of(context)!.step1, AppLocalizations.of(context)!.step1Description),
-                  _buildSetupStep('2', AppLocalizations.of(context)!.step2, AppLocalizations.of(context)!.step2Description),
-                  _buildSetupStep('3', AppLocalizations.of(context)!.step3, AppLocalizations.of(context)!.step3Description),
-                  _buildSetupStep('4', AppLocalizations.of(context)!.step4, AppLocalizations.of(context)!.step4Description),
-                  _buildSetupStep('5', AppLocalizations.of(context)!.step5, AppLocalizations.of(context)!.step5Description),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _geminiApiKeyController, // Use the controller
-                    style: const TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.geminiApiKey,
-                      hintText: AppLocalizations.of(context)!.enterYourApiKey,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: finlogBluePrimary),
-                      ),
-                      prefixIcon: Icon(Icons.key, color: finlogBluePrimary),
-                    ),
-                    obscureText: true,
-                  ),
-                ],
-              ),
-            );
-          }
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () async { // Make onPressed async
-              await _userProfileService.saveGeminiApiKey(_geminiApiKeyController.text); // Save API key
-                  if (!mounted) return; // Add this line
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: finlogBluePrimary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: Text(AppLocalizations.of(context)!.saveChanges, style: const TextStyle(color: Colors.white)),
+            title: Row(
+              children: [
+                Icon(Icons.auto_awesome, color: finlogBluePrimary),
+                const SizedBox(width: 8),
+                Text(
+                  AppLocalizations.of(context)!.geminiApiSetupTitle,
+                  style: const TextStyle(color: Colors.black),
+                ),
+              ],
+            ),
+            contentPadding: EdgeInsets.zero, // Set content padding to zero
+            content: Builder(
+              // Use Builder to get a new context
+              builder: (dialogContext) {
+                return SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    left: 24.0, // Add horizontal padding
+                    right: 24.0, // Add horizontal padding
+                    top: 20.0, // Add top padding
+                    bottom:
+                        MediaQuery.of(dialogContext).viewInsets.bottom +
+                        20.0, // Adjust padding for keyboard + extra space
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.geminiApiSetupDescription,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildSetupStep(
+                        '1',
+                        AppLocalizations.of(context)!.step1,
+                        AppLocalizations.of(context)!.step1Description,
+                      ),
+                      _buildSetupStep(
+                        '2',
+                        AppLocalizations.of(context)!.step2,
+                        AppLocalizations.of(context)!.step2Description,
+                      ),
+                      _buildSetupStep(
+                        '3',
+                        AppLocalizations.of(context)!.step3,
+                        AppLocalizations.of(context)!.step3Description,
+                      ),
+                      _buildSetupStep(
+                        '4',
+                        AppLocalizations.of(context)!.step4,
+                        AppLocalizations.of(context)!.step4Description,
+                      ),
+                      _buildSetupStep(
+                        '5',
+                        AppLocalizations.of(context)!.step5,
+                        AppLocalizations.of(context)!.step5Description,
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller:
+                            _geminiApiKeyController, // Use the controller
+                        style: const TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.geminiApiKey,
+                          hintText:
+                              AppLocalizations.of(context)!.enterYourApiKey,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: finlogBluePrimary),
+                          ),
+                          prefixIcon: Icon(Icons.key, color: finlogBluePrimary),
+                        ),
+                        obscureText: true,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(AppLocalizations.of(context)!.cancel),
+              ),
+              ElevatedButton(
+                // --- PERUBAHAN DI SINI ---
+                onPressed: () async {
+                  // Amankan Navigator SEBELUM async gap
+                  final navigator = Navigator.of(context);
+                  // Simpan API Key
+                  await _userProfileService.saveGeminiApiKey(
+                    _geminiApiKeyController.text,
+                  );
+                  // Gunakan navigator yang sudah diamankan untuk menutup dialog
+                  navigator.pop();
+                },
+                // --- AKHIR PERUBAHAN ---
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: finlogBluePrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.saveChanges,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
