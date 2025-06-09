@@ -8,8 +8,6 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:finlog/widgets/pdf/generate_pdf.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:finlog/screens/utility_page/success_page.dart';
 
 class DailyExpenditureCard extends StatefulWidget {
@@ -57,25 +55,21 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
             children: [              // SHARE BUTTON
               IconButton(
                 icon: Icon(Icons.share, size: 24, color: Colors.blue),
-                onPressed: () async {
+                onPressed: () {
                   if (!mounted || bills.isEmpty) return;
 
-                  try {
-                    debugPrint(
-                      'share button pressed for ${widget.dailyExpenditure.date}',
-                    );
-                    final doc = await generatePdfDoc(
-                      bills,
-                      widget.dailyExpenditure.date,
-                    );
+                  debugPrint(
+                    'share button pressed for ${widget.dailyExpenditure.date}',
+                  );
 
-                    debugPrint('PDF generated for ${widget.dailyExpenditure.date}');
-
-                    if (mounted) {
-                      await sharePdf(doc, widget.dailyExpenditure.date);
-                      
+                  generatePdfDoc(bills, widget.dailyExpenditure.date)
+                    .then((doc) {
+                      debugPrint('PDF generated for ${widget.dailyExpenditure.date}');
+                      return sharePdf(doc, widget.dailyExpenditure.date);
+                    })
+                    .then((_) {
                       // Navigate to success page after successful share
-                      if (mounted) {
+                      if (mounted && context.mounted) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -86,10 +80,10 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
                           ),
                         );
                       }
-                    }
-                  } catch (e) {
-                    debugPrint('Share error: $e');
-                  }
+                    })
+                    .catchError((e) {
+                      debugPrint('Share error: $e');
+                    });
                 },
               ),
 
@@ -106,45 +100,41 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
                   );
                   // Add edit logic here
                 },
-              ),
-                IconButton(
+              ),              IconButton(
                 icon: const Icon(
                   Icons.file_download_outlined,
                   size: 28,
                   color: Colors.blue,
                 ),
-                onPressed: () async {
+                onPressed: () {
                   if (!mounted || bills.isEmpty) return;
 
-                  try {
-                    debugPrint(
-                      'Download started for ${widget.dailyExpenditure.date}',
-                    );
+                  debugPrint(
+                    'Download started for ${widget.dailyExpenditure.date}',
+                  );
 
-                    final doc = await generatePdfDoc(
-                      bills,
-                      widget.dailyExpenditure.date,
-                    );
-
-                    if (!mounted) return;
-
-                    await savePdfToDevice(doc, widget.dailyExpenditure.date);
-                    
-                    // Navigate to success page after successful download
-                    if (mounted) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SuccessPage(
-                            title: 'PDF Berhasil Diunduh',
-                            subtitle: 'File telah tersimpan di perangkat',
+                  generatePdfDoc(bills, widget.dailyExpenditure.date)
+                    .then((doc) {
+                      if (!mounted) return null;
+                      return savePdfToDevice(doc, widget.dailyExpenditure.date);
+                    })
+                    .then((_) {
+                      // Navigate to success page after successful download
+                      if (mounted && context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SuccessPage(
+                              title: 'PDF Berhasil Diunduh',
+                              subtitle: 'File telah tersimpan di perangkat',
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  } catch (e) {
-                    debugPrint('Download error: $e');
-                  }
+                        );
+                      }
+                    })
+                    .catchError((e) {
+                      debugPrint('Download error: $e');
+                    });
                 },
               ),
             ],
