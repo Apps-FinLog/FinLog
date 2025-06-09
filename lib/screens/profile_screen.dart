@@ -180,9 +180,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         decoration: BoxDecoration(
-          color: finlogBluePrimary.withOpacity(0.1),
+          color: finlogBluePrimary.withAlpha((255 * 0.1).round()),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: finlogBluePrimary.withOpacity(0.3)),
+          border: Border.all(
+            color: finlogBluePrimary.withAlpha((255 * 0.3).round()),
+          ),
         ),
         child: Column(
           children: [
@@ -226,7 +228,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     border: Border.all(color: Colors.white, width: 4),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withAlpha((255 * 0.2).round()),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -528,6 +530,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ElevatedButton(
             onPressed: () async { // Make onPressed async
               await _userProfileService.saveGeminiApiKey(_geminiApiKeyController.text); // Save API key
+                  if (!mounted) return; // Add this line
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
@@ -832,3 +835,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 }
+

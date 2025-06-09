@@ -46,7 +46,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           _imageBytes = base64Decode(imageBase64);
         });
       } catch (e) {
-        print('Error decoding Base64 image in CustomAppBar: $e');
+        debugPrint('Error decoding Base64 image in CustomAppBar: $e');
         setState(() {
           _imageBytes = null;
         });
