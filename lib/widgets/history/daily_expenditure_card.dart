@@ -146,6 +146,8 @@ Future<void> sharePdf(pw.Document doc, DateTime date) async {
   );
 }
 
+// TODO : add some control flow to make sure user can abort the preview page and also success page
+
 Future<pw.Document> generatePdfDoc(List<BillData> bills, DateTime date) async {
   return await generatePdfDocument(bills, date);
 }
