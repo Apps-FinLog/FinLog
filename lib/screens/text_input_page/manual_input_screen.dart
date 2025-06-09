@@ -237,6 +237,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           child: InkWell(
             borderRadius: BorderRadius.circular(10),
             onTap: () {
+              FocusScope.of(context).unfocus(); // Dismiss keyboard
               setState(() {
                 _isCategoryExpanded = !_isCategoryExpanded;
               });
