@@ -137,5 +137,13 @@
     "scan": "Scan",
     "history": "History",
     "profile": "Profile",
-    "letsTakeNoteToday": "Let's take note today!"
+    "letsTakeNoteToday": "Let's take note today!",
+    "billVerificationTitle": "Bill Verification",
+    "scannedItemsTitle": "Scanned Items",
+    "ensureAllItemsCorrect": "Ensure all items are read correctly",
+    "subtotalLabel": "Subtotal",
+    "taxLabel": "Tax",
+    "discountLabel": "Discount",
+    "otherLabel": "Other",
+    "totalAmountLabel": "Total Amount"
 }

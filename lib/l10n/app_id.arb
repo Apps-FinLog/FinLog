@@ -137,5 +137,13 @@
     "scan": "Pindai",
     "history": "Riwayat",
     "profile": "Profil",
-    "letsTakeNoteToday": "~yuk catat hari ini!"
+    "letsTakeNoteToday": "~yuk catat hari ini!",
+    "billVerificationTitle": "Verifikasi Tagihan",
+    "scannedItemsTitle": "Item yang Terpindai",
+    "ensureAllItemsCorrect": "Pastikan semua item sudah terbaca dengan benar",
+    "subtotalLabel": "Subtotal",
+    "taxLabel": "Pajak",
+    "discountLabel": "Diskon",
+    "otherLabel": "Lainnya",
+    "totalAmountLabel": "Jumlah Total"
 }
