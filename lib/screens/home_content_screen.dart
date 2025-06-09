@@ -26,8 +26,7 @@ class _HomeContentScreenState extends State<HomeContentScreen> with AutomaticKee
         crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start
         children: [
           const HomeFilterButtons(),
-          const SizedBox(height: 20),
-          SummaryCard(
+          const SizedBox(height: 20),          SummaryCard(
             onTap: () {
               // Navigate to the detailed summary page
               Navigator.push(
@@ -35,7 +34,6 @@ class _HomeContentScreenState extends State<HomeContentScreen> with AutomaticKee
                 MaterialPageRoute(builder: (context) => const Placeholder()), // Replace with actual page
               );
             },
-            amount: 1300000, // Example amount
             title: AppLocalizations.of(context)!.expenditureMonthYear(
               DateFormat.MMMM(Localizations.localeOf(context).languageCode).format(DateTime.now()),
               DateTime.now().year.toString(),
