@@ -4,7 +4,6 @@ import 'package:finlog/screens/home_screen.dart';
 import 'package:finlog/services/user_profile_service.dart';
 import 'package:provider/provider.dart';
 // import 'dart:convert'; // Tidak perlu lagi
-import 'dart:typed_data'; // Tetap perlu untuk tipe data di service
 import 'package:finlog/l10n/app_localizations.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
