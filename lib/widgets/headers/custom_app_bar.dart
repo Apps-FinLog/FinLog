@@ -69,20 +69,28 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return AppBar(
       backgroundColor: Colors.white,
       centerTitle: false,
-      title: Row(
-        children: [
-          Text(
-            widget.title,
-            style: AppTextStyles.appBarTitle,
-          ),
-          Expanded(
-            child: Text(
-              AppLocalizations.of(context)!.letsTakeNoteToday,
-              style: AppTextStyles.appBarSubtitle,
-              textAlign: TextAlign.center,
+      title: GestureDetector(
+        onTap: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        },
+        child: Row(
+          children: [
+            Text(
+              widget.title,
+              style: AppTextStyles.appBarTitle,
             ),
-          ),
-        ],
+            Expanded(
+              child: Text(
+                AppLocalizations.of(context)!.letsTakeNoteToday,
+                style: AppTextStyles.appBarSubtitle,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
       elevation: 0,
       actions: [
