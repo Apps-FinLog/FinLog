@@ -1,6 +1,6 @@
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:finlog/models/bill_data.dart';
-import 'package:finlog/models/bill_item.dart'; // Import BillItem
+// Import BillItem
 
 class BillStorageService {
   static const String _billBoxName = 'bills';
