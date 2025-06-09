@@ -2,7 +2,7 @@ import 'package:hive_ce/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert'; // <-- TAMBAHKAN IMPORT INI
-import 'dart:typed_data';
+
 
 class UserProfileService extends ChangeNotifier {
   late Box _userProfileBox;
