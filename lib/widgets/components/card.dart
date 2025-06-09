@@ -11,16 +11,29 @@ class ReusablePageCard extends StatelessWidget {
     this.subtitle,
     this.child,
   });
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      // Using a border and zero elevation to closely match the image style
-      elevation: 0,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.grey.shade300, width: 1),
-        borderRadius: BorderRadius.circular(8.0),
+    return Container(
+      decoration: BoxDecoration(
+        // Subtle gradient background for a modern look
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            Colors.grey.shade50,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
+        // Subtle shadow for depth
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -48,6 +61,7 @@ class ReusablePageCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[700],
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],

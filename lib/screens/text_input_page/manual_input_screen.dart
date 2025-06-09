@@ -6,6 +6,7 @@ import 'package:finlog/models/bill_data.dart'; // New import
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart'; // For TextInputFormatter
 import 'package:finlog/widgets/navs/dual_action_buttons.dart';
+import 'package:finlog/l10n/app_localizations.dart';
 
 class ManualInputScreen extends StatefulWidget {
   const ManualInputScreen({super.key});
@@ -24,16 +25,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
   DateTime? _selectedDate;
   bool _isCategoryExpanded = false;
   String? _selectedCategory;
-  final List<String> _categories = [
-    'Makanan & Minuman',
-    'Transportasi',
-    'Belanja',
-    'Tagihan',
-    'Hiburan',
-    'Kesehatan',
-    'Pendidikan',
-    'Lainnya',
-  ];
+  late List<String> _categories;
 
   final _formKey = GlobalKey<FormState>(); // Form key for validation
 
@@ -227,7 +219,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Kategori",
+          AppLocalizations.of(context)!.categoryTitle,
           style: TextStyle(
             color: Colors.white.withAlpha(230),
             fontSize: 14,
@@ -253,7 +245,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    _selectedCategory ?? 'Pilih Kategori',
+                    _selectedCategory ?? AppLocalizations.of(context)!.selectCategory,
                     style: TextStyle(
                       color: _selectedCategory != null
                           ? Colors.white
@@ -339,9 +331,9 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
           const SizedBox(height: 20),
           const Icon(Icons.calculate_outlined, color: Colors.white, size: 48),
           const SizedBox(height: 16),
-          const Text(
-            'Catat Keuangan\nSekarang Yuk!',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)!.recordFinanceNow,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -356,16 +348,16 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildTextField(
-                  label: 'Nominal',
+                  label: AppLocalizations.of(context)!.nominalLabel,
                   controller: _nominalController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  hintText: 'Contoh: Rp 1.000.000',
+                  hintText: AppLocalizations.of(context)!.nominalHint,
                   validator: (value) {
                     if (value == null || value.isEmpty || value.replaceAll(RegExp(r'[^\d]'), '').isEmpty) {
-                      return 'Nominal tidak boleh kosong';
+                      return AppLocalizations.of(context)!.nominalEmptyValidation;
                     }
                     if (double.tryParse(value.replaceAll(RegExp(r'[^\d]'), '')) == null) {
-                      return 'Nominal tidak valid';
+                      return AppLocalizations.of(context)!.nominalInvalidValidation;
                     }
                     return null;
                   },
@@ -373,7 +365,7 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 6.0, left: 4.0),
                   child: Text(
-                    'Estimasi nominal lebih penting dibanding detail rinci nominal',
+                    AppLocalizations.of(context)!.nominalEstimationHint,
                     style: TextStyle(
                       color: Colors.white.withAlpha(180),
                       fontSize: 11,
@@ -384,23 +376,23 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
                 _buildCategoryAccordion(),
                 const SizedBox(height: 20),
                 _buildTextField(
-                  label: 'Tanggal',
+                  label: AppLocalizations.of(context)!.dateLabel,
                   controller: _dateController,
                   readOnly: true,
                   onTap: () => _selectDate(context),
                   prefixIcon: const Icon(Icons.calendar_today_outlined, size: 20),
                   validator: (value) {
                     if (_selectedDate == null) {
-                      return 'Tanggal tidak boleh kosong';
+                      return AppLocalizations.of(context)!.dateEmptyValidation;
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 20),
                 _buildTextField(
-                  label: 'Deskripsi (Opsional)',
+                  label: AppLocalizations.of(context)!.descriptionLabel,
                   controller: _descriptionController, // This will now work correctly
-                  hintText: 'Contoh: Beli makan siang',
+                  hintText: AppLocalizations.of(context)!.descriptionHint,
                   keyboardType: TextInputType.text,
                   maxLines: 3,
                   minLines: 1,
@@ -415,6 +407,16 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _categories = [
+      AppLocalizations.of(context)!.categoryFoodBeverage,
+      AppLocalizations.of(context)!.categoryTransportation,
+      AppLocalizations.of(context)!.categoryShopping,
+      AppLocalizations.of(context)!.categoryBills,
+      AppLocalizations.of(context)!.categoryEntertainment,
+      AppLocalizations.of(context)!.categoryHealth,
+      AppLocalizations.of(context)!.categoryEducation,
+      AppLocalizations.of(context)!.categoryOther,
+    ];
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -426,9 +428,9 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Input Manual',
-            style: TextStyle(
+          title: Text(
+            AppLocalizations.of(context)!.manualInputTitle,
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
@@ -451,8 +453,8 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
           child: DualActionButtons(
-            leftButtonText: 'Back',
-            rightButtonText: 'Continue',
+            leftButtonText: AppLocalizations.of(context)!.backButton,
+            rightButtonText: AppLocalizations.of(context)!.continueButton,
             onLeftButtonPressed: () {
               Navigator.of(context).pop();
             },
@@ -460,8 +462,8 @@ class _ManualInputScreenState extends State<ManualInputScreen> {
               FocusScope.of(context).unfocus();
               if (_selectedCategory == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Pilih kategori terlebih dahulu.'),
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.selectCategorySnackbar),
                     backgroundColor: Colors.redAccent,
                   ),
                 );

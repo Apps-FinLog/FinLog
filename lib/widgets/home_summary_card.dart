@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
 
+
 class HomeSummaryCard extends StatelessWidget {
   const HomeSummaryCard({super.key});
 
