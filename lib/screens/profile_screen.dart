@@ -203,16 +203,27 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [finlogBluePrimaryDark, finlogBluePrimary],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF1E3A8A), // Finlog dark blue
+            Color(0xFF3B82F6), // Blue
+          ],
+          stops: [0.0, 1.0],
         ),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: finlogBluePrimary.withAlpha((255 * 0.3).round()),
+            color: const Color(0xFF3B82F6).withOpacity(0.3), // Blue glow
+            blurRadius: 20,
+            spreadRadius: 2,
+            offset: const Offset(0, 8),
+          ),
+          BoxShadow(
+            color: const Color(0xFF1E40AF).withOpacity(0.2), // Darker blue shadow
             blurRadius: 12,
-            offset: const Offset(0, 6),
+            spreadRadius: 1,
+            offset: const Offset(0, 4),
           ),
         ],
       ),

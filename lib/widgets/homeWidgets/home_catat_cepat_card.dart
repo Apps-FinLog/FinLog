@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:finlog/l10n/app_localizations.dart';
 import 'package:finlog/screens/text_input_page/manual_input_screen.dart';
-import 'package:finlog/screens/input_modals/text_input_choice_screen.dart';
+
 
 class CatatCepat extends StatefulWidget {
   const CatatCepat({super.key});
