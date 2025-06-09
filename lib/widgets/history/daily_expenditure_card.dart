@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:finlog/widgets/components/card.dart';
 import 'package:finlog/models/daily_expenditure.dart';
-
 import 'package:finlog/widgets/history/bill_summary_item.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:finlog/widgets/pdf/generate_pdf.dart';
 import 'package:finlog/screens/utility_page/success_page.dart';
-
-import 'package:finlog/widgets/history/history_list_item.dart';
 import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 import 'package:provider/provider.dart'; // Import Provider
 
@@ -26,12 +23,21 @@ class DailyExpenditureCard extends StatefulWidget {
 }
 
 class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
+  bool _isLoading = false;
+
+  void _setLoading(bool loading) {
+    if (mounted) {
+      setState(() {
+        _isLoading = loading;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
     // Add safety check for empty bills list
-    final bills = widget.dailyExpenditure.bills;
-    if (bills.isEmpty) {
+    final bills = widget.dailyExpenditure.bills;    if (bills.isEmpty) {
       return ReusablePageCard(
         title: DateFormat(
           'EEEE, dd MMMM yyyy',
@@ -44,115 +50,191 @@ class _DailyExpenditureCardState extends State<DailyExpenditureCard> {
     final totalAmount = bills.fold(0.0, (sum, bill) => sum + bill.jumlahTotal);
     final userProfileService = Provider.of<UserProfileService>(context);
     final currentLocale = userProfileService.currentLocale;
-    return ReusablePageCard(
-      title: DateFormat('EEEE, dd MMMM yyyy', currentLocale.languageCode).format(dailyExpenditure.date),
-      ).format(widget.dailyExpenditure.date),
-      subtitle: 'Total: ${NumberFormat.currency(locale: currentLocale.languageCode, symbol: currentLocale.languageCode == 'id' ? 'Rp ' : '\$', decimalDigits: 0).format(dailyExpenditure.items.fold(0.0, (sum, item) => sum + item.total))}',
-
-   
-
     
-
+    return ReusablePageCard(
+      title: DateFormat(
+        'EEEE, dd MMMM yyyy',
+        currentLocale.languageCode,
+      ).format(widget.dailyExpenditure.date),
+      subtitle: 'Total: ${NumberFormat.currency(
+        locale: currentLocale.languageCode,
+        symbol: currentLocale.languageCode == 'id' ? 'Rp ' : '\$',
+        decimalDigits: 0,
+      ).format(totalAmount)}',
       child: Column(
-        children: [
-          Divider(color: Colors.grey[300], thickness: 1),
+        crossAxisAlignment: CrossAxisAlignment.start,        children: [
+          const Divider(color: Colors.grey, thickness: 0.5),
           ...bills
               .where((bill) => bill.billItems.isNotEmpty)
               .map((bill) => BillSummaryItem(billData: bill)),
           const SizedBox(height: 24),
           Divider(color: Colors.grey[300], thickness: 1),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [              // SHARE BUTTON
-              IconButton(
-                icon: Icon(Icons.share, size: 24, color: Colors.blue),
-                onPressed: () {
-                  if (!mounted || bills.isEmpty) return;
-
-                  debugPrint(
-                    'share button pressed for ${widget.dailyExpenditure.date}',
-                  );
-
-                  generatePdfDoc(bills, widget.dailyExpenditure.date)
-                    .then((doc) {
-                      debugPrint('PDF generated for ${widget.dailyExpenditure.date}');
-                      return sharePdf(doc, widget.dailyExpenditure.date);
-                    })
-                    .then((_) {
-                      // Navigate to success page after successful share
-                      if (mounted && context.mounted) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SuccessPage(
-                              title: 'PDF Berhasil Dibagikan',
-                              subtitle: 'File telah berhasil dibagikan',
-                            ),
-                          ),
-                        );
-                      }
-                    })
-                    .catchError((e) {
-                      debugPrint('Share error: $e');
-                    });
-                },
-              ),
-
-              // EDIT/EXPORT BUTTON
-              IconButton(
-                icon: Icon(
-                  Icons.edit_note_rounded,
-                  size: 28,
-                  color: Colors.blue,
+          // Show loading indicator when processing
+          if (_isLoading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'Processing...',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
-                onPressed: () {
-                  debugPrint(
-                    'edit button pressed for ${widget.dailyExpenditure.date}',
-                  );
-                  // Add edit logic here
-                },
-              ),              IconButton(
-                icon: const Icon(
-                  Icons.file_download_outlined,
-                  size: 28,
-                  color: Colors.blue,
-                ),
-                onPressed: () {
-                  if (!mounted || bills.isEmpty) return;
-
-                  debugPrint(
-                    'Download started for ${widget.dailyExpenditure.date}',
-                  );
-
-                  generatePdfDoc(bills, widget.dailyExpenditure.date)
-                    .then((doc) {
-                      if (!mounted) return null;
-                      return savePdfToDevice(doc, widget.dailyExpenditure.date);
-                    })
-                    .then((_) {
-                      // Navigate to success page after successful download
-                      if (mounted && context.mounted) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SuccessPage(
-                              title: 'PDF Berhasil Diunduh',
-                              subtitle: 'File telah tersimpan di perangkat',
-                            ),
-                          ),
-                        );
-                      }
-                    })
-                    .catchError((e) {
-                      debugPrint('Download error: $e');
-                    });
-                },
               ),
-            ],
-          ),
+            ),
+          if (!_isLoading)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // SHARE BUTTON
+                _buildActionButton(
+                  icon: Icons.share,
+                  tooltip: 'Share PDF',
+                  onPressed: () => _handleSharePdf(),
+                ),
+                const SizedBox(width: 8),
+                
+                // EDIT BUTTON  
+                _buildActionButton(
+                  icon: Icons.edit_note_rounded,
+                  tooltip: 'Edit Bills',
+                  onPressed: () => _handleEditBills(),
+                ),
+                const SizedBox(width: 8),
+                
+                // DOWNLOAD BUTTON
+                _buildActionButton(
+                  icon: Icons.file_download_outlined,
+                  tooltip: 'Download PDF',
+                  onPressed: () => _handleDownloadPdf(),
+                ),
+              ],
+            ),
         ],
       ),
     );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required String tooltip,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.blue.shade200),
+      ),
+      child: IconButton(
+        icon: Icon(icon, size: 20, color: Colors.blue.shade700),
+        onPressed: onPressed,
+        tooltip: tooltip,
+        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+      ),
+    );
+  }
+
+  Future<void> _handleSharePdf() async {
+    final bills = widget.dailyExpenditure.bills;
+    if (!mounted || bills.isEmpty) return;
+
+    _setLoading(true);
+    try {
+      debugPrint('Share button pressed for ${widget.dailyExpenditure.date}');
+      
+      final doc = await generatePdfDoc(bills, widget.dailyExpenditure.date);
+      debugPrint('PDF generated for ${widget.dailyExpenditure.date}');
+      
+      await sharePdf(doc, widget.dailyExpenditure.date);
+      
+      if (mounted && context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SuccessPage(
+              title: 'PDF Berhasil Dibagikan',
+              subtitle: 'File telah berhasil dibagikan',
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Share error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to share PDF: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> _handleDownloadPdf() async {
+    final bills = widget.dailyExpenditure.bills;
+    if (!mounted || bills.isEmpty) return;
+
+    _setLoading(true);
+    try {
+      debugPrint('Download started for ${widget.dailyExpenditure.date}');
+      
+      final doc = await generatePdfDoc(bills, widget.dailyExpenditure.date);
+      await savePdfToDevice(doc, widget.dailyExpenditure.date);
+      
+      if (mounted && context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SuccessPage(
+              title: 'PDF Berhasil Diunduh',
+              subtitle: 'File telah tersimpan di perangkat',
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Download error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to download PDF: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  void _handleEditBills() {
+    debugPrint('Edit button pressed for ${widget.dailyExpenditure.date}');
+    // TODO: Navigate to edit bills screen
+    // This will be implemented when the edit bills functionality is added
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Edit functionality coming soon!'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
   }
 }
 

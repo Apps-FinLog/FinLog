@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:finlog/screens/utility_page/reusable_place_holder.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SuccessPage extends StatelessWidget {
   final String? title;
@@ -14,9 +14,6 @@ class SuccessPage extends StatelessWidget {
     this.imagePath,
   });
 
-import 'package:finlog/l10n/app_localizations.dart';
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,9 +25,9 @@ import 'package:finlog/l10n/app_localizations.dart';
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
-          'Success',
-          style: TextStyle(
+        title: Text(
+          title ?? 'Success',
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -39,13 +36,10 @@ import 'package:finlog/l10n/app_localizations.dart';
         centerTitle: true,
       ),
       body: ReusablePlaceholder(
-
-   
-      imagePath: 'assets/images/flame.png',
-      titleText: AppLocalizations.of(context)!.operationSuccessfulTitle,
-      subtitleText: AppLocalizations.of(context)!.redirectingToHomePage,
-    ), 
-
+        imagePath: imagePath ?? 'assets/images/flame.png',
+        titleText: title ?? AppLocalizations.of(context)!.operationSuccessfulTitle,
+        subtitleText: subtitle ?? AppLocalizations.of(context)!.redirectingToHomePage,
+      ),
     );
   }
 }
