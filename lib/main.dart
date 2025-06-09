@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:finlog/screens/splash_onboarding/onboarding_screen.dart'; // This will be navigated to from SplashScreen
-import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
-import 'package:finlog/services/bill_storage_service.dart'; // Import BillStorageService
-import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
-import 'package:provider/provider.dart'; // Import Provider
-import 'package:flutter_localizations/flutter_localizations.dart'; // Import for localization delegates
-import 'package:finlog/l10n/app_localizations.dart'; // Import generated localizations
+import 'package:finlog/screens/splash_onboarding/onboarding_screen.dart';
+import 'package:finlog/screens/home_screen.dart';
+import 'package:finlog/services/bill_storage_service.dart';
+import 'package:finlog/services/user_profile_service.dart';
+import 'package:finlog/services/onboarding_service.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:finlog/l10n/app_localizations.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:finlog/hive_registrar.g.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import dotenv
 
 late BillStorageService billStorageService;
 late UserProfileService userProfileService;
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Required for async operations before runApp
-  await dotenv.load(fileName: ".env"); // Load the .env file
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+
+  await Hive.initFlutter();
+  Hive.registerAdapters();
 
   billStorageService = BillStorageService();
-  await billStorageService.init(); // Initialize BillStorageService
+  await billStorageService.init();
 
   userProfileService = UserProfileService();
-  await userProfileService.init(); // Initialize UserProfileService
+  await userProfileService.init();
 
   runApp(
     MultiProvider(
@@ -46,29 +53,66 @@ class MyApp extends StatelessWidget {
           title: 'FinLog',
           theme: ThemeData(
             primarySwatch: Colors.blue,
-            fontFamily: 'Inter', // Menggunakan font Inter
-            scaffoldBackgroundColor: Colors.white, // Default background
+            fontFamily: 'Inter',
+            scaffoldBackgroundColor: Colors.white,
             textTheme: const TextTheme(
-              // Default text styles
               bodyLarge: TextStyle(color: Colors.white),
               bodyMedium: TextStyle(color: Colors.white70),
               titleLarge: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
-            )
+            ),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+            ),
           ),
-          locale: userProfileService.currentLocale, // Use the locale from UserProfileService
+          locale: userProfileService.currentLocale,
           localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: AppLocalizations.supportedLocales, // Use supported locales from generated file
-          home: const OnboardingScreen(), // Directly navigate to OnboardingScreen
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const AppInitializer(),
           debugShowCheckedModeBanner: false,
         );
+      },
+    );
+  }
+}
+
+class AppInitializer extends StatefulWidget {
+  const AppInitializer({super.key});
+
+  @override
+  State<AppInitializer> createState() => _AppInitializerState();
+}
+
+class _AppInitializerState extends State<AppInitializer> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: OnboardingService.hasCompletedOnboarding(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          debugPrint('Error checking onboarding: ${snapshot.error}');
+          return const OnboardingScreen();
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (snapshot.data == true) {
+          return const HomeScreen();
+        } else {
+          return const OnboardingScreen();
+        }
       },
     );
   }
