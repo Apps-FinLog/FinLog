@@ -7,6 +7,9 @@ import 'package:finlog/services/gemini_service.dart';
 import 'package:finlog/models/manual_input_data.dart'; // Import ManualInputData
 import 'package:finlog/models/bill_data.dart'; // Import BillData
 import 'package:intl/intl.dart'; // Import for DateFormat
+import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
+import 'package:provider/provider.dart'; // Import Provider
+import 'package:finlog/l10n/app_localizations.dart';
 
 enum InputSource { manual, journal, ocr }
 
@@ -30,14 +33,14 @@ class VerifikasiInputScreen extends StatefulWidget {
 }
 
 class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
-  final GeminiService _geminiService = GeminiService();
+  late GeminiService _geminiService; // Declare GeminiService instance
   Map<String, dynamic>? _parsedExpenseData;
   bool _isLoading = false;
   String? _errorMessage;
 
   String _formatDateString(String? dateString) {
     if (dateString == null || dateString.isEmpty) {
-      return 'N/A';
+      return AppLocalizations.of(context)!.notAvailable;
     }
     try {
       // Attempt to parse various common date formats
@@ -50,7 +53,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
             date = DateTime.parse('${parts[0]}-${parts[1]}-${parts[2]}');
           } else if (int.parse(parts[0]) > 12) { // DD/MM/YYYY
             date = DateFormat('dd/MM/yyyy').parse(dateString);
-          } else { // Assume MM/DD/YYYY or DD/MM/YYYY, try parsing
+          } else { // Assume MM/DD/YYYY or DD/DD/YYYY, try parsing
             try {
               date = DateFormat('dd/MM/yyyy').parse(dateString);
             } catch (_) {
@@ -58,33 +61,37 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
             }
           }
         } else {
-          return 'Invalid Date Format';
+          return AppLocalizations.of(context)!.invalidDateFormat;
         }
       } else if (dateString.contains('-')) {
         // Try YYYY-MM-DD
         date = DateTime.parse(dateString);
       } else {
-        return 'Invalid Date Format';
+        return AppLocalizations.of(context)!.invalidDateFormat;
       }
       return DateFormat('dd/MM/yyyy').format(date);
     } catch (e) {
       debugPrint('Error parsing date string "$dateString": $e');
-      return 'Invalid Date';
+      return AppLocalizations.of(context)!.invalidDate;
     }
   }
 
   @override
   void initState() {
     super.initState();
-    // Always parse with Gemini for journal or OCR inputs to get amount, category, etc.
-    // The date will be prioritized from widget.journalDate in _buildContentCard.
-    if (widget.sourceScreen == InputSource.journal || widget.sourceScreen == InputSource.ocr) {
-      _parseJournalEntry();
-    } else {
-      // If manualInputData is provided or source is manual, no need to parse with Gemini
-      // If manualInputData is provided or source is manual, no need to parse with Gemini
-      _isLoading = false;
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userProfileService = Provider.of<UserProfileService>(context, listen: false);
+      _geminiService = GeminiService(userProfileService); // Initialize GeminiService with UserProfileService
+
+      // Always parse with Gemini for journal or OCR inputs to get amount, category, etc.
+      // The date will be prioritized from widget.journalDate in _buildContentCard.
+      if (widget.sourceScreen == InputSource.journal || widget.sourceScreen == InputSource.ocr) {
+        _parseJournalEntry();
+      } else {
+        // If manualInputData is provided or source is manual, no need to parse with Gemini
+        _isLoading = false;
+      }
+    });
   }
 
   Future<void> _parseJournalEntry() async {
@@ -99,9 +106,9 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
       });
       debugPrint('Parsed Expense Data: $_parsedExpenseData');
       debugPrint('Parsed Expense Data: $_parsedExpenseData');
-    } catch (e) {
+    } catch (error) { // Changed 'e' to 'error'
       setState(() {
-        _errorMessage = 'Failed to parse expense: ${e.toString()}';
+        _errorMessage = AppLocalizations.of(context)!.failedToParseExpense(error.toString());
       });
     } finally {
       setState(() {
@@ -160,9 +167,9 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Rincian Input',
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.inputDetailsTitle,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -182,7 +189,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Date: ${widget.manualInputData != null ? DateFormat('dd/MM/yyyy').format(widget.manualInputData!.date) : (widget.journalDate != null ? DateFormat('dd/MM/yyyy').format(widget.journalDate!) : _formatDateString(_parsedExpenseData?['displayDate']))}',
+                            '${AppLocalizations.of(context)!.dateLabelColon} ${widget.manualInputData != null ? DateFormat('dd/MM/yyyy').format(widget.manualInputData!.date) : (widget.journalDate != null ? DateFormat('dd/MM/yyyy').format(widget.journalDate!) : _formatDateString(_parsedExpenseData?['displayDate']))}',
                             style: TextStyle(
                               color: Colors.white.withAlpha((255 * 0.9).round()),
                               fontSize: 15,
@@ -191,7 +198,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Amount: ${widget.manualInputData != null ? NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(widget.manualInputData!.nominal) : (_parsedExpenseData?['jumlahTotal'] != null ? NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(_parsedExpenseData!['jumlahTotal']) : 'N/A')} IDR',
+                            '${AppLocalizations.of(context)!.amountLabelColon} ${widget.manualInputData != null ? NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(widget.manualInputData!.nominal) : (_parsedExpenseData?['jumlahTotal'] != null ? NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0).format(_parsedExpenseData!['jumlahTotal']) : AppLocalizations.of(context)!.notAvailable)} ${AppLocalizations.of(context)!.currencyIDR}',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 18,
@@ -200,7 +207,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Category: ${widget.manualInputData != null ? widget.manualInputData!.category : (_parsedExpenseData?['category'] ?? 'Lainnya')}', // Use parsed category or default to 'Lainnya'
+                            '${AppLocalizations.of(context)!.categoryLabelColon} ${widget.manualInputData != null ? widget.manualInputData!.category : (_parsedExpenseData?['category'] ?? AppLocalizations.of(context)!.categoryOther)}', // Use parsed category or default to 'Lainnya'
                             style: TextStyle(
                               color: Colors.white.withAlpha((255 * 0.9).round()),
                               fontSize: 15,
@@ -208,7 +215,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Description: ${widget.manualInputData != null ? (widget.manualInputData!.description ?? 'N/A') : (_parsedExpenseData?['summary'] ?? widget.journalInput)}', // Use Gemini summary or original journal input as description
+                            '${AppLocalizations.of(context)!.descriptionLabelColon} ${widget.manualInputData != null ? (widget.manualInputData!.description ?? AppLocalizations.of(context)!.notAvailable) : (_parsedExpenseData?['summary'] ?? widget.journalInput)}', // Use Gemini summary or original journal input as description
                             style: TextStyle(
                               color: Colors.white.withAlpha((255 * 0.9).round()),
                               fontSize: 15,
@@ -217,7 +224,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                           const SizedBox(height: 10),
                           if (widget.manualInputData == null) // Only show payment method for parsed data
                             Text(
-                              'Payment Method: N/A', // Default for journal input
+                              '${AppLocalizations.of(context)!.paymentMethodLabelColon} ${AppLocalizations.of(context)!.notAvailable}', // Default for journal input
                               style: TextStyle(
                                 color: Colors.white.withAlpha((255 * 0.9).round()),
                                 fontSize: 15,
@@ -240,9 +247,9 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                   ),
                   elevation: 1,
                 ),
-                child: const Text(
-                  'Tambah Lagi',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.addMoreButton,
+                  style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: finlogBluePrimaryDark, // Dark text on light button
@@ -258,7 +265,7 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
             // Simulating summary/total section
             // This part can be updated later to show actual totals from parsed data
             Text(
-              'Original Input:',
+              AppLocalizations.of(context)!.originalInputLabel,
               style: TextStyle(
                 color: Colors.white.withAlpha((255 * 0.9).round()),
                 fontSize: 15,
@@ -283,9 +290,9 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'FinLog',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
+        title: Text(
+          AppLocalizations.of(context)!.finlogAppTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         actions: const [
           Padding(
@@ -325,9 +332,9 @@ class _VerifikasiInputScreenState extends State<VerifikasiInputScreen> {
                   ),
                   elevation: 2,
                 ),
-                child: const Text(
-                  'Konfirmasi',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context)!.confirmButton,
+                  style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

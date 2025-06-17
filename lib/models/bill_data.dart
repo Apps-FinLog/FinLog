@@ -26,8 +26,8 @@ class BillData extends ChangeNotifier with HiveObjectMixin {
   double jumlahTotal = 0.0;
 
   BillData()
-      : displayDate = DateFormat('dd/MM/yyyy').format(DateTime.now()),
-        displayTime = DateFormat('HH:mm:ss').format(DateTime.now());
+    : displayDate = DateFormat('dd/MM/yyyy').format(DateTime.now()),
+      displayTime = DateFormat('HH:mm:ss').format(DateTime.now());
 
   void parseOcrResult(Map<String, dynamic> ocrData) {
     if (ocrData['displayDate'] != null && ocrData['displayDate'].isNotEmpty) {
@@ -43,7 +43,9 @@ class BillData extends ChangeNotifier with HiveObjectMixin {
         displayTime = ocrDisplayTime;
       } catch (e) {
         // If parsing fails, fall back to current time
-        debugPrint('Invalid displayTime from OCR: "$ocrDisplayTime". Falling back to current time. Error: $e');
+        debugPrint(
+          'Invalid displayTime from OCR: "$ocrDisplayTime". Falling back to current time. Error: $e',
+        );
         displayTime = DateFormat('HH:mm:ss').format(DateTime.now());
       }
     } else {
@@ -55,12 +57,14 @@ class BillData extends ChangeNotifier with HiveObjectMixin {
     if (ocrData['billItems'] is List) {
       for (var itemJson in ocrData['billItems']) {
         try {
-          billItems.add(BillItem(
-            name: itemJson['name'] ?? 'Unknown Item',
-            price: (itemJson['price'] as num?)?.toDouble() ?? 0.0,
-            quantity: (itemJson['quantity'] as num?)?.toInt() ?? 0,
-            total: (itemJson['total'] as num?)?.toDouble() ?? 0.0,
-          ));
+          billItems.add(
+            BillItem(
+              name: itemJson['name'] ?? 'Unknown Item',
+              price: (itemJson['price'] as num?)?.toDouble() ?? 0.0,
+              quantity: (itemJson['quantity'] as num?)?.toInt() ?? 0,
+              total: (itemJson['total'] as num?)?.toDouble() ?? 0.0,
+            ),
+          );
         } catch (e) {
           debugPrint("Error parsing bill item: $e, itemJson: $itemJson");
         }
@@ -73,6 +77,35 @@ class BillData extends ChangeNotifier with HiveObjectMixin {
     lainnya = (ocrData['lainnya'] as num?)?.toDouble() ?? 0.0;
     jumlahTotal = (ocrData['jumlahTotal'] as num?)?.toDouble() ?? 0.0;
 
+    notifyListeners();
+  }
+
+  void updateItemName(BillItem item, String newName) {
+    item.name = newName;
+    _updateBillSummary();
+    notifyListeners();
+  }
+
+  void updateItemPrice(BillItem item, double newPrice) {
+    item.price = newPrice;
+    item.updateTotal();
+    _updateBillSummary();
+    notifyListeners();
+  }
+
+  void updateItemQuantity(BillItem item, int newQuantity) {
+    item.quantity = newQuantity;
+    item.updateTotal();
+    _updateBillSummary();
+    notifyListeners();
+  }
+
+  void _updateBillSummary() {
+    subtotal = 0.0;
+    for (var item in billItems) {
+      subtotal += item.price * item.quantity;
+    }
+    jumlahTotal = subtotal + pajak + diskon + lainnya;
     notifyListeners();
   }
 }

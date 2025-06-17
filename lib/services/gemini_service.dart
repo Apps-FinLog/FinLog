@@ -2,10 +2,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import flutter_dotenv
+import 'package:finlog/services/user_profile_service.dart'; // Import UserProfileService
 
 class GeminiService {
   static const String _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent';
+  final UserProfileService _userProfileService; // Declare UserProfileService
+
+  GeminiService(this._userProfileService); // Constructor to receive UserProfileService
 
   Future<Map<String, dynamic>> parseExpense(String userInput) async {
     final String prompt = """
@@ -39,7 +42,12 @@ User input: "$userInput"
 Please provide ONLY the JSON object. Do not include any additional text or markdown outside the JSON block.
 """;
 
-    final Uri uri = Uri.parse('$_baseUrl?key=${dotenv.env['GEMINI_API_KEY']}');
+    final String? apiKey = _userProfileService.getGeminiApiKey(); // Get API key from UserProfileService
+    if (apiKey == null || apiKey.isEmpty) {
+      throw Exception('Gemini API Key is not set. Please set it in the profile settings.');
+    }
+
+    final Uri uri = Uri.parse('$_baseUrl?key=$apiKey');
 
     try {
       final response = await http.post(
@@ -80,6 +88,8 @@ Please provide ONLY the JSON object. Do not include any additional text or markd
 You are an OCR assistant. Your task is to extract bill details from the provided image and format them into a JSON object.
 Infer values if not explicitly mentioned, or use reasonable defaults.
 
+dont forget that in Indonesia (our main market) the format for expense would be represented in Rupiah(Rp) and the format for the thousand would be using (.) instead of(,)
+
 Expected JSON structure:
 {
   "displayDate": "<string, DD/MM/YYYY, only provide if explicitly mentioned in the input>",
@@ -106,7 +116,12 @@ If the image does not contain enough information to extract all fields, return a
 Please provide ONLY the JSON object. Do not include any additional text or markdown outside the JSON block.
 """;
 
-    final Uri uri = Uri.parse('$_baseUrl?key=${dotenv.env['GEMINI_API_KEY']}');
+    final String? apiKey = _userProfileService.getGeminiApiKey(); // Get API key from UserProfileService
+    if (apiKey == null || apiKey.isEmpty) {
+      throw Exception('Gemini API Key is not set. Please set it in the profile settings.');
+    }
+
+    final Uri uri = Uri.parse('$_baseUrl?key=$apiKey');
 
     try {
       final response = await http.post(

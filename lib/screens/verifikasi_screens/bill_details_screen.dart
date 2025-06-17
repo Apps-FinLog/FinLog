@@ -9,6 +9,7 @@ import 'package:finlog/widgets/bill_widgets/bill_item_list.dart'; // Import Bill
 import 'package:finlog/widgets/bill_widgets/bill_action_buttons.dart'; // Import BillActionButtons
 import 'package:intl/intl.dart'; // Import for NumberFormat
 import 'package:finlog/services/bill_storage_service.dart'; // Import BillStorageService
+import 'package:finlog/l10n/app_localizations.dart';
 
 class BillDetailsScreen extends StatefulWidget {
   final BillData billData;
@@ -20,6 +21,7 @@ class BillDetailsScreen extends StatefulWidget {
 
 class _BillDetailsScreenState extends State<BillDetailsScreen> {
   late BillData _billData;
+  bool _isEditing = false;
 
   @override
   void initState() {
@@ -28,16 +30,24 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
   }
 
   void _ubahBill() {
+    setState(() {
+      _isEditing = !_isEditing;
+    });
     debugPrint('Tombol Ubah Bill ditekan');
     // TODO: Implementasi navigasi ke layar edit atau tampilkan form edit
   }
 
   Future<void> _konfirmasiBill() async {
-    debugPrint('Tombol Konfirmasi ditekan. Data: ${_billData.billItems}, Total: ${_billData.jumlahTotal}');
+    debugPrint(
+      'Tombol Konfirmasi ditekan. Data: ${_billData.billItems}, Total: ${_billData.jumlahTotal}',
+    );
     // Ensure context is valid before using it after an async operation
-    if (!mounted) return; 
+    if (!mounted) return;
 
-    final billStorageService = Provider.of<BillStorageService>(context, listen: false);
+    final billStorageService = Provider.of<BillStorageService>(
+      context,
+      listen: false,
+    );
     await billStorageService.saveBill(_billData); // Save the bill data
     debugPrint('Bill data saved to Hive!');
 
@@ -45,8 +55,11 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const HomeScreen(initialIndex: 2)),
-      (Route<dynamic> route) => false, // This makes sure all previous routes are removed
+      MaterialPageRoute(
+        builder: (context) => const HomeScreen(initialIndex: 2),
+      ),
+      (Route<dynamic> route) =>
+          false, // This makes sure all previous routes are removed
     );
   }
 
@@ -75,7 +88,11 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                         padding: const EdgeInsets.all(20.0),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [gradientStart, gradientMiddle, gradientEnd],
+                            colors: [
+                              gradientStart,
+                              gradientMiddle,
+                              gradientEnd,
+                            ],
                             stops: [0.0, 0.4, 1.0],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -93,18 +110,20 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Verifikasi Tagihan',
-                              style: TextStyle(
+                            Text(
+                              AppLocalizations.of(
+                                context,
+                              )!.billVerificationTitle,
+                              style: const TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
-                              'Item yang Terpindai',
-                              style: TextStyle(
+                            Text(
+                              AppLocalizations.of(context)!.scannedItemsTitle,
+                              style: const TextStyle(
                                 fontSize: 15,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
@@ -112,7 +131,9 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Pastikan semua item sudah terbaca dengan benar',
+                              AppLocalizations.of(
+                                context,
+                              )!.ensureAllItemsCorrect,
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.white.withAlpha((0.8) * 255 ~/ 1),
@@ -133,7 +154,10 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                               thickness: 0.8,
                             ),
 
-                            BillItemList(billData: billData),
+                            BillItemList(
+                              billData: billData,
+                              isEditing: _isEditing,
+                            ),
 
                             Divider(
                               color: Colors.white.withAlpha((0.3) * 255 ~/ 1),
@@ -142,25 +166,34 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                             ),
 
                             BillSummaryRow(
-                              label: 'Subtotal',
-                              value: currencyFormatter.format(billData.subtotal),
+                              label:
+                                  AppLocalizations.of(context)!.subtotalLabel,
+                              value: currencyFormatter.format(
+                                billData.subtotal,
+                              ),
                             ),
                             BillSummaryRow(
-                              label: 'Pajak',
+                              label: AppLocalizations.of(context)!.taxLabel,
                               value: currencyFormatter.format(billData.pajak),
                             ),
                             BillSummaryRow(
-                              label: 'Diskon',
+                              label:
+                                  AppLocalizations.of(context)!.discountLabel,
                               value: currencyFormatter.format(billData.diskon),
                             ),
                             BillSummaryRow(
-                              label: 'Lainnya',
+                              label: AppLocalizations.of(context)!.otherLabel,
                               value: currencyFormatter.format(billData.lainnya),
                             ),
                             const SizedBox(height: 8),
                             BillSummaryRow(
-                              label: 'Jumlah Total',
-                              value: currencyFormatter.format(billData.jumlahTotal),
+                              label:
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.totalAmountLabel,
+                              value: currencyFormatter.format(
+                                billData.jumlahTotal,
+                              ),
                               isTotal: true,
                             ),
                           ],
@@ -171,6 +204,7 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                   BillActionButtons(
                     onUbahBill: _ubahBill,
                     onKonfirmasiBill: _konfirmasiBill,
+                    isEditing: _isEditing,
                   ),
                 ],
               );

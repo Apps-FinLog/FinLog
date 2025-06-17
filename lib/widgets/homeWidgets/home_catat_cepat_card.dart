@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:finlog/styles/colors.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:finlog/l10n/app_localizations.dart';
+import 'package:finlog/screens/text_input_page/manual_input_screen.dart';
+
 
 class CatatCepat extends StatefulWidget {
   const CatatCepat({super.key});
@@ -63,6 +66,7 @@ class _CatatCepatState extends State<CatatCepat> {
     List<TextInputFormatter>? inputFormatters,
     String? hintText,
     String? Function(String?)? validator,
+    required BuildContext context, // Add BuildContext
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,6 +101,29 @@ class _CatatCepatState extends State<CatatCepat> {
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,
             ),
+            suffixIcon: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _nominalController,
+              builder: (context, value, child) {
+                if (value.text.isNotEmpty) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ManualInputScreen(initialNominal: _nominalController.text)),
+                      );
+                    },
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: finlogBluePrimaryDark.withAlpha(
+                        (255 * 0.7).round(),
+                      ),
+                      size: 20,
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           ),
           validator: validator,
         ),
@@ -127,32 +154,33 @@ class _CatatCepatState extends State<CatatCepat> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: const [
+            children: [
               Text(
-                'Catat Cepat',
-                style: TextStyle(
+                AppLocalizations.of(context)!.recordQuickly,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
-              SizedBox(width: 8),
-              Icon(Icons.flash_on, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              const Icon(Icons.flash_on, color: Colors.white, size: 20),
             ],
           ),
           const SizedBox(height: 12),
                 _buildTextField(
-                  label: 'Nominal',
+                  context: context, // Pass context
+                  label: AppLocalizations.of(context)!.nominalLabel,
                   controller: _nominalController,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  hintText: 'Contoh: Rp 1.000.000',
+                  hintText: AppLocalizations.of(context)!.nominalHint,
                   validator: (value) {
                     if (value == null || value.isEmpty || value.replaceAll(RegExp(r'[^\d]'), '').isEmpty) {
-                      return 'Nominal tidak boleh kosong';
+                      return AppLocalizations.of(context)!.nominalEmptyValidation;
                     }
                     if (double.tryParse(value.replaceAll(RegExp(r'[^\d]'), '')) == null) {
-                      return 'Nominal tidak valid';
+                      return AppLocalizations.of(context)!.nominalInvalidValidation;
                     }
                     return null;
                   },
@@ -160,7 +188,7 @@ class _CatatCepatState extends State<CatatCepat> {
                 Padding(
                   padding: const EdgeInsets.only(top: 6.0, left: 4.0),
                   child: Text(
-                    'Estimasi nominal lebih penting dibanding detail rinci nominal',
+                    AppLocalizations.of(context)!.nominalEstimationHint,
                     style: TextStyle(color: Colors.white.withAlpha((0.7) * 255 ~/ 1), fontSize: 11),
                   ),
                 ),

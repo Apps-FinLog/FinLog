@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 const Color finlogLoadingBlue = Color(0xFF0C6BFF);
 
 class LoadingScreen extends StatelessWidget {
