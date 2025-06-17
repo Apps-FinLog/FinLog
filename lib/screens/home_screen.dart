@@ -4,10 +4,10 @@ import 'package:finlog/screens/input_modals/text_input_choice_screen.dart'; // I
 import 'package:finlog/widgets/headers/custom_app_bar.dart'; // Import CustomAppBar
 import 'package:finlog/widgets/navs/custom_bottom_navigation_bar.dart';
 import 'package:finlog/screens/history_screen.dart'; // Import HistoryScreen
+import 'package:finlog/screens/profile_screen.dart'; // Import ProfileScreen
+>>>>>>> 90901fbe541daa0d5b1c27a9844e06e34472a91e
 import 'package:finlog/screens/home_content_screen.dart'; // Import HomeContentScreen
-<<<<<<< HEAD
-import 'package:provider/provider.dart';
-import 'package:finlog/providers/background_provider.dart';
+import 'package:finlog/screens/profile_screen.dart'; // Import ProfileScreen
 =======
 import 'package:finlog/screens/profile_screen.dart'; // Import ProfileScreen
 >>>>>>> 90901fbe541daa0d5b1c27a9844e06e34472a91e
