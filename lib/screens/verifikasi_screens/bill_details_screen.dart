@@ -9,6 +9,7 @@ import 'package:finlog/widgets/bill_widgets/bill_item_list.dart'; // Import Bill
 import 'package:finlog/widgets/bill_widgets/bill_action_buttons.dart'; // Import BillActionButtons
 import 'package:intl/intl.dart'; // Import for NumberFormat
 import 'package:finlog/services/bill_storage_service.dart'; // Import BillStorageService
+import 'package:finlog/l10n/app_localizations.dart';
 
 class BillDetailsScreen extends StatefulWidget {
   final BillData billData;
@@ -109,18 +110,20 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Verifikasi Tagihan',
-                              style: TextStyle(
+                            Text(
+                              AppLocalizations.of(
+                                context,
+                              )!.billVerificationTitle,
+                              style: const TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
-                              'Item yang Terpindai',
-                              style: TextStyle(
+                            Text(
+                              AppLocalizations.of(context)!.scannedItemsTitle,
+                              style: const TextStyle(
                                 fontSize: 15,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
@@ -128,7 +131,9 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Pastikan semua item sudah terbaca dengan benar',
+                              AppLocalizations.of(
+                                context,
+                              )!.ensureAllItemsCorrect,
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.white.withAlpha((0.8) * 255 ~/ 1),
@@ -161,26 +166,31 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                             ),
 
                             BillSummaryRow(
-                              label: 'Subtotal',
+                              label:
+                                  AppLocalizations.of(context)!.subtotalLabel,
                               value: currencyFormatter.format(
                                 billData.subtotal,
                               ),
                             ),
                             BillSummaryRow(
-                              label: 'Pajak',
+                              label: AppLocalizations.of(context)!.taxLabel,
                               value: currencyFormatter.format(billData.pajak),
                             ),
                             BillSummaryRow(
-                              label: 'Diskon',
+                              label:
+                                  AppLocalizations.of(context)!.discountLabel,
                               value: currencyFormatter.format(billData.diskon),
                             ),
                             BillSummaryRow(
-                              label: 'Lainnya',
+                              label: AppLocalizations.of(context)!.otherLabel,
                               value: currencyFormatter.format(billData.lainnya),
                             ),
                             const SizedBox(height: 8),
                             BillSummaryRow(
-                              label: 'Jumlah Total',
+                              label:
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.totalAmountLabel,
                               value: currencyFormatter.format(
                                 billData.jumlahTotal,
                               ),
